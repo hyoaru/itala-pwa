@@ -40,8 +40,10 @@ function RouteComponent() {
           </div>
         </div>
         <div className="bg-default-soft rounded-3xl p-5">
-          <p className="text-muted text-sm">Available balance</p>
-          <p className="font-heading text-4xl font-semibold">₱4,280.50</p>
+          <div className="space-y-1">
+            <p className="text-muted text-sm">Available balance</p>
+            <p className="font-heading text-4xl font-semibold">₱4,280.50</p>
+          </div>
           <p className="text-sm font-medium">+ ₱500 this month </p>
         </div>
         <div className="flex justify-between gap-3">
