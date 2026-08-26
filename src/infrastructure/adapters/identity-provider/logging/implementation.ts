@@ -1,4 +1,7 @@
-import type { IdentityProvider } from "@/application/ports/identity-provider";
+import {
+  IdentityProviderError,
+  type IdentityProvider,
+} from "@/application/ports/identity-provider";
 import type { AuthenticatedSession } from "@/domain/entities";
 import { logger } from "@/infrastructure/logger";
 
@@ -7,6 +10,21 @@ export class LoggingIdentityProvider implements IdentityProvider {
 
   public constructor(inner: IdentityProvider) {
     this.inner = inner;
+  }
+
+  private logFailure(
+    message: string,
+    extra: object | undefined,
+    error: unknown,
+  ): void {
+    const isExpected =
+      error instanceof IdentityProviderError &&
+      error.constructor !== IdentityProviderError;
+    if (isExpected) {
+      logger.warn(message, extra);
+    } else {
+      logger.error(message, extra);
+    }
   }
 
   public async signUp(
@@ -26,7 +44,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Sign up successful", { email });
       return result;
     } catch (error) {
-      logger.error("Sign up failed", { email });
+      this.logFailure("Sign up failed", { email }, error);
       throw error;
     }
   }
@@ -41,7 +59,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Sign in successful", { email });
       return result;
     } catch (error) {
-      logger.error("Sign in failed", { email });
+      this.logFailure("Sign in failed", { email }, error);
       throw error;
     }
   }
@@ -53,7 +71,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.debug("Session refreshed");
       return result;
     } catch (error) {
-      logger.error("Refreshing session failed");
+      this.logFailure("Refreshing session failed", undefined, error);
       throw error;
     }
   }
@@ -65,7 +83,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Email verification successful", { email });
       return result;
     } catch (error) {
-      logger.error("Email verification failed", { email });
+      this.logFailure("Email verification failed", { email }, error);
       throw error;
     }
   }
@@ -77,7 +95,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Email verification sent", { email });
       return result;
     } catch (error) {
-      logger.error("Sending email verification failed", { email });
+      this.logFailure("Sending email verification failed", { email }, error);
       throw error;
     }
   }
@@ -89,7 +107,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Password reset requested", { email });
       return result;
     } catch (error) {
-      logger.error("Requesting password reset failed", { email });
+      this.logFailure("Requesting password reset failed", { email }, error);
       throw error;
     }
   }
@@ -105,7 +123,7 @@ export class LoggingIdentityProvider implements IdentityProvider {
       logger.info("Password reset successful", { email });
       return result;
     } catch (error) {
-      logger.error("Resetting password failed", { email });
+      this.logFailure("Resetting password failed", { email }, error);
       throw error;
     }
   }

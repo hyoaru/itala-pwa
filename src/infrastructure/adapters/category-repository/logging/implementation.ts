@@ -1,6 +1,5 @@
 import {
-  CategoryAlreadyExistsError,
-  CategoryNotFoundError,
+  CategoryRepositoryError,
   type CategoryPage,
   type CategoryQuery,
   type CategoryRepository,
@@ -15,6 +14,17 @@ export class LoggingCategoryRepository implements CategoryRepository {
     this.inner = inner;
   }
 
+  private logFailure(message: string, extra: object | undefined, error: unknown): void {
+    const isExpected =
+      error instanceof CategoryRepositoryError &&
+      error.constructor !== CategoryRepositoryError;
+    if (isExpected) {
+      logger.warn(message, extra);
+    } else {
+      logger.error(message, extra);
+    }
+  }
+
   public async create(name: string): Promise<string> {
     try {
       logger.debug("Creating category", { name });
@@ -22,11 +32,7 @@ export class LoggingCategoryRepository implements CategoryRepository {
       logger.info("Category created", { name });
       return result;
     } catch (error) {
-      if (error instanceof CategoryAlreadyExistsError) {
-        logger.warn("Category already exists", { name });
-        throw error;
-      }
-      logger.error("Failed to create category", { name });
+      this.logFailure("Failed to create category", { name }, error);
       throw error;
     }
   }
@@ -38,11 +44,7 @@ export class LoggingCategoryRepository implements CategoryRepository {
       logger.info("Category found", { id });
       return result;
     } catch (error) {
-      if (error instanceof CategoryNotFoundError) {
-        logger.warn("Category not found", { id });
-        throw error;
-      }
-      logger.error("Failed to find category", { id });
+      this.logFailure("Failed to find category", { id }, error);
       throw error;
     }
   }
@@ -54,7 +56,7 @@ export class LoggingCategoryRepository implements CategoryRepository {
       logger.info("Categories found", { query });
       return result;
     } catch (error) {
-      logger.error("Failed to find categories", { query });
+      this.logFailure("Failed to find categories", { query }, error);
       throw error;
     }
   }
