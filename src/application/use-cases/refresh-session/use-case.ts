@@ -2,8 +2,9 @@ import type { IdentityProvider } from "@/application/ports/identity-provider";
 import type { AuthenticatedSession } from "@/domain/entities";
 import type { UseCase } from "../interface";
 import type { RefreshSessionRequest } from "./request";
+import type { RefreshSessionResponse } from "./response";
 
-export class RefreshSession implements UseCase<AuthenticatedSession> {
+export class RefreshSession implements UseCase<RefreshSessionResponse> {
   private request: RefreshSessionRequest;
   private idp: IdentityProvider;
 

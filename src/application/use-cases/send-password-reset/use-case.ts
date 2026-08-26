@@ -1,8 +1,9 @@
 import type { IdentityProvider } from "@/application/ports/identity-provider";
 import type { UseCase } from "../interface";
 import type { SendPasswordResetRequest } from "./request";
+import type { SendPasswordResetResponse } from "./response";
 
-export class SendPasswordReset implements UseCase<void> {
+export class SendPasswordReset implements UseCase<SendPasswordResetResponse> {
   private request: SendPasswordResetRequest;
   private idp: IdentityProvider;
 
@@ -11,7 +12,7 @@ export class SendPasswordReset implements UseCase<void> {
     this.idp = idp;
   }
 
-  public async execute(): Promise<void> {
+  public async execute(): Promise<SendPasswordResetResponse> {
     await this.idp.requestPasswordReset(this.request.email);
   }
 }

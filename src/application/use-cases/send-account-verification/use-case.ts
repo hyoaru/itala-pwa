@@ -1,8 +1,11 @@
 import type { IdentityProvider } from "@/application/ports/identity-provider";
 import type { UseCase } from "../interface";
 import type { SendAccountVerificationRequest } from "./request";
+import type { SendAccountVerificationResponse } from "./response";
 
-export class SendAccountVerification implements UseCase<void> {
+export class SendAccountVerification
+  implements UseCase<SendAccountVerificationResponse>
+{
   private request: SendAccountVerificationRequest;
   private idp: IdentityProvider;
 
@@ -14,7 +17,7 @@ export class SendAccountVerification implements UseCase<void> {
     this.idp = idp;
   }
 
-  public async execute(): Promise<void> {
+  public async execute(): Promise<SendAccountVerificationResponse> {
     await this.idp.sendVerification(this.request.email);
   }
 }
