@@ -1,6 +1,8 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
+import { useMutation } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
+import { identityActions } from "../actions";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -22,6 +24,7 @@ export function AuthenticationSessionProvider({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [_, setSessionState] = useState<AuthenticatedSession | null>(null);
+  const refreshSessionMutation = useMutation(identityActions.refresh());
 
   const createUserFromIdToken = (idToken: string): User => {
     const idClaims = jwtDecode<{
@@ -72,9 +75,20 @@ export function AuthenticationSessionProvider({
       const accessClaims = jwtDecode<{ exp: number }>(accessToken);
       const now = Math.floor(Date.now() / 1000);
 
-      if (accessClaims.exp <= now) {
-        // TODO: Handle token refresh logic here via IdentityProvider
-        clearSession();
+      if (now >= accessClaims.exp) {
+        const refreshSession = async () => {
+          try {
+            const refreshedSession = await refreshSessionMutation.mutateAsync({
+              refreshToken: refreshToken,
+            });
+
+            setUser(createUserFromIdToken(refreshedSession.idToken));
+            setSessionState(refreshedSession);
+          } catch {
+            clearSession();
+          }
+        };
+        refreshSession();
       } else {
         const restoredSession = new AuthenticatedSession({
           accessToken,
@@ -90,7 +104,7 @@ export function AuthenticationSessionProvider({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [refreshSessionMutation]);
 
   const isAuthenticated = user !== null;
 

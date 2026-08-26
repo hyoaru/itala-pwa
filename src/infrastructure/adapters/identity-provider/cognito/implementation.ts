@@ -21,6 +21,7 @@ import {
   ConfirmSignUpCommand,
   ExpiredCodeException,
   ForgotPasswordCommand,
+  GetTokensFromRefreshTokenCommand,
   InitiateAuthCommand,
   InvalidEmailRoleAccessPolicyException,
   InvalidParameterException,
@@ -140,6 +141,40 @@ export class CognitoIdentityProvider implements IdentityProvider {
           cause: error,
         });
       }
+      const message = error instanceof Error ? error.message : String(error);
+      throw new IdentityProviderError(`Identity provider error: ${message}`, {
+        cause: error,
+      });
+    }
+  }
+
+  public async refresh(refreshToken: string): Promise<AuthenticatedSession> {
+    try {
+      const result = await this.cognitoClient.send(
+        new GetTokensFromRefreshTokenCommand({
+          ClientId: this.cognitoClientId,
+          RefreshToken: refreshToken,
+        }),
+      );
+
+      const accessToken = result?.AuthenticationResult?.AccessToken;
+      const idToken = result?.AuthenticationResult?.IdToken;
+      const newRefreshToken = result?.AuthenticationResult?.RefreshToken;
+
+      if (!accessToken || !idToken || !newRefreshToken) {
+        throw new IdentityProviderError("Unexpected response from Cognito");
+      }
+
+      return new AuthenticatedSession({
+        accessToken,
+        idToken,
+        refreshToken: newRefreshToken,
+      });
+    } catch (error) {
+      if (error instanceof IdentityProviderError) {
+        throw error;
+      }
+
       const message = error instanceof Error ? error.message : String(error);
       throw new IdentityProviderError(`Identity provider error: ${message}`, {
         cause: error,

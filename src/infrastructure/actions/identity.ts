@@ -5,12 +5,14 @@ import {
   SignIn,
   SignUp,
   VerifyAccount,
+  RefreshSession,
   type ResetPasswordRequest,
   type SendAccountVerificationRequest,
   type SendPasswordResetRequest,
   type SignInRequest,
   type SignUpRequest,
   type VerifyAccountRequest,
+  type RefreshSessionRequest,
 } from "@/application/use-cases";
 import { mutationOptions } from "@tanstack/react-query";
 import {
@@ -35,6 +37,29 @@ export const identityActions = {
           email: request.email,
           password: request.password,
         }).execute();
+
+        localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
+        localStorage.setItem("ACCESS_TOKEN", authenticatedSession.accessToken);
+        localStorage.setItem(
+          "REFRESH_TOKEN",
+          authenticatedSession.refreshToken,
+        );
+
+        return authenticatedSession;
+      },
+    }),
+  refresh: () =>
+    mutationOptions({
+      mutationKey: [baseKey, "refresh"],
+      mutationFn: async (
+        request: RefreshSessionRequest,
+      ): ReturnType<InstanceType<typeof RefreshSession>["execute"]> => {
+        const authenticatedSession = await new RefreshSession(
+          identityProvider,
+          {
+            refreshToken: request.refreshToken,
+          },
+        ).execute();
 
         localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
         localStorage.setItem("ACCESS_TOKEN", authenticatedSession.accessToken);

@@ -10,6 +10,8 @@ export interface IdentityProvider {
 
   signIn(email: string, password: string): Promise<AuthenticatedSession>;
 
+  refresh(frefreshToken: string): Promise<AuthenticatedSession>;
+
   verify(email: string, code: string): Promise<void>;
 
   sendVerification(email: string): Promise<void>;

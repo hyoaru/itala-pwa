@@ -25,6 +25,10 @@ export class DecoratedIdentityProvider implements IdentityProvider {
     return await this.inner.signIn(email, password);
   }
 
+  public async refresh(refreshToken: string): Promise<AuthenticatedSession> {
+    return await this.inner.refresh(refreshToken);
+  }
+
   public async verify(email: string, code: string): Promise<void> {
     return await this.inner.verify(email, code);
   }

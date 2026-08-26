@@ -46,6 +46,18 @@ export class LoggingIdentityProvider implements IdentityProvider {
     }
   }
 
+  public async refresh(refreshToken: string): Promise<AuthenticatedSession> {
+    try {
+      logger.debug("Refreshing session");
+      const result = await this.inner.refresh(refreshToken);
+      logger.debug("Session refreshed");
+      return result;
+    } catch (error) {
+      logger.error("Refreshing session failed");
+      throw error;
+    }
+  }
+
   public async verify(email: string, code: string): Promise<void> {
     try {
       logger.debug("Verifying email", { email });
