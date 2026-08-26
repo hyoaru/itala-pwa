@@ -31,34 +31,32 @@ const categoryRepository = new DecoratedCategoryRepository(
   new HttpCategoryRepository(httpClient),
 );
 
+const createCategory = new CreateCategory(categoryRepository);
+const findCategory = new FindCategory(categoryRepository);
+const findCategories = new FindCategories(categoryRepository);
+
 export const categoryActions = {
   createCategory: () =>
     mutationOptions({
       mutationKey: [baseKey, "create"],
       mutationFn: (
         request: CreateCategoryRequest,
-      ): ReturnType<InstanceType<typeof CreateCategory>["execute"]> => {
-        return new CreateCategory(categoryRepository, {
-          name: request.name,
-        }).execute();
+      ): ReturnType<typeof createCategory.execute> => {
+        return createCategory.execute(request);
       },
     }),
   findCategory: (request: FindCategoryRequest) =>
     queryOptions({
       queryKey: [baseKey, "find_one", request.id],
-      queryFn: (): ReturnType<InstanceType<typeof FindCategory>["execute"]> => {
-        return new FindCategory(categoryRepository, {
-          id: request.id,
-        }).execute();
+      queryFn: (): ReturnType<typeof findCategory.execute> => {
+        return findCategory.execute(request);
       },
     }),
   findCategories: (request?: FindCategoriesRequest) =>
     queryOptions({
       queryKey: [baseKey, "find", request],
-      queryFn: (): ReturnType<
-        InstanceType<typeof FindCategories>["execute"]
-      > => {
-        return new FindCategories(categoryRepository, request).execute();
+      queryFn: (): ReturnType<typeof findCategories.execute> => {
+        return findCategories.execute(request);
       },
     }),
 };

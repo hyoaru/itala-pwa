@@ -1,11 +1,11 @@
 import {
+  RefreshSession,
   ResetPassword,
   SendAccountVerification,
   SendPasswordReset,
   SignIn,
   SignUp,
   VerifyAccount,
-  RefreshSession,
   type ResetPasswordRequest,
   type SendAccountVerificationRequest,
   type SendPasswordResetRequest,
@@ -26,17 +26,22 @@ const identityProvider = new DecoratedIdentityProvider(
   new CognitoIdentityProvider(),
 );
 
+const signIn = new SignIn(identityProvider);
+const refreshSession = new RefreshSession(identityProvider);
+const signUp = new SignUp(identityProvider);
+const verifyAccount = new VerifyAccount(identityProvider);
+const sendAccountVerification = new SendAccountVerification(identityProvider);
+const sendPasswordReset = new SendPasswordReset(identityProvider);
+const resetPassword = new ResetPassword(identityProvider);
+
 export const identityActions = {
   signIn: () =>
     mutationOptions({
       mutationKey: [baseKey, "sign_in"],
       mutationFn: async (
         request: SignInRequest,
-      ): ReturnType<InstanceType<typeof SignIn>["execute"]> => {
-        const authenticatedSession = await new SignIn(identityProvider, {
-          email: request.email,
-          password: request.password,
-        }).execute();
+      ): ReturnType<typeof signIn.execute> => {
+        const authenticatedSession = await signIn.execute(request);
 
         localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
         localStorage.setItem("ACCESS_TOKEN", authenticatedSession.accessToken);
@@ -53,13 +58,8 @@ export const identityActions = {
       mutationKey: [baseKey, "refresh"],
       mutationFn: async (
         request: RefreshSessionRequest,
-      ): ReturnType<InstanceType<typeof RefreshSession>["execute"]> => {
-        const authenticatedSession = await new RefreshSession(
-          identityProvider,
-          {
-            refreshToken: request.refreshToken,
-          },
-        ).execute();
+      ): ReturnType<typeof refreshSession.execute> => {
+        const authenticatedSession = await refreshSession.execute(request);
 
         localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
         localStorage.setItem("ACCESS_TOKEN", authenticatedSession.accessToken);
@@ -76,13 +76,8 @@ export const identityActions = {
       mutationKey: [baseKey, "sign_up"],
       mutationFn: (
         request: SignUpRequest,
-      ): ReturnType<InstanceType<typeof SignUp>["execute"]> => {
-        return new SignUp(identityProvider, {
-          email: request.email,
-          firstName: request.firstName,
-          lastName: request.lastName,
-          password: request.password,
-        }).execute();
+      ): ReturnType<typeof signUp.execute> => {
+        return signUp.execute(request);
       },
     }),
   verifyAccount: () =>
@@ -90,11 +85,8 @@ export const identityActions = {
       mutationKey: [baseKey, "verify"],
       mutationFn: (
         request: VerifyAccountRequest,
-      ): ReturnType<InstanceType<typeof VerifyAccount>["execute"]> => {
-        return new VerifyAccount(identityProvider, {
-          email: request.email,
-          code: request.code,
-        }).execute();
+      ): ReturnType<typeof verifyAccount.execute> => {
+        return verifyAccount.execute(request);
       },
     }),
   sendAccountVerification: () =>
@@ -102,12 +94,8 @@ export const identityActions = {
       mutationKey: [baseKey, "send_verification"],
       mutationFn: (
         request: SendAccountVerificationRequest,
-      ): ReturnType<
-        InstanceType<typeof SendAccountVerification>["execute"]
-      > => {
-        return new SendAccountVerification(identityProvider, {
-          email: request.email,
-        }).execute();
+      ): ReturnType<typeof sendAccountVerification.execute> => {
+        return sendAccountVerification.execute(request);
       },
     }),
   sendPasswordReset: () =>
@@ -115,10 +103,8 @@ export const identityActions = {
       mutationKey: [baseKey, "request_password_reset"],
       mutationFn: (
         request: SendPasswordResetRequest,
-      ): ReturnType<InstanceType<typeof SendPasswordReset>["execute"]> => {
-        return new SendPasswordReset(identityProvider, {
-          email: request.email,
-        }).execute();
+      ): ReturnType<typeof sendPasswordReset.execute> => {
+        return sendPasswordReset.execute(request);
       },
     }),
   resetPassword: () =>
@@ -126,12 +112,8 @@ export const identityActions = {
       mutationKey: [baseKey, "reset_password"],
       mutationFn: (
         request: ResetPasswordRequest,
-      ): ReturnType<InstanceType<typeof ResetPassword>["execute"]> => {
-        return new ResetPassword(identityProvider, {
-          email: request.email,
-          code: request.code,
-          newPassword: request.newPassword,
-        }).execute();
+      ): ReturnType<typeof resetPassword.execute> => {
+        return resetPassword.execute(request);
       },
     }),
 };

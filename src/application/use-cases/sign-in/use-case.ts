@@ -3,16 +3,14 @@ import type { UseCase } from "../interface";
 import type { SignInRequest } from "./request";
 import type { SignInResponse } from "./response";
 
-export class SignIn implements UseCase<SignInResponse> {
-  private request: SignInRequest;
+export class SignIn implements UseCase<SignInRequest, SignInResponse> {
   private idp: IdentityProvider;
 
-  public constructor(idp: IdentityProvider, request: SignInRequest) {
-    this.request = request;
+  public constructor(idp: IdentityProvider) {
     this.idp = idp;
   }
 
-  public async execute(): Promise<SignInResponse> {
-    return await this.idp.signIn(this.request.email, this.request.password);
+  public async execute(request: SignInRequest): Promise<SignInResponse> {
+    return await this.idp.signIn(request.email, request.password);
   }
 }

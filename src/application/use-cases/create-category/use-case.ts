@@ -3,19 +3,19 @@ import type { UseCase } from "../interface";
 import type { CreateCategoryRequest } from "./request";
 import type { CreateCategoryResponse } from "./response";
 
-export class CreateCategory implements UseCase<CreateCategoryResponse> {
-  private request: CreateCategoryRequest;
+export class CreateCategory implements UseCase<
+  CreateCategoryRequest,
+  CreateCategoryResponse
+> {
   private repository: CategoryRepository;
 
-  public constructor(
-    repository: CategoryRepository,
-    request: CreateCategoryRequest,
-  ) {
-    this.request = request;
+  public constructor(repository: CategoryRepository) {
     this.repository = repository;
   }
 
-  public async execute(): Promise<CreateCategoryResponse> {
-    return await this.repository.create(this.request.name);
+  public async execute(
+    request: CreateCategoryRequest,
+  ): Promise<CreateCategoryResponse> {
+    return await this.repository.create(request.name);
   }
 }

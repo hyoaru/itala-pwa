@@ -3,16 +3,19 @@ import type { UseCase } from "../interface";
 import type { VerifyAccountRequest } from "./request";
 import type { VerifyAccountResponse } from "./response";
 
-export class VerifyAccount implements UseCase<VerifyAccountResponse> {
-  private request: VerifyAccountRequest;
+export class VerifyAccount implements UseCase<
+  VerifyAccountRequest,
+  VerifyAccountResponse
+> {
   private idp: IdentityProvider;
 
-  public constructor(idp: IdentityProvider, request: VerifyAccountRequest) {
-    this.request = request;
+  public constructor(idp: IdentityProvider) {
     this.idp = idp;
   }
 
-  public async execute(): Promise<VerifyAccountResponse> {
-    await this.idp.verify(this.request.email, this.request.code);
+  public async execute(
+    request: VerifyAccountRequest,
+  ): Promise<VerifyAccountResponse> {
+    await this.idp.verify(request.email, request.code);
   }
 }

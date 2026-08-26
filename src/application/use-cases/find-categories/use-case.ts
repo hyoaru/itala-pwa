@@ -3,19 +3,19 @@ import type { UseCase } from "../interface";
 import type { FindCategoriesRequest } from "./request";
 import type { FindCategoriesResponse } from "./response";
 
-export class FindCategories implements UseCase<FindCategoriesResponse> {
-  private request?: FindCategoriesRequest;
+export class FindCategories implements UseCase<
+  FindCategoriesRequest | undefined,
+  FindCategoriesResponse
+> {
   private repository: CategoryRepository;
 
-  public constructor(
-    repository: CategoryRepository,
-    request?: FindCategoriesRequest,
-  ) {
-    this.request = request;
+  public constructor(repository: CategoryRepository) {
     this.repository = repository;
   }
 
-  public async execute(): Promise<FindCategoriesResponse> {
-    return await this.repository.find(this.request);
+  public async execute(
+    request?: FindCategoriesRequest,
+  ): Promise<FindCategoriesResponse> {
+    return await this.repository.find(request);
   }
 }

@@ -3,21 +3,19 @@ import type { UseCase } from "../interface";
 import type { SendAccountVerificationRequest } from "./request";
 import type { SendAccountVerificationResponse } from "./response";
 
-export class SendAccountVerification
-  implements UseCase<SendAccountVerificationResponse>
-{
-  private request: SendAccountVerificationRequest;
+export class SendAccountVerification implements UseCase<
+  SendAccountVerificationRequest,
+  SendAccountVerificationResponse
+> {
   private idp: IdentityProvider;
 
-  public constructor(
-    idp: IdentityProvider,
-    request: SendAccountVerificationRequest,
-  ) {
-    this.request = request;
+  public constructor(idp: IdentityProvider) {
     this.idp = idp;
   }
 
-  public async execute(): Promise<SendAccountVerificationResponse> {
-    await this.idp.sendVerification(this.request.email);
+  public async execute(
+    request: SendAccountVerificationRequest,
+  ): Promise<SendAccountVerificationResponse> {
+    await this.idp.sendVerification(request.email);
   }
 }
