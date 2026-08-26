@@ -6,3 +6,6 @@ export * from "./send-account-verification";
 export * from "./send-password-reset";
 export * from "./reset-password";
 export * from "./refresh-session";
+export * from "./create-category";
+export * from "./find-category";
+export * from "./find-categories";
