@@ -1,3 +1,4 @@
+import { TransactionType } from "@/domain/value-objects";
 import { NewCategoryModal } from "@/infrastructure/components";
 import { getFieldError } from "@/infrastructure/forms";
 import {
@@ -56,7 +57,7 @@ function RouteComponent() {
   const form = useAppForm({
     defaultValues: {
       amount: 0,
-      transactionType: "EXPENSE",
+      transactionType: TransactionType.Expense as TransactionType,
       description: "",
       categoryId: "",
       accountId: "",
@@ -64,7 +65,7 @@ function RouteComponent() {
     validators: {
       onChange: z.object({
         amount: z.number().min(0),
-        transactionType: z.enum(["EXPENSE", "INCOME"]),
+        transactionType: z.enum(TransactionType),
         description: z.string().nonempty().max(60),
         categoryId: z.string().nonempty(),
         accountId: z.string().nonempty(),
@@ -79,7 +80,7 @@ function RouteComponent() {
   return (
     <>
       <Form
-        className="w-full space-y-4"
+        className="w-full space-y-3"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit(e);
@@ -95,10 +96,12 @@ function RouteComponent() {
                 id={field.name}
                 onClick={() => {
                   field.handleChange(
-                    field.state.value == "INCOME" ? "EXPENSE" : "INCOME",
+                    field.state.value == TransactionType.Income
+                      ? TransactionType.Expense
+                      : TransactionType.Income,
                   );
                 }}
-                className="data-[selected=true]:text-foreground h-0 text-sm font-semibold"
+                className="data-[selected=true]:text-foreground h-0 text-sm font-semibold uppercase"
               >
                 {field.state.value}
               </field.ToggleButton>
@@ -110,7 +113,7 @@ function RouteComponent() {
           <form.Subscribe selector={(state) => state.values.transactionType}>
             {(transactionType) => (
               <p className="text-muted text-sm">
-                {transactionType === "INCOME"
+                {transactionType === TransactionType.Income
                   ? "How much did you receive?"
                   : "How much did you spend?"}
               </p>

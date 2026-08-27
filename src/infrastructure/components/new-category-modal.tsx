@@ -41,10 +41,7 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
     validators: {
       onChange: z.object({
         name: z.string().min(1).max(64),
-        transactionType: z.enum([
-          TransactionType.Income,
-          TransactionType.Expense,
-        ]),
+        transactionType: z.enum(TransactionType),
       }),
     },
     onSubmit: async ({ value }) => {
@@ -75,7 +72,7 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
                 e.preventDefault();
                 form.handleSubmit(e);
               }}
-              className="space-y-4"
+              className="space-y-3"
             >
               <form.AppField name="name">
                 {(field) => {
