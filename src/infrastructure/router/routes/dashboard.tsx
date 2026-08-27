@@ -1,6 +1,6 @@
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button } from "@heroui/react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: ({ context }) => {
@@ -47,10 +47,13 @@ function RouteComponent() {
           <p className="text-sm font-medium">+ ₱500 this month </p>
         </div>
         <div className="flex justify-between gap-3">
-          <Button className="w-full font-semibold">Insights</Button>
-          <Button variant="secondary" className="w-full font-semibold">
-            Add expense
-          </Button>
+          <Button className="w-full font-semibold">View insights</Button>
+          <Link
+            to="/transactions/new"
+            className="button button--secondary w-full font-semibold"
+          >
+            Add transaction
+          </Link>
         </div>
         <div className="space-y-3">
           <p className="font-heading text-sm font-medium">

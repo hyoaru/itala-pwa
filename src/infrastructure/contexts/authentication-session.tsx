@@ -24,7 +24,7 @@ export function AuthenticationSessionProvider({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [_, setSessionState] = useState<AuthenticatedSession | null>(null);
-  const refreshSessionMutation = useMutation(identityActions.refresh());
+  const { mutateAsync: refresh } = useMutation(identityActions.refresh());
 
   const createUserFromIdToken = (idToken: string): User => {
     const idClaims = jwtDecode<{
@@ -78,10 +78,7 @@ export function AuthenticationSessionProvider({
       if (now >= accessClaims.exp) {
         const refreshSession = async () => {
           try {
-            const refreshedSession = await refreshSessionMutation.mutateAsync({
-              refreshToken: refreshToken,
-            });
-
+            const refreshedSession = await refresh({ refreshToken });
             setUser(createUserFromIdToken(refreshedSession.idToken));
             setSessionState(refreshedSession);
           } catch {
@@ -104,7 +101,7 @@ export function AuthenticationSessionProvider({
     } finally {
       setIsLoading(false);
     }
-  }, [refreshSessionMutation]);
+  }, [refresh]);
 
   const isAuthenticated = user !== null;
 
