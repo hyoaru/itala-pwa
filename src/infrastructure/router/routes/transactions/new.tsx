@@ -7,18 +7,29 @@ import {
 } from "@/infrastructure/components";
 import { AsyncBoundary } from "@/infrastructure/components/ui/async-boundary";
 import { getFieldError } from "@/infrastructure/forms";
+import { TransactionRepositoryError } from "@/application/ports/transaction-repository";
+import { useTransactionActions } from "@/infrastructure/actions";
 import {
   Button,
+  Calendar,
+  DateField,
+  DatePicker,
   Form,
   InputGroup,
+  Label,
   NumberField,
   TextField,
+  TimeField,
   ToggleButton,
+  toast,
   useOverlayState,
 } from "@heroui/react";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { CalendarDays } from "lucide-react";
 import { ArrowLeft, Pilcrow } from "lucide-react";
+import { CalendarDateTime } from "@internationalized/date";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -33,6 +44,17 @@ export const Route = createFileRoute("/transactions/new")({
 
 const { fieldContext, formContext } = createFormHookContexts();
 
+const nowAsCalendarDateTime = () => {
+  const now = new Date();
+  return new CalendarDateTime(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    now.getDate(),
+    now.getHours(),
+    now.getMinutes(),
+  );
+};
+
 const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
@@ -40,6 +62,7 @@ const { useAppForm } = createFormHook({
     AccountSelect,
     ToggleButton,
     NumberField,
+    DatePicker,
   },
   formComponents: {
     Button,
@@ -53,12 +76,15 @@ function RouteComponent() {
   const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
   const createCategoryModalState = useOverlayState();
   const createAccountModalState = useOverlayState();
+  const { createTransaction } = useTransactionActions();
+  const createTransactionMutation = useMutation(createTransaction());
 
   const form = useAppForm({
     defaultValues: {
       amount: 0,
       transactionType: TransactionType.Expense as TransactionType,
       description: "",
+      occurredAt: nowAsCalendarDateTime(),
       categoryId: "",
       accountId: "",
     },
@@ -67,14 +93,34 @@ function RouteComponent() {
         amount: z.number().min(0),
         transactionType: z.enum(TransactionType),
         description: z.string().nonempty().max(60),
+        occurredAt: z.instanceof(CalendarDateTime),
         categoryId: z.string().nonempty(),
         accountId: z.string().nonempty(),
       }),
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-      form.resetField("amount");
-      form.resetField("description");
+      try {
+        await createTransactionMutation.mutateAsync({
+          amount: String(value.amount),
+          accountId: value.accountId,
+          categoryId: value.categoryId,
+          description: value.description,
+          occurredAt: value.occurredAt.toDate("UTC"),
+        });
+
+        form.reset();
+        toast("Transaction saved", { variant: "success" });
+      } catch (error) {
+        if (error instanceof TransactionRepositoryError) {
+          toast(`An unexpected error has occured: ${error.message}`, {
+            variant: "danger",
+          });
+        } else {
+          toast("An unexpected error has occured", {
+            variant: "danger",
+          });
+        }
+      }
     },
   });
   return (
@@ -176,6 +222,85 @@ function RouteComponent() {
                   />
                 </InputGroup>
               </field.TextField>
+            );
+          }}
+        </form.AppField>
+
+        <form.AppField name="occurredAt">
+          {(field) => {
+            const { isInvalid } = getFieldError(field);
+            return (
+              <field.DatePicker
+                className="w-full"
+                isInvalid={isInvalid}
+                granularity="minute"
+                onChange={(value) =>
+                  field.handleChange(value as CalendarDateTime)
+                }
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+              >
+                <div className="relative w-full">
+                  <DateField.Group
+                    className="px-3"
+                    variant="secondary"
+                    fullWidth
+                  >
+                    <div className=" ">
+                      <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
+                    </div>
+
+                    <DateField.Input className="text-sm">
+                      {(segment) => <DateField.Segment segment={segment} />}
+                    </DateField.Input>
+                  </DateField.Group>
+                  <DatePicker.Trigger className="absolute inset-0 h-full w-full cursor-pointer"></DatePicker.Trigger>
+                </div>
+                <DatePicker.Popover className="flex flex-col gap-3">
+                  <Calendar aria-label="Event date">
+                    <Calendar.Header>
+                      <Calendar.YearPickerTrigger>
+                        <Calendar.YearPickerTriggerHeading />
+                        <Calendar.YearPickerTriggerIndicator />
+                      </Calendar.YearPickerTrigger>
+                      <Calendar.NavButton slot="previous" />
+                      <Calendar.NavButton slot="next" />
+                    </Calendar.Header>
+                    <Calendar.Grid>
+                      <Calendar.GridHeader>
+                        {(day) => (
+                          <Calendar.HeaderCell>{day}</Calendar.HeaderCell>
+                        )}
+                      </Calendar.GridHeader>
+                      <Calendar.GridBody>
+                        {(date) => <Calendar.Cell date={date} />}
+                      </Calendar.GridBody>
+                    </Calendar.Grid>
+                    <Calendar.YearPickerGrid>
+                      <Calendar.YearPickerGridBody>
+                        {({ year }) => <Calendar.YearPickerCell year={year} />}
+                      </Calendar.YearPickerGridBody>
+                    </Calendar.YearPickerGrid>
+                  </Calendar>
+                  <div className="flex items-center justify-between">
+                    <Label>Time</Label>
+                    <TimeField
+                      hourCycle={24}
+                      hideTimeZone={true}
+                      shouldForceLeadingZeros={true}
+                      granularity={"minute"}
+                    >
+                      <TimeField.Group variant="secondary">
+                        <TimeField.Input>
+                          {(segment) => <TimeField.Segment segment={segment} />}
+                        </TimeField.Input>
+                      </TimeField.Group>
+                    </TimeField>
+                  </div>
+                </DatePicker.Popover>
+              </field.DatePicker>
             );
           }}
         </form.AppField>
