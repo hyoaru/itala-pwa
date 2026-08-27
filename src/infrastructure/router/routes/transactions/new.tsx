@@ -1,5 +1,5 @@
 import { TransactionType } from "@/domain/value-objects";
-import { NewCategoryModal } from "@/infrastructure/components";
+import { NewAccountModal, NewCategoryModal } from "@/infrastructure/components";
 import { getFieldError } from "@/infrastructure/forms";
 import {
   Button,
@@ -52,7 +52,9 @@ const { useAppForm } = createFormHook({
 
 function RouteComponent() {
   const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
+  const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
   const createCategoryModalState = useOverlayState();
+  const createAccountModalState = useOverlayState();
 
   const form = useAppForm({
     defaultValues: {
@@ -253,6 +255,8 @@ function RouteComponent() {
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(value) => field.handleChange(value as string)}
+                isOpen={isAccountSelectOpen}
+                onOpenChange={setIsAccountSelectOpen}
               >
                 <field.Select.Trigger className="">
                   <p className="text-muted">
@@ -266,6 +270,20 @@ function RouteComponent() {
                   </Select.Indicator>
                 </field.Select.Trigger>
                 <field.Select.Popover>
+                  <div className="mt-2 px-1">
+                    <Button
+                      variant="secondary"
+                      className="justify-start px-3 text-start"
+                      fullWidth
+                      onPress={() => {
+                        setIsAccountSelectOpen(false);
+                        createAccountModalState.open();
+                      }}
+                    >
+                      <Plus className="inline h-[1.2em] w-[1.2em]" />
+                      Create account
+                    </Button>
+                  </div>
                   <ListBox>
                     <ListBox.Item id="option1" textValue="Option 1">
                       Option 1
@@ -292,6 +310,11 @@ function RouteComponent() {
       <NewCategoryModal
         isOpen={createCategoryModalState.isOpen}
         onOpenChange={createCategoryModalState.setOpen}
+      />
+
+      <NewAccountModal
+        isOpen={createAccountModalState.isOpen}
+        onOpenChange={createAccountModalState.setOpen}
       />
     </>
   );
