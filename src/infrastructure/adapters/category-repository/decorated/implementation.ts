@@ -2,7 +2,7 @@ import type {
   CategoryRepository,
   CategoryQuery,
   CategoryPage,
-} from "@/application/ports/account-repository";
+} from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
 import { LoggingCategoryRepository } from "../logging";
 

@@ -17,7 +17,7 @@ import {
   type CategoryRepository,
   CategoryAlreadyExistsError,
   CategoryNotFoundError,
-} from "@/application/ports/account-repository";
+} from "@/application/ports/category-repository";
 
 export class HttpCategoryRepository implements CategoryRepository {
   private httpClient: AxiosInstance;

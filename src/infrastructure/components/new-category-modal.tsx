@@ -12,6 +12,8 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { ArrowRight, Pilcrow, Shapes } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
+import { useMutation } from "@tanstack/react-query";
+import { categoryActions } from "../actions";
 
 interface NewCategoryModalProps {
   isOpen: boolean;
@@ -33,6 +35,8 @@ const { useAppForm } = createFormHook({
 });
 
 export const NewCategoryModal = (props: NewCategoryModalProps) => {
+  const createCategoryMutation = useMutation(categoryActions.createCategory())
+
   const form = useAppForm({
     defaultValues: {
       name: "",
@@ -45,6 +49,9 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
       }),
     },
     onSubmit: async ({ value }) => {
+      await createCategoryMutation.mutateAsync({
+        name: 
+      })
       console.log(value);
       props.onOpenChange(false);
     },

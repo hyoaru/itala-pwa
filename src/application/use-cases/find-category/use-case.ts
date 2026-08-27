@@ -1,4 +1,4 @@
-import type { CategoryRepository } from "@/application/ports/account-repository";
+import type { CategoryRepository } from "@/application/ports/category-repository";
 import type { UseCase } from "../interface";
 import type { FindCategoryRequest } from "./request";
 import type { FindCategoryResponse } from "./response";

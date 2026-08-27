@@ -3,7 +3,7 @@ import {
   type CategoryPage,
   type CategoryQuery,
   type CategoryRepository,
-} from "@/application/ports/account-repository";
+} from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
 import { logger } from "@/infrastructure/logger";
 
@@ -14,7 +14,11 @@ export class LoggingCategoryRepository implements CategoryRepository {
     this.inner = inner;
   }
 
-  private logFailure(message: string, extra: object | undefined, error: unknown): void {
+  private logFailure(
+    message: string,
+    extra: object | undefined,
+    error: unknown,
+  ): void {
     const isExpected =
       error instanceof CategoryRepositoryError &&
       error.constructor !== CategoryRepositoryError;
