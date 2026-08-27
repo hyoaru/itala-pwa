@@ -1,3 +1,7 @@
+import {
+  AllTransactionsPanel,
+  AsyncBoundary,
+} from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
@@ -29,16 +33,16 @@ function RouteComponent() {
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
   const transactionTabs = [
-    { name: "all" },
-    { name: "income" },
-    { name: "expense" },
+    { name: "all", panel: AllTransactionsPanel },
+    { name: "income", panel: AllTransactionsPanel },
+    { name: "expense", panel: AllTransactionsPanel },
   ];
 
   return (
     <>
       <div className="w-full space-y-4">
         <div className="flex w-full items-center justify-between">
-          <p className="text-muted text-sm">
+          <p className="text-sm">
             {greeting}, {user?.firstName}
           </p>
           <div className="bg-accent rounded-full">
@@ -87,22 +91,15 @@ function RouteComponent() {
                 <ArrowUpRight className="size-6" />
               </Button>
             </div>
-            {/* {items.map((item) => ( */}
-            {/*   <Tabs.Panel key={item.id} className="pt-4" id={item.id}> */}
-            {/*     <p>{item.label} panel content.</p> */}
-            {/*   </Tabs.Panel> */}
+            {/* <div className="h-full border">test</div> */}
+            {/* {transactionTabs.map((item) => ( */}
+            {/*   <div key={`TabPanel-${item.name}`} className="h-full border"> */}
+            {/*     <AsyncBoundary> */}
+            {/*       <item.panel id={item.name} /> */}
+            {/*     </AsyncBoundary> */}
+            {/*   </div> */}
             {/* ))} */}
           </Tabs>
-          <div className="space-y-2">
-            <div className="bg-default-soft flex justify-between rounded-3xl p-3 text-sm">
-              <p className="font-medium">Coffee shop</p>
-              <p className="font-semibold">-₱4.80</p>
-            </div>
-            <div className="bg-default-soft flex justify-between rounded-3xl p-3 text-sm">
-              <p className="font-medium">Coffee shop</p>
-              <p className="font-semibold">-₱4.80</p>
-            </div>
-          </div>
         </div>
       </div>
     </>
