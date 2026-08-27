@@ -3,6 +3,7 @@ import {
   QueryClientProvider,
   useQueryClient,
 } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider } from "@tanstack/react-router";
 import { useState } from "react";
 import { Initializing } from "./components/defaults";
@@ -30,6 +31,7 @@ export default function App() {
       <AuthenticationSessionProvider>
         <InnerApp />
       </AuthenticationSessionProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

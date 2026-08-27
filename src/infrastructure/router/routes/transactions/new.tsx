@@ -1,5 +1,10 @@
 import { TransactionType } from "@/domain/value-objects";
-import { NewAccountModal, NewCategoryModal } from "@/infrastructure/components";
+import {
+  CategorySelect,
+  NewAccountModal,
+  NewCategoryModal,
+} from "@/infrastructure/components";
+import { AsyncBoundary } from "@/infrastructure/components/ui/async-boundary";
 import { getFieldError } from "@/infrastructure/forms";
 import {
   Button,
@@ -19,7 +24,6 @@ import {
   ArrowRight,
   Pilcrow,
   Plus,
-  Shapes,
   WalletCards,
 } from "lucide-react";
 import { useState } from "react";
@@ -40,6 +44,7 @@ const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
     Select,
+    CategorySelect,
     ToggleButton,
     NumberField,
   },
@@ -186,57 +191,25 @@ function RouteComponent() {
           {(field) => {
             const { isInvalid } = getFieldError(field);
             return (
-              <field.Select
-                isInvalid={isInvalid}
-                variant="secondary"
-                placeholder="Choose a category"
-                fullWidth
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(value) => field.handleChange(value as string)}
-                isOpen={isCategorySelectOpen}
-                onOpenChange={setIsCategorySelectOpen}
-              >
-                <field.Select.Trigger className="">
-                  <p className="text-muted">
-                    <Shapes className="me-3 h-[1.2em] w-[1.2em]" />
-                  </p>
-                  <Select.Value className="text-sm" />
-                  <Select.Indicator className="">
-                    <div className="">
-                      <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />
-                    </div>
-                  </Select.Indicator>
-                </field.Select.Trigger>
-                <field.Select.Popover>
-                  <div className="mt-2 px-1">
-                    <Button
-                      variant="secondary"
-                      className="justify-start px-3 text-start"
-                      fullWidth
-                      onPress={() => {
-                        setIsCategorySelectOpen(false);
-                        createCategoryModalState.open();
-                      }}
-                    >
-                      <Plus className="inline h-[1.2em] w-[1.2em]" />
-                      Create category
-                    </Button>
-                  </div>
-                  <ListBox>
-                    <ListBox.Item id="option1" textValue="Option 1">
-                      Option 1
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                    <ListBox.Item id="option2" textValue="Option 2">
-                      Option 2
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                  </ListBox>
-                </field.Select.Popover>
-              </field.Select>
+              <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
+                <field.CategorySelect
+                  isInvalid={isInvalid}
+                  variant="secondary"
+                  placeholder="Choose a category"
+                  fullWidth
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(value) => field.handleChange(value as string)}
+                  isOpen={isCategorySelectOpen}
+                  onOpenChange={setIsCategorySelectOpen}
+                  onCreateCategory={() => {
+                    setIsCategorySelectOpen(false);
+                    createCategoryModalState.open();
+                  }}
+                />
+              </AsyncBoundary>
             );
           }}
         </form.AppField>

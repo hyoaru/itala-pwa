@@ -38,7 +38,7 @@ const findCategories = new FindCategories(categoryRepository);
 export const categoryActions = {
   createCategory: () =>
     mutationOptions({
-      mutationKey: [baseKey, "create"],
+      mutationKey: [baseKey],
       mutationFn: (
         request: CreateCategoryRequest,
       ): ReturnType<typeof createCategory.execute> => {
@@ -47,14 +47,14 @@ export const categoryActions = {
     }),
   findCategory: (request: FindCategoryRequest) =>
     queryOptions({
-      queryKey: [baseKey, "find_one", request.id],
+      queryKey: [baseKey, request.id],
       queryFn: (): ReturnType<typeof findCategory.execute> => {
         return findCategory.execute(request);
       },
     }),
   findCategories: (request?: FindCategoriesRequest) =>
     queryOptions({
-      queryKey: [baseKey, "find", request],
+      queryKey: [baseKey, request],
       queryFn: (): ReturnType<typeof findCategories.execute> => {
         return findCategories.execute(request);
       },
