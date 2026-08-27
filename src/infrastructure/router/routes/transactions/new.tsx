@@ -142,11 +142,12 @@ function RouteComponent() {
               <field.ToggleButton
                 id={field.name}
                 onClick={() => {
-                  field.handleChange(
+                  const next =
                     field.state.value == TransactionType.Income
                       ? TransactionType.Expense
-                      : TransactionType.Income,
-                  );
+                      : TransactionType.Income;
+                  field.handleChange(next);
+                  field.form.setFieldValue("categoryId", "");
                 }}
                 className="data-[selected=true]:text-foreground h-0 text-sm font-semibold uppercase"
               >
@@ -323,23 +324,30 @@ function RouteComponent() {
             const { isInvalid } = getFieldError(field);
             return (
               <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
-                <field.CategorySelect
-                  isInvalid={isInvalid}
-                  variant="secondary"
-                  placeholder="Choose a category"
-                  fullWidth
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(value) => field.handleChange(value as string)}
-                  isOpen={isCategorySelectOpen}
-                  onOpenChange={setIsCategorySelectOpen}
-                  onCreateCategory={() => {
-                    setIsCategorySelectOpen(false);
-                    createCategoryModalState.open();
-                  }}
-                />
+                <form.Subscribe
+                  selector={(state) => state.values.transactionType}
+                >
+                  {(transactionType) => (
+                    <field.CategorySelect
+                      isInvalid={isInvalid}
+                      variant="secondary"
+                      placeholder="Choose a category"
+                      fullWidth
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(value) => field.handleChange(value as string)}
+                      isOpen={isCategorySelectOpen}
+                      onOpenChange={setIsCategorySelectOpen}
+                      transactionType={transactionType}
+                      onCreateCategory={() => {
+                        setIsCategorySelectOpen(false);
+                        createCategoryModalState.open();
+                      }}
+                    />
+                  )}
+                </form.Subscribe>
               </AsyncBoundary>
             );
           }}
