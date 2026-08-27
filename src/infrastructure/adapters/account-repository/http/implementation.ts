@@ -61,6 +61,9 @@ export class HttpAccountRepository implements AccountRepository {
     if (query?.status) {
       requestParams.status = statusToServer[query.status];
     }
+    if (query?.cursor) {
+      requestParams.cursor = query.cursor;
+    }
     const response = await this.httpClient.get<FindResponse>(`/accounts`, {
       params: requestParams,
     });

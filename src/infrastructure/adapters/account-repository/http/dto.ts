@@ -25,4 +25,5 @@ export interface FindResponse {
 export interface FindRequest {
   name?: string;
   status?: string;
+  cursor?: string;
 }

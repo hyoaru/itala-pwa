@@ -6,7 +6,11 @@ import {
   type FindAccountRequest,
   type FindAccountsRequest,
 } from "@/application/use-cases";
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  infiniteQueryOptions,
+  queryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 import {
   DecoratedAccountRepository,
@@ -58,5 +62,13 @@ export const accountActions = {
       queryFn: (): ReturnType<typeof findAccounts.execute> => {
         return findAccounts.execute(request);
       },
+    }),
+  findAccountsInfinite: (request?: FindAccountsRequest) =>
+    infiniteQueryOptions({
+      queryKey: [baseKey, "infinite", request],
+      queryFn: ({ pageParam }) =>
+        findAccounts.execute({ ...request, cursor: pageParam ?? undefined }),
+      initialPageParam: null as string | null,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     }),
 };

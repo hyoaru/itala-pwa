@@ -1,5 +1,6 @@
 import { TransactionType } from "@/domain/value-objects";
 import {
+  AccountSelect,
   CategorySelect,
   NewAccountModal,
   NewCategoryModal,
@@ -10,22 +11,14 @@ import {
   Button,
   Form,
   InputGroup,
-  ListBox,
   NumberField,
-  Select,
   TextField,
   ToggleButton,
   useOverlayState,
 } from "@heroui/react";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Pilcrow,
-  Plus,
-  WalletCards,
-} from "lucide-react";
+import { ArrowLeft, Pilcrow } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -43,8 +36,8 @@ const { fieldContext, formContext } = createFormHookContexts();
 const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
-    Select,
     CategorySelect,
+    AccountSelect,
     ToggleButton,
     NumberField,
   },
@@ -218,57 +211,25 @@ function RouteComponent() {
           {(field) => {
             const { isInvalid } = getFieldError(field);
             return (
-              <field.Select
-                isInvalid={isInvalid}
-                variant="secondary"
-                placeholder="Choose an account"
-                fullWidth
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(value) => field.handleChange(value as string)}
-                isOpen={isAccountSelectOpen}
-                onOpenChange={setIsAccountSelectOpen}
-              >
-                <field.Select.Trigger className="">
-                  <p className="text-muted">
-                    <WalletCards className="me-3 h-[1.2em] w-[1.2em]" />
-                  </p>
-                  <Select.Value className="text-sm" />
-                  <Select.Indicator className="">
-                    <div className="">
-                      <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />
-                    </div>
-                  </Select.Indicator>
-                </field.Select.Trigger>
-                <field.Select.Popover>
-                  <div className="mt-2 px-1">
-                    <Button
-                      variant="secondary"
-                      className="justify-start px-3 text-start"
-                      fullWidth
-                      onPress={() => {
-                        setIsAccountSelectOpen(false);
-                        createAccountModalState.open();
-                      }}
-                    >
-                      <Plus className="inline h-[1.2em] w-[1.2em]" />
-                      Create account
-                    </Button>
-                  </div>
-                  <ListBox>
-                    <ListBox.Item id="option1" textValue="Option 1">
-                      Option 1
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                    <ListBox.Item id="option2" textValue="Option 2">
-                      Option 2
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                  </ListBox>
-                </field.Select.Popover>
-              </field.Select>
+              <AsyncBoundary>
+                <field.AccountSelect
+                  isInvalid={isInvalid}
+                  variant="secondary"
+                  placeholder="Choose an account"
+                  fullWidth
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(value) => field.handleChange(value as string)}
+                  isOpen={isAccountSelectOpen}
+                  onOpenChange={setIsAccountSelectOpen}
+                  onCreateAccount={() => {
+                    setIsAccountSelectOpen(false);
+                    createAccountModalState.open();
+                  }}
+                />
+              </AsyncBoundary>
             );
           }}
         </form.AppField>

@@ -4,6 +4,7 @@ import type { AccountStatus } from "@/domain/value-objects";
 export interface AccountQuery {
   name?: string;
   status?: AccountStatus;
+  cursor?: string;
 }
 
 export interface AccountPage {
