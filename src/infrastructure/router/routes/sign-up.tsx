@@ -4,7 +4,7 @@ import {
   IdentityProviderInvalidEmailError,
   IdentityProviderInvalidPasswordError,
 } from "@/application/ports/identity-provider";
-import { identityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/actions/identity";
 import { getFieldError } from "@/infrastructure/forms";
 import { passwordSchema } from "@/infrastructure/validators";
 import {
@@ -51,7 +51,8 @@ const { useAppForm } = createFormHook({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const signUpMutation = useMutation(identityActions.signUp());
+  const { signUp } = useIdentityActions();
+  const signUpMutation = useMutation(signUp());
 
   const form = useAppForm({
     defaultValues: {

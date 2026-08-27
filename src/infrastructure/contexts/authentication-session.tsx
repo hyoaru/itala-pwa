@@ -2,7 +2,7 @@ import { AuthenticatedSession, User } from "@/domain/entities";
 import { useMutation } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
-import { identityActions } from "../actions";
+import { useIdentityActions } from "../actions";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -24,7 +24,8 @@ export function AuthenticationSessionProvider({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [_, setSessionState] = useState<AuthenticatedSession | null>(null);
-  const { mutateAsync: refresh } = useMutation(identityActions.refresh());
+  const { refresh: getRefreshOptions } = useIdentityActions();
+  const { mutateAsync: refresh } = useMutation(getRefreshOptions());
 
   const createUserFromIdToken = (idToken: string): User => {
     const idClaims = jwtDecode<{

@@ -18,7 +18,7 @@ import { ArrowRight, Pilcrow, Shapes } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
 import { useMutation } from "@tanstack/react-query";
-import { categoryActions } from "../actions";
+import { useCategoryActions } from "../actions";
 
 interface NewCategoryModalProps {
   isOpen: boolean;
@@ -40,7 +40,8 @@ const { useAppForm } = createFormHook({
 });
 
 export const NewCategoryModal = (props: NewCategoryModalProps) => {
-  const createCategoryMutation = useMutation(categoryActions.createCategory());
+  const { createCategory } = useCategoryActions();
+  const createCategoryMutation = useMutation(createCategory());
 
   const form = useAppForm({
     defaultValues: {

@@ -4,7 +4,7 @@ import {
   IdentityProviderPasswordResetRequiredError,
   IdentityProviderUserNotVerifiedError,
 } from "@/application/ports/identity-provider";
-import { identityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/actions/identity";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { getFieldError } from "@/infrastructure/forms";
 import {
@@ -52,7 +52,8 @@ const { useAppForm } = createFormHook({
 function RouteComponent() {
   const { setSession } = useAuthenticationSessionContext();
   const navigate = useNavigate();
-  const signInMutation = useMutation(identityActions.signIn());
+  const { signIn } = useIdentityActions();
+  const signInMutation = useMutation(signIn());
 
   const form = useAppForm({
     defaultValues: {

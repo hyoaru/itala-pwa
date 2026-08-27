@@ -4,7 +4,7 @@ import {
   IdentityProviderInvalidCodeError,
   IdentityProviderUserNotFoundError,
 } from "@/application/ports/identity-provider";
-import { identityActions } from "@/infrastructure/actions";
+import { useIdentityActions } from "@/infrastructure/actions";
 import { getFieldError } from "@/infrastructure/forms";
 import { Button, Form, InputOTP, TextField, toast } from "@heroui/react";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
@@ -43,9 +43,10 @@ const { useAppForm } = createFormHook({
 function RouteComponent() {
   const navigate = useNavigate();
   const email = sessionStorage.getItem("VERIFICATION_EMAIL") ?? "";
-  const verifyAccountMutation = useMutation(identityActions.verifyAccount());
+  const { verifyAccount, sendAccountVerification } = useIdentityActions();
+  const verifyAccountMutation = useMutation(verifyAccount());
   const sendAccountVerificationMutation = useMutation(
-    identityActions.sendAccountVerification(),
+    sendAccountVerification(),
   );
 
   const form = useAppForm({

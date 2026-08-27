@@ -3,7 +3,7 @@ import {
   IdentityProviderError,
   IdentityProviderUserNotFoundError,
 } from "@/application/ports/identity-provider";
-import { identityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/actions/identity";
 import { getFieldError } from "@/infrastructure/forms";
 import {
   Button,
@@ -39,9 +39,8 @@ const { useAppForm } = createFormHook({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const sendPasswordResetMutation = useMutation(
-    identityActions.sendPasswordReset(),
-  );
+  const { sendPasswordReset } = useIdentityActions();
+  const sendPasswordResetMutation = useMutation(sendPasswordReset());
 
   const form = useAppForm({
     defaultValues: {

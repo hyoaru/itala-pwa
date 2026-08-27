@@ -211,7 +211,7 @@ function RouteComponent() {
           {(field) => {
             const { isInvalid } = getFieldError(field);
             return (
-              <AsyncBoundary>
+              <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
                 <field.AccountSelect
                   isInvalid={isInvalid}
                   variant="secondary"

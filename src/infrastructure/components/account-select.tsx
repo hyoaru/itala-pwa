@@ -2,15 +2,16 @@ import { Button, ListBox, Select } from "@heroui/react";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { ArrowRight, Plus, WalletCards } from "lucide-react";
 import type { ComponentProps } from "react";
-import { accountActions } from "../actions";
+import { useAccountActions } from "../actions";
 
 interface AccountSelectProps extends ComponentProps<typeof Select> {
   onCreateAccount: () => void;
 }
 
 export const AccountSelect = (props: AccountSelectProps) => {
+  const { findAccountsInfinite } = useAccountActions();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useSuspenseInfiniteQuery(accountActions.findAccountsInfinite());
+    useSuspenseInfiniteQuery(findAccountsInfinite());
   const accounts = data.pages.flatMap((page) => page.items);
 
   return (

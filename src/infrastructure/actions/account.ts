@@ -10,6 +10,7 @@ import {
   mutationOptions,
   infiniteQueryOptions,
   queryOptions,
+  useQueryClient,
 } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -18,6 +19,10 @@ import {
 } from "../adapters/account-repository";
 
 const baseKey = "accounts";
+
+export const accountKeys = {
+  all: [baseKey] as const,
+};
 
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -39,36 +44,38 @@ const createAccount = new CreateAccount(accountRepository);
 const findAccount = new FindAccount(accountRepository);
 const findAccounts = new FindAccounts(accountRepository);
 
-export const accountActions = {
-  createAccount: () =>
-    mutationOptions({
-      mutationKey: [baseKey, "create"],
-      mutationFn: (
-        request: CreateAccountRequest,
-      ): ReturnType<typeof createAccount.execute> => {
-        return createAccount.execute(request);
-      },
-    }),
-  findAccount: (request: FindAccountRequest) =>
-    queryOptions({
-      queryKey: [baseKey, "find_one", request.id],
-      queryFn: (): ReturnType<typeof findAccount.execute> => {
-        return findAccount.execute(request);
-      },
-    }),
-  findAccounts: (request?: FindAccountsRequest) =>
-    queryOptions({
-      queryKey: [baseKey, "find", request],
-      queryFn: (): ReturnType<typeof findAccounts.execute> => {
-        return findAccounts.execute(request);
-      },
-    }),
-  findAccountsInfinite: (request?: FindAccountsRequest) =>
-    infiniteQueryOptions({
-      queryKey: [baseKey, "infinite", request],
-      queryFn: ({ pageParam }) =>
-        findAccounts.execute({ ...request, cursor: pageParam ?? undefined }),
-      initialPageParam: null as string | null,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }),
+export const useAccountActions = () => {
+  const queryClient = useQueryClient();
+  return {
+    createAccount: () =>
+      mutationOptions({
+        mutationKey: accountKeys.all,
+        mutationFn: (
+          request: CreateAccountRequest,
+        ): ReturnType<typeof createAccount.execute> => {
+          return createAccount.execute(request);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+        },
+      }),
+    findAccount: (request: FindAccountRequest) =>
+      queryOptions({
+        queryKey: [...accountKeys.all, request.id],
+        queryFn: (): ReturnType<typeof findAccount.execute> => {
+          return findAccount.execute(request);
+        },
+      }),
+    findAccountsInfinite: (request?: FindAccountsRequest) =>
+      infiniteQueryOptions({
+        queryKey: [...accountKeys.all, request],
+        queryFn: ({ pageParam }) =>
+          findAccounts.execute({
+            ...request,
+            cursor: pageParam ?? undefined,
+          }),
+        initialPageParam: null as string | null,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }),
+  };
 };

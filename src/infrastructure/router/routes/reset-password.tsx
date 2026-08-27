@@ -4,7 +4,7 @@ import {
   IdentityProviderInvalidPasswordError,
   IdentityProviderUserNotFoundError,
 } from "@/application/ports/identity-provider";
-import { identityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/actions/identity";
 import { getFieldError } from "@/infrastructure/forms";
 import { passwordSchema } from "@/infrastructure/validators";
 import {
@@ -44,7 +44,8 @@ const { useAppForm } = createFormHook({
 function RouteComponent() {
   const navigate = useNavigate();
   const email = sessionStorage.getItem("PASSWORD_RESET_EMAIL")!;
-  const resetPasswordMutation = useMutation(identityActions.resetPassword());
+  const { resetPassword } = useIdentityActions();
+  const resetPasswordMutation = useMutation(resetPassword());
 
   const form = useAppForm({
     defaultValues: {

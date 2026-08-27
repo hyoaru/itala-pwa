@@ -2,15 +2,16 @@ import { Button, ListBox, Select } from "@heroui/react";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Shapes, ArrowRight, Plus } from "lucide-react";
 import type { ComponentProps } from "react";
-import { categoryActions } from "../actions";
+import { useCategoryActions } from "../actions";
 
 interface CategorySelectProps extends ComponentProps<typeof Select> {
   onCreateCategory: () => void;
 }
 
 export const CategorySelect = (props: CategorySelectProps) => {
+  const { findCategoriesInfinite } = useCategoryActions();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useSuspenseInfiniteQuery(categoryActions.findCategoriesInfinite());
+    useSuspenseInfiniteQuery(findCategoriesInfinite());
   const categories = data.pages.flatMap((page) => page.items);
 
   return (

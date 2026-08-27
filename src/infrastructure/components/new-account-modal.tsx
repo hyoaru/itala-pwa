@@ -15,7 +15,7 @@ import { Pilcrow, WalletCards } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
 import { useMutation } from "@tanstack/react-query";
-import { accountActions } from "../actions";
+import { useAccountActions } from "../actions";
 
 interface NewAccountModalProps {
   isOpen: boolean;
@@ -36,7 +36,8 @@ const { useAppForm } = createFormHook({
 });
 
 export const NewAccountModal = (props: NewAccountModalProps) => {
-  const createAccountMutation = useMutation(accountActions.createAccount());
+  const { createAccount } = useAccountActions();
+  const createAccountMutation = useMutation(createAccount());
 
   const form = useAppForm({
     defaultValues: {
