@@ -17,6 +17,11 @@ export const categoryStatusMap: Record<string, CategoryStatus> = {
   ARCHIVED: CategoryStatus.Archived,
 };
 
+export const categoryStatusToServer: Record<CategoryStatus, string> = {
+  [CategoryStatus.Active]: "ACTIVE",
+  [CategoryStatus.Archived]: "ARCHIVED",
+};
+
 export function toCategory(data: FindItem): Category {
   return new Category({
     id: data.id,

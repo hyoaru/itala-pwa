@@ -1,10 +1,10 @@
 import type { Category } from "@/domain/entities";
-import type { TransactionType } from "@/domain/value-objects";
+import type { CategoryStatus, TransactionType } from "@/domain/value-objects";
 
 export interface CategoryQuery {
   name?: string;
   transactionType?: TransactionType;
-  status?: string;
+  status?: CategoryStatus;
 }
 
 export interface CategoryPage {

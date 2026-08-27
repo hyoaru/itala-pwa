@@ -9,7 +9,7 @@ import type {
 import type { Category } from "@/domain/entities";
 import type { TransactionType } from "@/domain/value-objects";
 import {
-  categoryStatusMap,
+  categoryStatusToServer,
   toCategory,
   transactionTypeToServer,
 } from "./mapper";
@@ -75,7 +75,7 @@ export class HttpCategoryRepository implements CategoryRepository {
         transactionTypeToServer[query.transactionType];
     }
     if (query?.status) {
-      requestParams.status = categoryStatusMap[query.status];
+      requestParams.status = categoryStatusToServer[query.status];
     }
     const response = await this.httpClient.get<FindResponse>(`/categories`, {
       params: requestParams,
