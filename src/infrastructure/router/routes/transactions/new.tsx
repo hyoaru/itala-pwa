@@ -1,3 +1,4 @@
+import { NewCategoryModal } from "@/infrastructure/components";
 import { getFieldError } from "@/infrastructure/forms";
 import {
   Button,
@@ -8,6 +9,7 @@ import {
   Select,
   TextField,
   ToggleButton,
+  useOverlayState,
 } from "@heroui/react";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
@@ -15,9 +17,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Pilcrow,
+  Plus,
   Shapes,
   WalletCards,
 } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/transactions/new")({
@@ -46,6 +50,9 @@ const { useAppForm } = createFormHook({
 });
 
 function RouteComponent() {
+  const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
+  const createCategoryModalState = useOverlayState();
+
   const form = useAppForm({
     defaultValues: {
       amount: 0,
@@ -151,12 +158,12 @@ function RouteComponent() {
                 variant="secondary"
                 fullWidth
               >
-                <InputGroup className="px-4 py-3">
-                  <InputGroup.Prefix className="m-0 p-0">
-                    <Pilcrow className="me-2 inline h-[1.2em] w-[1.2em]" />
+                <InputGroup className="">
+                  <InputGroup.Prefix className="">
+                    <Pilcrow className="h-[1.2em] w-[1.2em]" />
                   </InputGroup.Prefix>
                   <InputGroup.Input
-                    className="p-0 font-medium placeholder:text-sm"
+                    className="text-sm"
                     placeholder="What is this transaction for?"
                     id={field.name}
                     name={field.name}
@@ -184,6 +191,8 @@ function RouteComponent() {
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(value) => field.handleChange(value as string)}
+                isOpen={isCategorySelectOpen}
+                onOpenChange={setIsCategorySelectOpen}
               >
                 <field.Select.Trigger className="m-0 px-4 py-3">
                   <p className="text-foreground text-sm font-medium">
@@ -197,6 +206,20 @@ function RouteComponent() {
                   </Select.Indicator>
                 </field.Select.Trigger>
                 <field.Select.Popover>
+                  <div className="mt-2 px-1">
+                    <Button
+                      variant="secondary"
+                      className="justify-start px-3 text-start"
+                      fullWidth
+                      onPress={() => {
+                        setIsCategorySelectOpen(false);
+                        createCategoryModalState.open();
+                      }}
+                    >
+                      <Plus className="inline h-[1.2em] w-[1.2em]" />
+                      Create category
+                    </Button>
+                  </div>
                   <ListBox>
                     <ListBox.Item id="option1" textValue="Option 1">
                       Option 1
@@ -262,6 +285,11 @@ function RouteComponent() {
           </form.Button>
         </form.AppForm>
       </Form>
+
+      <NewCategoryModal
+        isOpen={createCategoryModalState.isOpen}
+        onOpenChange={createCategoryModalState.setOpen}
+      />
     </>
   );
 }
