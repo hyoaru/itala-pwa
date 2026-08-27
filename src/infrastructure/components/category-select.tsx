@@ -1,6 +1,6 @@
 import { Button, ListBox, Select } from "@heroui/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Shapes, ArrowRight, Plus, ChevronRight } from "lucide-react";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { Shapes, ArrowRight, Plus } from "lucide-react";
 import type { ComponentProps } from "react";
 import { categoryActions } from "../actions";
 
@@ -9,7 +9,10 @@ interface CategorySelectProps extends ComponentProps<typeof Select> {
 }
 
 export const CategorySelect = (props: CategorySelectProps) => {
-  const { data } = useSuspenseQuery(categoryActions.findCategories());
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery(categoryActions.findCategoriesInfinite());
+  const categories = data.pages.flatMap((page) => page.items);
+
   return (
     <Select
       {...props}
@@ -28,7 +31,18 @@ export const CategorySelect = (props: CategorySelectProps) => {
           </div>
         </Select.Indicator>
       </Select.Trigger>
-      <Select.Popover>
+      <Select.Popover
+        onScroll={(e) => {
+          const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+          if (
+            hasNextPage &&
+            !isFetchingNextPage &&
+            scrollHeight - scrollTop - clientHeight < 40
+          ) {
+            fetchNextPage();
+          }
+        }}
+      >
         <div className="mt-2 px-1">
           <Button
             variant="secondary"
@@ -41,12 +55,14 @@ export const CategorySelect = (props: CategorySelectProps) => {
           </Button>
         </div>
         <ListBox>
-          {data.items.map((i) => (
-            <ListBox.Item className="" key={i.id} id={i.id} textValue={i.name}>
-              <p>
-                <ChevronRight className="text-muted me-2 inline h-[1.2em] w-[1.2em]" />
-                {i.name}
-              </p>
+          {categories.map((category) => (
+            <ListBox.Item
+              className="capitalize"
+              key={category.id}
+              id={category.id}
+              textValue={category.name}
+            >
+              {category.name}
               <ListBox.ItemIndicator />
             </ListBox.Item>
           ))}

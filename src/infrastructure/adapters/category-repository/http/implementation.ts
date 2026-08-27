@@ -77,6 +77,9 @@ export class HttpCategoryRepository implements CategoryRepository {
     if (query?.status) {
       requestParams.status = categoryStatusToServer[query.status];
     }
+    if (query?.cursor) {
+      requestParams.cursor = query.cursor;
+    }
     const response = await this.httpClient.get<FindResponse>(`/categories`, {
       params: requestParams,
     });

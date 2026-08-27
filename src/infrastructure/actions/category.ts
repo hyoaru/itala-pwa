@@ -6,7 +6,11 @@ import {
   type FindCategoriesRequest,
   type FindCategoryRequest,
 } from "@/application/use-cases";
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  infiniteQueryOptions,
+  queryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 import {
   DecoratedCategoryRepository,
@@ -58,5 +62,13 @@ export const categoryActions = {
       queryFn: (): ReturnType<typeof findCategories.execute> => {
         return findCategories.execute(request);
       },
+    }),
+  findCategoriesInfinite: (request?: FindCategoriesRequest) =>
+    infiniteQueryOptions({
+      queryKey: [baseKey, "infinite", request],
+      queryFn: ({ pageParam }) =>
+        findCategories.execute({ ...request, cursor: pageParam ?? undefined }),
+      initialPageParam: null as string | null,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     }),
 };

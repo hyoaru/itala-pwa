@@ -5,6 +5,7 @@ export interface CategoryQuery {
   name?: string;
   transactionType?: TransactionType;
   status?: CategoryStatus;
+  cursor?: string;
 }
 
 export interface CategoryPage {

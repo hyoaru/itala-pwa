@@ -27,4 +27,5 @@ export interface FindRequest {
   name?: string;
   transaction_type?: string;
   status?: string;
+  cursor?: string;
 }
