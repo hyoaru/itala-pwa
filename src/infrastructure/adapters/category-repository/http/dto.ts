@@ -1,3 +1,8 @@
+export interface CreateRequest {
+  name: string;
+  transaction_type: string;
+}
+
 export interface CreateResponse {
   id: string;
 }

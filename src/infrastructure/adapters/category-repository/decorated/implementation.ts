@@ -4,6 +4,7 @@ import type {
   CategoryPage,
 } from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
+import type { TransactionType } from "@/domain/value-objects";
 import { LoggingCategoryRepository } from "../logging";
 
 export class DecoratedCategoryRepository implements CategoryRepository {
@@ -13,8 +14,11 @@ export class DecoratedCategoryRepository implements CategoryRepository {
     this.inner = new LoggingCategoryRepository(inner);
   }
 
-  public async create(name: string): Promise<string> {
-    return this.inner.create(name);
+  public async create(
+    name: string,
+    transactionType: TransactionType,
+  ): Promise<string> {
+    return this.inner.create(name, transactionType);
   }
 
   public async findOne(id: string): Promise<Category> {

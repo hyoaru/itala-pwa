@@ -20,10 +20,12 @@ export class LoggingIdentityProvider implements IdentityProvider {
     const isExpected =
       error instanceof IdentityProviderError &&
       error.constructor !== IdentityProviderError;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const fullMessage = `${message}: ${errorMessage}`;
     if (isExpected) {
-      logger.warn(message, extra);
+      logger.warn(fullMessage, extra);
     } else {
-      logger.error(message, extra);
+      logger.error(fullMessage, extra);
     }
   }
 

@@ -13,7 +13,7 @@ export interface CategoryPage {
 }
 
 export interface CategoryRepository {
-  create(name: string): Promise<string>;
+  create(name: string, transactionType: TransactionType): Promise<string>;
   findOne(id: string): Promise<Category>;
   find(query?: CategoryQuery): Promise<CategoryPage>;
 }

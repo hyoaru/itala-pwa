@@ -1,11 +1,13 @@
 import axios, { type AxiosInstance } from "axios";
 import type {
+  CreateRequest,
   CreateResponse,
   FindOneResponse,
   FindRequest,
   FindResponse,
 } from "./dto";
 import type { Category } from "@/domain/entities";
+import type { TransactionType } from "@/domain/value-objects";
 import {
   categoryStatusMap,
   toCategory,
@@ -26,11 +28,17 @@ export class HttpCategoryRepository implements CategoryRepository {
     this.httpClient = httpClient;
   }
 
-  public async create(name: string): Promise<string> {
+  public async create(
+    name: string,
+    transactionType: TransactionType,
+  ): Promise<string> {
     try {
       const response = await this.httpClient.post<CreateResponse>(
         "/categories",
-        { name },
+        {
+          name,
+          transaction_type: transactionTypeToServer[transactionType],
+        } satisfies CreateRequest,
       );
 
       return response.data.id;

@@ -5,6 +5,7 @@ import {
   type CategoryRepository,
 } from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
+import type { TransactionType } from "@/domain/value-objects";
 import { logger } from "@/infrastructure/logger";
 
 export class LoggingCategoryRepository implements CategoryRepository {
@@ -22,21 +23,30 @@ export class LoggingCategoryRepository implements CategoryRepository {
     const isExpected =
       error instanceof CategoryRepositoryError &&
       error.constructor !== CategoryRepositoryError;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const fullMessage = `${message}: ${errorMessage}`;
     if (isExpected) {
-      logger.warn(message, extra);
+      logger.warn(fullMessage, extra);
     } else {
-      logger.error(message, extra);
+      logger.error(fullMessage, extra);
     }
   }
 
-  public async create(name: string): Promise<string> {
+  public async create(
+    name: string,
+    transactionType: TransactionType,
+  ): Promise<string> {
     try {
-      logger.debug("Creating category", { name });
-      const result = await this.inner.create(name);
-      logger.info("Category created", { name });
+      logger.debug("Creating category", { name, transactionType });
+      const result = await this.inner.create(name, transactionType);
+      logger.info("Category created", { name, transactionType });
       return result;
     } catch (error) {
-      this.logFailure("Failed to create category", { name }, error);
+      this.logFailure(
+        "Failed to create category",
+        { name, transactionType },
+        error,
+      );
       throw error;
     }
   }

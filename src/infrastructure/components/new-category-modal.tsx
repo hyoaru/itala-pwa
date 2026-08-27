@@ -7,7 +7,12 @@ import {
   Modal,
   Select,
   TextField,
+  toast,
 } from "@heroui/react";
+import {
+  CategoryAlreadyExistsError,
+  CategoryRepositoryError,
+} from "@/application/ports/category-repository";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { ArrowRight, Pilcrow, Shapes } from "lucide-react";
 import { z } from "zod";
@@ -35,7 +40,7 @@ const { useAppForm } = createFormHook({
 });
 
 export const NewCategoryModal = (props: NewCategoryModalProps) => {
-  const createCategoryMutation = useMutation(categoryActions.createCategory())
+  const createCategoryMutation = useMutation(categoryActions.createCategory());
 
   const form = useAppForm({
     defaultValues: {
@@ -49,11 +54,30 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
       }),
     },
     onSubmit: async ({ value }) => {
-      await createCategoryMutation.mutateAsync({
-        name: 
-      })
-      console.log(value);
-      props.onOpenChange(false);
+      try {
+        await createCategoryMutation.mutateAsync({
+          name: value.name,
+          transactionType: value.transactionType,
+        });
+
+        form.reset();
+        toast("Category created", { variant: "success" });
+        props.onOpenChange(false);
+      } catch (error) {
+        if (error instanceof CategoryAlreadyExistsError) {
+          toast("A category with this name already exists", {
+            variant: "danger",
+          });
+        } else if (error instanceof CategoryRepositoryError) {
+          toast(`An unexpected error has occured: ${error.message}`, {
+            variant: "danger",
+          });
+        } else {
+          toast("An unexpected error has occured", {
+            variant: "danger",
+          });
+        }
+      }
     },
   });
 

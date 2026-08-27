@@ -16,6 +16,6 @@ export class CreateCategory implements UseCase<
   public async execute(
     request: CreateCategoryRequest,
   ): Promise<CreateCategoryResponse> {
-    return await this.repository.create(request.name);
+    return await this.repository.create(request.name, request.transactionType);
   }
 }
