@@ -29,7 +29,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 import { ArrowLeft, Pilcrow } from "lucide-react";
-import { CalendarDateTime } from "@internationalized/date";
+import { CalendarDateTime, Time } from "@internationalized/date";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -108,7 +108,8 @@ function RouteComponent() {
           occurredAt: value.occurredAt.toDate("UTC"),
         });
 
-        form.reset();
+        form.resetField("amount");
+        form.resetField("description");
         toast("Transaction saved", { variant: "success" });
       } catch (error) {
         if (error instanceof TransactionRepositoryError) {
@@ -242,64 +243,76 @@ function RouteComponent() {
                 value={field.state.value}
                 onBlur={field.handleBlur}
               >
-                <div className="relative w-full">
-                  <DateField.Group
-                    className="px-3"
-                    variant="secondary"
-                    fullWidth
-                  >
-                    <div className=" ">
-                      <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
-                    </div>
+                {(values) => (
+                  <>
+                    <div className="relative w-full">
+                      <DateField.Group
+                        className="px-3"
+                        variant="secondary"
+                        fullWidth
+                      >
+                        <div className=" ">
+                          <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
+                        </div>
 
-                    <DateField.Input className="text-sm">
-                      {(segment) => <DateField.Segment segment={segment} />}
-                    </DateField.Input>
-                  </DateField.Group>
-                  <DatePicker.Trigger className="absolute inset-0 h-full w-full cursor-pointer"></DatePicker.Trigger>
-                </div>
-                <DatePicker.Popover className="flex flex-col gap-3">
-                  <Calendar aria-label="Event date">
-                    <Calendar.Header>
-                      <Calendar.YearPickerTrigger>
-                        <Calendar.YearPickerTriggerHeading />
-                        <Calendar.YearPickerTriggerIndicator />
-                      </Calendar.YearPickerTrigger>
-                      <Calendar.NavButton slot="previous" />
-                      <Calendar.NavButton slot="next" />
-                    </Calendar.Header>
-                    <Calendar.Grid>
-                      <Calendar.GridHeader>
-                        {(day) => (
-                          <Calendar.HeaderCell>{day}</Calendar.HeaderCell>
-                        )}
-                      </Calendar.GridHeader>
-                      <Calendar.GridBody>
-                        {(date) => <Calendar.Cell date={date} />}
-                      </Calendar.GridBody>
-                    </Calendar.Grid>
-                    <Calendar.YearPickerGrid>
-                      <Calendar.YearPickerGridBody>
-                        {({ year }) => <Calendar.YearPickerCell year={year} />}
-                      </Calendar.YearPickerGridBody>
-                    </Calendar.YearPickerGrid>
-                  </Calendar>
-                  <div className="flex items-center justify-between">
-                    <Label>Time</Label>
-                    <TimeField
-                      hourCycle={24}
-                      hideTimeZone={true}
-                      shouldForceLeadingZeros={true}
-                      granularity={"minute"}
-                    >
-                      <TimeField.Group variant="secondary">
-                        <TimeField.Input>
-                          {(segment) => <TimeField.Segment segment={segment} />}
-                        </TimeField.Input>
-                      </TimeField.Group>
-                    </TimeField>
-                  </div>
-                </DatePicker.Popover>
+                        <DateField.Input className="text-sm">
+                          {(segment) => <DateField.Segment segment={segment} />}
+                        </DateField.Input>
+                      </DateField.Group>
+                      <DatePicker.Trigger className="absolute inset-0 h-full w-full cursor-pointer"></DatePicker.Trigger>
+                    </div>
+                    <DatePicker.Popover className="flex flex-col gap-3">
+                      <Calendar aria-label="Event date">
+                        <Calendar.Header>
+                          <Calendar.YearPickerTrigger>
+                            <Calendar.YearPickerTriggerHeading />
+                            <Calendar.YearPickerTriggerIndicator />
+                          </Calendar.YearPickerTrigger>
+                          <Calendar.NavButton slot="previous" />
+                          <Calendar.NavButton slot="next" />
+                        </Calendar.Header>
+                        <Calendar.Grid>
+                          <Calendar.GridHeader>
+                            {(day) => (
+                              <Calendar.HeaderCell>{day}</Calendar.HeaderCell>
+                            )}
+                          </Calendar.GridHeader>
+                          <Calendar.GridBody>
+                            {(date) => <Calendar.Cell date={date} />}
+                          </Calendar.GridBody>
+                        </Calendar.Grid>
+                        <Calendar.YearPickerGrid>
+                          <Calendar.YearPickerGridBody>
+                            {({ year }) => (
+                              <Calendar.YearPickerCell year={year} />
+                            )}
+                          </Calendar.YearPickerGridBody>
+                        </Calendar.YearPickerGrid>
+                      </Calendar>
+                      <div className="flex items-center justify-between">
+                        <Label>Time</Label>
+                        <TimeField
+                          hourCycle={24}
+                          hideTimeZone={true}
+                          shouldForceLeadingZeros={true}
+                          granularity={"minute"}
+                          value={values.state.timeValue ?? new Time(0, 0)}
+                          onChange={(time) => {
+                            if (time) values.state.setTimeValue(time);
+                          }}
+                        >
+                          <TimeField.Group variant="secondary">
+                            <TimeField.Input>
+                              {(segment) => (
+                                <TimeField.Segment segment={segment} />
+                              )}
+                            </TimeField.Input>
+                          </TimeField.Group>
+                        </TimeField>
+                      </div>
+                    </DatePicker.Popover>
+                  </>
+                )}
               </field.DatePicker>
             );
           }}
