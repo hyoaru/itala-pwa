@@ -197,13 +197,13 @@ function RouteComponent() {
                 isOpen={isCategorySelectOpen}
                 onOpenChange={setIsCategorySelectOpen}
               >
-                <field.Select.Trigger className="m-0 px-4 py-3">
-                  <p className="text-foreground text-sm font-medium">
-                    <Shapes className="me-2 inline h-[1.2em] w-[1.2em]" />
+                <field.Select.Trigger className="">
+                  <p className="text-muted">
+                    <Shapes className="me-3 h-[1.2em] w-[1.2em]" />
                   </p>
-                  <Select.Value className="text-foreground text-sm font-medium" />
-                  <Select.Indicator className="me-1">
-                    <div className="text-sm">
+                  <Select.Value className="text-sm" />
+                  <Select.Indicator className="">
+                    <div className="">
                       <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />
                     </div>
                   </Select.Indicator>
@@ -254,13 +254,13 @@ function RouteComponent() {
                 onBlur={field.handleBlur}
                 onChange={(value) => field.handleChange(value as string)}
               >
-                <field.Select.Trigger className="m-0 px-4 py-3">
-                  <p className="text-foreground text-sm font-medium">
-                    <WalletCards className="me-2 inline h-[1.2em] w-[1.2em]" />
+                <field.Select.Trigger className="">
+                  <p className="text-muted">
+                    <WalletCards className="me-3 h-[1.2em] w-[1.2em]" />
                   </p>
-                  <Select.Value className="text-foreground text-sm font-medium" />
-                  <Select.Indicator className="me-1">
-                    <div className="text-sm">
+                  <Select.Value className="text-sm" />
+                  <Select.Indicator className="">
+                    <div className="">
                       <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />
                     </div>
                   </Select.Indicator>
