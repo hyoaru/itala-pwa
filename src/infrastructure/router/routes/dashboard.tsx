@@ -40,7 +40,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="w-full space-y-4">
+      <div className="flex w-full flex-col space-y-4 self-stretch">
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">
             {greeting}, {user?.firstName}
@@ -65,11 +65,11 @@ function RouteComponent() {
             Add transaction
           </Link>
         </div>
-        <div className="space-y-3">
+        <div className="flex flex-1 flex-col space-y-3">
           <p className="font-heading text-sm font-medium">
             Recent transactions
           </p>
-          <Tabs className="">
+          <Tabs className="flex flex-1 flex-col">
             <div className="flex items-center">
               <div className="grow">
                 <Tabs.ListContainer className="bg-default w-max">
@@ -91,7 +91,8 @@ function RouteComponent() {
                 <ArrowUpRight className="size-6" />
               </Button>
             </div>
-            {/* <div className="h-full border">test</div> */}
+            <div className="h-full bg-black">hey</div>
+            {/* <div className="flex-1 border">test</div> */}
             {/* {transactionTabs.map((item) => ( */}
             {/*   <div key={`TabPanel-${item.name}`} className="h-full border"> */}
             {/*     <AsyncBoundary> */}
