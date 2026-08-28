@@ -36,4 +36,26 @@ export class DecoratedTransactionRepository implements TransactionRepository {
   public async find(query?: TransactionQuery): Promise<TransactionPage> {
     return this.inner.find(query);
   }
+
+  public async update(
+    id: string,
+    amount: string,
+    accountId: string,
+    categoryId: string,
+    description: string,
+    occurredAt: Date,
+  ): Promise<void> {
+    return this.inner.update(
+      id,
+      amount,
+      accountId,
+      categoryId,
+      description,
+      occurredAt,
+    );
+  }
+
+  public async delete(id: string): Promise<void> {
+    return this.inner.delete(id);
+  }
 }

@@ -4,7 +4,10 @@ import type {
   CategoryPage,
 } from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
-import type { TransactionType } from "@/domain/value-objects";
+import type {
+  CategoryStatus,
+  TransactionType,
+} from "@/domain/value-objects";
 import { LoggingCategoryRepository } from "../logging";
 
 export class DecoratedCategoryRepository implements CategoryRepository {
@@ -27,5 +30,21 @@ export class DecoratedCategoryRepository implements CategoryRepository {
 
   public async find(query?: CategoryQuery): Promise<CategoryPage> {
     return this.inner.find(query);
+  }
+
+  public async update(
+    id: string,
+    name: string,
+    status: CategoryStatus,
+  ): Promise<void> {
+    return this.inner.update(id, name, status);
+  }
+
+  public async archive(id: string): Promise<void> {
+    return this.inner.archive(id);
+  }
+
+  public async restore(id: string): Promise<void> {
+    return this.inner.restore(id);
   }
 }

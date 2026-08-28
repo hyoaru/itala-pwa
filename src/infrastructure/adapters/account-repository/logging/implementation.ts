@@ -5,6 +5,7 @@ import {
   type AccountRepository,
 } from "@/application/ports/account-repository";
 import type { Account } from "@/domain/entities";
+import type { AccountStatus } from "@/domain/value-objects";
 import { logger } from "@/infrastructure/logger";
 
 export class LoggingAccountRepository implements AccountRepository {
@@ -63,6 +64,43 @@ export class LoggingAccountRepository implements AccountRepository {
       return result;
     } catch (error) {
       this.logFailure("Failed to find accounts", { query }, error);
+      throw error;
+    }
+  }
+
+  public async update(
+    id: string,
+    name: string,
+    status: AccountStatus,
+  ): Promise<void> {
+    try {
+      logger.debug("Updating account", { id, name, status });
+      await this.inner.update(id, name, status);
+      logger.info("Account updated", { id, name, status });
+    } catch (error) {
+      this.logFailure("Failed to update account", { id, name, status }, error);
+      throw error;
+    }
+  }
+
+  public async archive(id: string): Promise<void> {
+    try {
+      logger.debug("Archiving account", { id });
+      await this.inner.archive(id);
+      logger.info("Account archived", { id });
+    } catch (error) {
+      this.logFailure("Failed to archive account", { id }, error);
+      throw error;
+    }
+  }
+
+  public async restore(id: string): Promise<void> {
+    try {
+      logger.debug("Restoring account", { id });
+      await this.inner.restore(id);
+      logger.info("Account restored", { id });
+    } catch (error) {
+      this.logFailure("Failed to restore account", { id }, error);
       throw error;
     }
   }

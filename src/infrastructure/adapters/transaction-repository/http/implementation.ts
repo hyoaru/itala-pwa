@@ -5,6 +5,7 @@ import type {
   FindOneResponse,
   FindRequest,
   FindResponse,
+  UpdateRequest,
 } from "./dto";
 import type { Transaction } from "@/domain/entities";
 import {
@@ -97,5 +98,48 @@ export class HttpTransactionRepository implements TransactionRepository {
       items: response.data.items.map(toTransaction),
       nextCursor: response.data.next_cursor,
     };
+  }
+
+  public async update(
+    id: string,
+    amount: string,
+    accountId: string,
+    categoryId: string,
+    description: string,
+    occurredAt: Date,
+  ): Promise<void> {
+    try {
+      await this.httpClient.put(`/transactions/${id}`, {
+        amount,
+        account_id: accountId,
+        category_id: categoryId,
+        description,
+        occurred_at: occurredAt.toISOString(),
+      } satisfies UpdateRequest);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        throw new TransactionRepositoryError(
+          "Cannot update transaction: account or category is archived",
+          { cause: error },
+        );
+      }
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new TransactionNotFoundError(id);
+      }
+
+      throw error;
+    }
+  }
+
+  public async delete(id: string): Promise<void> {
+    try {
+      await this.httpClient.delete(`/transactions/${id}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new TransactionNotFoundError(id);
+      }
+
+      throw error;
+    }
   }
 }

@@ -17,4 +17,7 @@ export interface CategoryRepository {
   create(name: string, transactionType: TransactionType): Promise<string>;
   findOne(id: string): Promise<Category>;
   find(query?: CategoryQuery): Promise<CategoryPage>;
+  update(id: string, name: string, status: CategoryStatus): Promise<void>;
+  archive(id: string): Promise<void>;
+  restore(id: string): Promise<void>;
 }

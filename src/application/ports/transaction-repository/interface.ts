@@ -25,4 +25,13 @@ export interface TransactionRepository {
   ): Promise<string>;
   findOne(id: string): Promise<Transaction>;
   find(query?: TransactionQuery): Promise<TransactionPage>;
+  update(
+    id: string,
+    amount: string,
+    accountId: string,
+    categoryId: string,
+    description: string,
+    occurredAt: Date,
+  ): Promise<void>;
+  delete(id: string): Promise<void>;
 }

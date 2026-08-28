@@ -29,3 +29,8 @@ export interface FindRequest {
   status?: string;
   cursor?: string;
 }
+
+export interface UpdateRequest {
+  name: string;
+  status: string;
+}

@@ -5,8 +5,10 @@ import type {
   FindOneResponse,
   FindRequest,
   FindResponse,
+  UpdateRequest,
 } from "./dto";
 import type { Account } from "@/domain/entities";
+import { AccountStatus } from "@/domain/value-objects";
 import {
   type AccountPage,
   type AccountQuery,
@@ -72,5 +74,51 @@ export class HttpAccountRepository implements AccountRepository {
       items: response.data.items.map(toAccount),
       nextCursor: response.data.next_cursor,
     };
+  }
+
+  public async update(
+    id: string,
+    name: string,
+    status: AccountStatus,
+  ): Promise<void> {
+    try {
+      await this.httpClient.put(`/accounts/${id}`, {
+        name,
+        status: statusToServer[status],
+      } satisfies UpdateRequest);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        throw new AccountAlreadyExistsError(name);
+      }
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new AccountNotFoundError(id);
+      }
+
+      throw error;
+    }
+  }
+
+  public async archive(id: string): Promise<void> {
+    try {
+      await this.httpClient.post(`/accounts/${id}/archive`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new AccountNotFoundError(id);
+      }
+
+      throw error;
+    }
+  }
+
+  public async restore(id: string): Promise<void> {
+    try {
+      await this.httpClient.post(`/accounts/${id}/restore`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new AccountNotFoundError(id);
+      }
+
+      throw error;
+    }
   }
 }

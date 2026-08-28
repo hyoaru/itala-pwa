@@ -37,3 +37,11 @@ export interface FindRequest {
   to?: string;
   cursor?: string;
 }
+
+export interface UpdateRequest {
+  amount: string;
+  account_id: string;
+  category_id: string;
+  description: string;
+  occurred_at: string;
+}

@@ -16,4 +16,7 @@ export interface AccountRepository {
   create(name: string): Promise<string>;
   findOne(id: string): Promise<Account>;
   find(query?: AccountQuery): Promise<AccountPage>;
+  update(id: string, name: string, status: AccountStatus): Promise<void>;
+  archive(id: string): Promise<void>;
+  restore(id: string): Promise<void>;
 }

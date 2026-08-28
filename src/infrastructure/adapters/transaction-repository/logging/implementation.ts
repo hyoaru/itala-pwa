@@ -82,4 +82,44 @@ export class LoggingTransactionRepository implements TransactionRepository {
       throw error;
     }
   }
+
+  public async update(
+    id: string,
+    amount: string,
+    accountId: string,
+    categoryId: string,
+    description: string,
+    occurredAt: Date,
+  ): Promise<void> {
+    try {
+      logger.debug("Updating transaction", { id, accountId, categoryId });
+      await this.inner.update(
+        id,
+        amount,
+        accountId,
+        categoryId,
+        description,
+        occurredAt,
+      );
+      logger.info("Transaction updated", { id, accountId, categoryId });
+    } catch (error) {
+      this.logFailure(
+        "Failed to update transaction",
+        { id, accountId, categoryId },
+        error,
+      );
+      throw error;
+    }
+  }
+
+  public async delete(id: string): Promise<void> {
+    try {
+      logger.debug("Deleting transaction", { id });
+      await this.inner.delete(id);
+      logger.info("Transaction deleted", { id });
+    } catch (error) {
+      this.logFailure("Failed to delete transaction", { id }, error);
+      throw error;
+    }
+  }
 }

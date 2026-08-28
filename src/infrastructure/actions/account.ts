@@ -1,10 +1,16 @@
 import {
+  ArchiveAccount,
   CreateAccount,
   FindAccount,
   FindAccounts,
+  RestoreAccount,
+  UpdateAccount,
+  type ArchiveAccountRequest,
   type CreateAccountRequest,
   type FindAccountRequest,
   type FindAccountsRequest,
+  type RestoreAccountRequest,
+  type UpdateAccountRequest,
 } from "@/application/use-cases";
 import {
   mutationOptions,
@@ -43,6 +49,9 @@ const accountRepository = new DecoratedAccountRepository(
 const createAccount = new CreateAccount(accountRepository);
 const findAccount = new FindAccount(accountRepository);
 const findAccounts = new FindAccounts(accountRepository);
+const updateAccount = new UpdateAccount(accountRepository);
+const archiveAccount = new ArchiveAccount(accountRepository);
+const restoreAccount = new RestoreAccount(accountRepository);
 
 export const useAccountActions = () => {
   const queryClient = useQueryClient();
@@ -76,6 +85,36 @@ export const useAccountActions = () => {
           }),
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }),
+    updateAccount: (request: UpdateAccountRequest) =>
+      mutationOptions({
+        mutationKey: [...accountKeys.all, request.id],
+        mutationFn: (): ReturnType<typeof updateAccount.execute> => {
+          return updateAccount.execute(request);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+        },
+      }),
+    archiveAccount: (request: ArchiveAccountRequest) =>
+      mutationOptions({
+        mutationKey: [...accountKeys.all, request.id],
+        mutationFn: (): ReturnType<typeof archiveAccount.execute> => {
+          return archiveAccount.execute(request);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+        },
+      }),
+    restoreAccount: (request: RestoreAccountRequest) =>
+      mutationOptions({
+        mutationKey: [...accountKeys.all, request.id],
+        mutationFn: (): ReturnType<typeof restoreAccount.execute> => {
+          return restoreAccount.execute(request);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+        },
       }),
   };
 };

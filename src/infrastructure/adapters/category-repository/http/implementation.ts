@@ -5,9 +5,13 @@ import type {
   FindOneResponse,
   FindRequest,
   FindResponse,
+  UpdateRequest,
 } from "./dto";
 import type { Category } from "@/domain/entities";
-import type { TransactionType } from "@/domain/value-objects";
+import type {
+  CategoryStatus,
+  TransactionType,
+} from "@/domain/value-objects";
 import {
   categoryStatusToServer,
   toCategory,
@@ -88,5 +92,51 @@ export class HttpCategoryRepository implements CategoryRepository {
       items: response.data.items.map(toCategory),
       nextCursor: response.data.next_cursor,
     };
+  }
+
+  public async update(
+    id: string,
+    name: string,
+    status: CategoryStatus,
+  ): Promise<void> {
+    try {
+      await this.httpClient.put(`/categories/${id}`, {
+        name,
+        status: categoryStatusToServer[status],
+      } satisfies UpdateRequest);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        throw new CategoryAlreadyExistsError(name);
+      }
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new CategoryNotFoundError(id);
+      }
+
+      throw error;
+    }
+  }
+
+  public async archive(id: string): Promise<void> {
+    try {
+      await this.httpClient.post(`/categories/${id}/archive`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new CategoryNotFoundError(id);
+      }
+
+      throw error;
+    }
+  }
+
+  public async restore(id: string): Promise<void> {
+    try {
+      await this.httpClient.post(`/categories/${id}/restore`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new CategoryNotFoundError(id);
+      }
+
+      throw error;
+    }
   }
 }
