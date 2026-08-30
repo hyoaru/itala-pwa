@@ -56,17 +56,23 @@ export const AccountSelect = (props: AccountSelectProps) => {
           </Button>
         </div>
         <ListBox>
-          {accounts.map((account) => (
-            <ListBox.Item
-              className="capitalize"
-              key={account.id}
-              id={account.id}
-              textValue={account.name}
-            >
-              {account.name}
-              <ListBox.ItemIndicator />
+          {accounts.length === 0 ? (
+            <ListBox.Item id="empty" textValue="No accounts found" isDisabled>
+              No accounts found
             </ListBox.Item>
-          ))}
+          ) : (
+            accounts.map((account) => (
+              <ListBox.Item
+                className="capitalize"
+                key={account.id}
+                id={account.id}
+                textValue={account.name}
+              >
+                {account.name}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            ))
+          )}
         </ListBox>
       </Select.Popover>
     </Select>

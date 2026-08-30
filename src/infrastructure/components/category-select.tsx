@@ -60,17 +60,23 @@ export const CategorySelect = (props: CategorySelectProps) => {
           </Button>
         </div>
         <ListBox>
-          {categories.map((category) => (
-            <ListBox.Item
-              className="capitalize"
-              key={category.id}
-              id={category.id}
-              textValue={category.name}
-            >
-              {category.name}
-              <ListBox.ItemIndicator />
+          {categories.length === 0 ? (
+            <ListBox.Item id="empty" textValue="No categories found" isDisabled>
+              No categories found
             </ListBox.Item>
-          ))}
+          ) : (
+            categories.map((category) => (
+              <ListBox.Item
+                className="capitalize"
+                key={category.id}
+                id={category.id}
+                textValue={category.name}
+              >
+                {category.name}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            ))
+          )}
         </ListBox>
       </Select.Popover>
     </Select>
