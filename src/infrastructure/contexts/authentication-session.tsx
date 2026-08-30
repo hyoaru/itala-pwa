@@ -1,8 +1,8 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useIdentityActions } from "../hooks";
+import { container } from "../container";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -23,10 +23,7 @@ export function AuthenticationSessionProvider({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [_, setSessionState] = useState<AuthenticatedSession | null>(null);
   const queryClient = useQueryClient();
-  const { refresh: getRefreshOptions } = useIdentityActions();
-  const { mutateAsync: refresh } = useMutation(getRefreshOptions());
 
   const createUserFromIdToken = (idToken: string): User => {
     const idClaims = jwtDecode<{
@@ -50,7 +47,6 @@ export function AuthenticationSessionProvider({
     localStorage.setItem("REFRESH_TOKEN", newSession.refreshToken);
 
     setUser(createUserFromIdToken(newSession.idToken));
-    setSessionState(newSession);
   };
 
   const clearSession = () => {
@@ -60,7 +56,6 @@ export function AuthenticationSessionProvider({
     localStorage.removeItem("REFRESH_TOKEN");
 
     setUser(null);
-    setSessionState(null);
   };
 
   useEffect(() => {
@@ -69,42 +64,39 @@ export function AuthenticationSessionProvider({
     const refreshToken = localStorage.getItem("REFRESH_TOKEN");
 
     if (!accessToken || !idToken || !refreshToken) {
-      clearSession();
       setIsLoading(false);
       return;
     }
 
     try {
-      const accessClaims = jwtDecode<{ exp: number }>(accessToken);
-      const now = Math.floor(Date.now() / 1000);
+      const { exp } = jwtDecode<{ exp: number }>(accessToken);
+      const isExpired = Math.floor(Date.now() / 1000) >= exp;
 
-      if (now >= accessClaims.exp) {
-        const refreshSession = async () => {
-          try {
-            const refreshedSession = await refresh({ refreshToken });
-            setUser(createUserFromIdToken(refreshedSession.idToken));
-            setSessionState(refreshedSession);
-          } catch {
-            clearSession();
-          }
-        };
-        refreshSession();
-      } else {
-        const restoredSession = new AuthenticatedSession({
-          accessToken,
-          idToken,
-          refreshToken,
-        });
-
+      if (!isExpired) {
         setUser(createUserFromIdToken(idToken));
-        setSessionState(restoredSession);
+        setIsLoading(false);
+        return;
       }
     } catch {
-      clearSession();
-    } finally {
       setIsLoading(false);
+      return;
     }
-  }, [refresh]);
+
+    container.identity.refresh
+      .execute({ refreshToken })
+      .then((session) => {
+        localStorage.setItem("ACCESS_TOKEN", session.accessToken);
+        localStorage.setItem("ID_TOKEN", session.idToken);
+        localStorage.setItem("REFRESH_TOKEN", session.refreshToken);
+        setUser(createUserFromIdToken(session.idToken));
+      })
+      .catch(() => {
+        localStorage.removeItem("ACCESS_TOKEN");
+        localStorage.removeItem("ID_TOKEN");
+        localStorage.removeItem("REFRESH_TOKEN");
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const isAuthenticated = user !== null;
 

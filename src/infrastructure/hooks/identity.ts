@@ -1,6 +1,4 @@
 import type {
-  RefreshSessionRequest,
-  RefreshSessionResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   SendAccountVerificationRequest,
@@ -30,31 +28,6 @@ export const useIdentityActions = () => {
         ): Promise<SignInResponse> => {
           const authenticatedSession =
             await container.identity.signIn.execute(request);
-
-          localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
-          localStorage.setItem(
-            "ACCESS_TOKEN",
-            authenticatedSession.accessToken,
-          );
-          localStorage.setItem(
-            "REFRESH_TOKEN",
-            authenticatedSession.refreshToken,
-          );
-
-          return authenticatedSession;
-        },
-        onSuccess: () => {
-          queryClient.invalidateQueries();
-        },
-      }),
-    refresh: () =>
-      mutationOptions({
-        mutationKey: [baseKey],
-        mutationFn: async (
-          request: RefreshSessionRequest,
-        ): Promise<RefreshSessionResponse> => {
-          const authenticatedSession =
-            await container.identity.refresh.execute(request);
 
           localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
           localStorage.setItem(
