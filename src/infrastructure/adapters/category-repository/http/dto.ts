@@ -20,7 +20,7 @@ export interface FindOneResponse extends FindItem {}
 
 export interface FindResponse {
   items: FindItem[];
-  next_cursor: string;
+  next_cursor: string | null;
 }
 
 export interface FindRequest {
