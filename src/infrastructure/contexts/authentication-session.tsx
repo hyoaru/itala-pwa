@@ -1,5 +1,5 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useIdentityActions } from "../hooks";
@@ -24,6 +24,7 @@ export function AuthenticationSessionProvider({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [_, setSessionState] = useState<AuthenticatedSession | null>(null);
+  const queryClient = useQueryClient();
   const { refresh: getRefreshOptions } = useIdentityActions();
   const { mutateAsync: refresh } = useMutation(getRefreshOptions());
 
@@ -53,6 +54,7 @@ export function AuthenticationSessionProvider({
   };
 
   const clearSession = () => {
+    queryClient.clear();
     localStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("ID_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");

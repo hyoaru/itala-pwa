@@ -1,16 +1,15 @@
-import {
-  ArchiveCategory,
-  CreateCategory,
-  FindCategories,
-  FindCategory,
-  RestoreCategory,
-  UpdateCategory,
-  type ArchiveCategoryRequest,
-  type CreateCategoryRequest,
-  type FindCategoriesRequest,
-  type FindCategoryRequest,
-  type RestoreCategoryRequest,
-  type UpdateCategoryRequest,
+import type {
+  ArchiveCategoryRequest,
+  ArchiveCategoryResponse,
+  CreateCategoryRequest,
+  CreateCategoryResponse,
+  FindCategoriesRequest,
+  FindCategoryRequest,
+  FindCategoryResponse,
+  RestoreCategoryRequest,
+  RestoreCategoryResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
 } from "@/application/use-cases";
 import {
   infiniteQueryOptions,
@@ -18,56 +17,37 @@ import {
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  DecoratedCategoryRepository,
-  HttpCategoryRepository,
-} from "../adapters/category-repository";
-import { apiHttpClient } from "./api-client";
+import { container } from "../container";
 
 const baseKey = "categories";
-
-export const categoryKeys = {
-  all: [baseKey] as const,
-};
-
-const categoryRepository = new DecoratedCategoryRepository(
-  new HttpCategoryRepository(apiHttpClient),
-);
-
-const createCategory = new CreateCategory(categoryRepository);
-const findCategory = new FindCategory(categoryRepository);
-const findCategories = new FindCategories(categoryRepository);
-const updateCategory = new UpdateCategory(categoryRepository);
-const archiveCategory = new ArchiveCategory(categoryRepository);
-const restoreCategory = new RestoreCategory(categoryRepository);
 
 export const useCategoryActions = () => {
   const queryClient = useQueryClient();
   return {
     createCategory: () =>
       mutationOptions({
-        mutationKey: categoryKeys.all,
+        mutationKey: [baseKey],
         mutationFn: (
           request: CreateCategoryRequest,
-        ): ReturnType<typeof createCategory.execute> => {
-          return createCategory.execute(request);
+        ): Promise<CreateCategoryResponse> => {
+          return container.category.create.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     findCategory: (request: FindCategoryRequest) =>
       queryOptions({
-        queryKey: [...categoryKeys.all, request.id],
-        queryFn: (): ReturnType<typeof findCategory.execute> => {
-          return findCategory.execute(request);
+        queryKey: [baseKey, request.id],
+        queryFn: (): Promise<FindCategoryResponse> => {
+          return container.category.findOne.execute(request);
         },
       }),
     findCategoriesInfinite: (request?: FindCategoriesRequest) =>
       infiniteQueryOptions({
-        queryKey: [...categoryKeys.all, request],
+        queryKey: [baseKey, request],
         queryFn: ({ pageParam }) =>
-          findCategories.execute({
+          container.category.find.execute({
             ...request,
             cursor: pageParam ?? undefined,
           }),
@@ -76,32 +56,32 @@ export const useCategoryActions = () => {
       }),
     updateCategory: (request: UpdateCategoryRequest) =>
       mutationOptions({
-        mutationKey: [...categoryKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof updateCategory.execute> => {
-          return updateCategory.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<UpdateCategoryResponse> => {
+          return container.category.update.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     archiveCategory: (request: ArchiveCategoryRequest) =>
       mutationOptions({
-        mutationKey: [...categoryKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof archiveCategory.execute> => {
-          return archiveCategory.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<ArchiveCategoryResponse> => {
+          return container.category.archive.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     restoreCategory: (request: RestoreCategoryRequest) =>
       mutationOptions({
-        mutationKey: [...categoryKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof restoreCategory.execute> => {
-          return restoreCategory.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<RestoreCategoryResponse> => {
+          return container.category.restore.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
   };

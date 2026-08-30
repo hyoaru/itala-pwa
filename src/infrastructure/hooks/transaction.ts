@@ -1,14 +1,13 @@
-import {
-  CreateTransaction,
-  DeleteTransaction,
-  FindTransaction,
-  FindTransactions,
-  UpdateTransaction,
-  type CreateTransactionRequest,
-  type DeleteTransactionRequest,
-  type FindTransactionRequest,
-  type FindTransactionsRequest,
-  type UpdateTransactionRequest,
+import type {
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  DeleteTransactionRequest,
+  DeleteTransactionResponse,
+  FindTransactionRequest,
+  FindTransactionResponse,
+  FindTransactionsRequest,
+  UpdateTransactionRequest,
+  UpdateTransactionResponse,
 } from "@/application/use-cases";
 import {
   infiniteQueryOptions,
@@ -16,57 +15,39 @@ import {
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  DecoratedTransactionRepository,
-  HttpTransactionRepository,
-} from "../adapters/transaction-repository";
-import { accountKeys } from "./account";
-import { apiHttpClient } from "./api-client";
+import { container } from "../container";
+import { baseKey as accountBaseKey } from "./account";
 
 const baseKey = "transactions";
-
-export const transactionKeys = {
-  all: [baseKey] as const,
-};
-
-const transactionRepository = new DecoratedTransactionRepository(
-  new HttpTransactionRepository(apiHttpClient),
-);
-
-const createTransaction = new CreateTransaction(transactionRepository);
-const findTransaction = new FindTransaction(transactionRepository);
-const findTransactions = new FindTransactions(transactionRepository);
-const updateTransaction = new UpdateTransaction(transactionRepository);
-const deleteTransaction = new DeleteTransaction(transactionRepository);
 
 export const useTransactionActions = () => {
   const queryClient = useQueryClient();
   return {
     createTransaction: () =>
       mutationOptions({
-        mutationKey: transactionKeys.all,
+        mutationKey: [baseKey],
         mutationFn: (
           request: CreateTransactionRequest,
-        ): ReturnType<typeof createTransaction.execute> => {
-          return createTransaction.execute(request);
+        ): Promise<CreateTransactionResponse> => {
+          return container.transaction.create.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: transactionKeys.all });
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
+          queryClient.invalidateQueries({ queryKey: [accountBaseKey] });
         },
       }),
     findTransaction: (request: FindTransactionRequest) =>
       queryOptions({
-        queryKey: [...transactionKeys.all, request.id],
-        queryFn: (): ReturnType<typeof findTransaction.execute> => {
-          return findTransaction.execute(request);
+        queryKey: [baseKey, request.id],
+        queryFn: (): Promise<FindTransactionResponse> => {
+          return container.transaction.findOne.execute(request);
         },
       }),
     findTransactionsInfinite: (request?: FindTransactionsRequest) =>
       infiniteQueryOptions({
-        queryKey: [...transactionKeys.all, request],
+        queryKey: [baseKey, request],
         queryFn: ({ pageParam }) =>
-          findTransactions.execute({
+          container.transaction.find.execute({
             ...request,
             cursor: pageParam ?? undefined,
           }),
@@ -75,24 +56,24 @@ export const useTransactionActions = () => {
       }),
     updateTransaction: (request: UpdateTransactionRequest) =>
       mutationOptions({
-        mutationKey: [...transactionKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof updateTransaction.execute> => {
-          return updateTransaction.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<UpdateTransactionResponse> => {
+          return container.transaction.update.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: transactionKeys.all });
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
+          queryClient.invalidateQueries({ queryKey: [accountBaseKey] });
         },
       }),
     deleteTransaction: (request: DeleteTransactionRequest) =>
       mutationOptions({
-        mutationKey: [...transactionKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof deleteTransaction.execute> => {
-          return deleteTransaction.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<DeleteTransactionResponse> => {
+          return container.transaction.delete.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: transactionKeys.all });
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
+          queryClient.invalidateQueries({ queryKey: [accountBaseKey] });
         },
       }),
   };

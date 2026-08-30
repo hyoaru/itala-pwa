@@ -1,16 +1,15 @@
-import {
-  ArchiveAccount,
-  CreateAccount,
-  FindAccount,
-  FindAccounts,
-  RestoreAccount,
-  UpdateAccount,
-  type ArchiveAccountRequest,
-  type CreateAccountRequest,
-  type FindAccountRequest,
-  type FindAccountsRequest,
-  type RestoreAccountRequest,
-  type UpdateAccountRequest,
+import type {
+  ArchiveAccountRequest,
+  ArchiveAccountResponse,
+  CreateAccountRequest,
+  CreateAccountResponse,
+  FindAccountRequest,
+  FindAccountResponse,
+  FindAccountsRequest,
+  RestoreAccountRequest,
+  RestoreAccountResponse,
+  UpdateAccountRequest,
+  UpdateAccountResponse,
 } from "@/application/use-cases";
 import {
   infiniteQueryOptions,
@@ -18,56 +17,37 @@ import {
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  DecoratedAccountRepository,
-  HttpAccountRepository,
-} from "../adapters/account-repository";
-import { apiHttpClient } from "./api-client";
+import { container } from "../container";
 
-const baseKey = "accounts";
-
-export const accountKeys = {
-  all: [baseKey] as const,
-};
-
-const accountRepository = new DecoratedAccountRepository(
-  new HttpAccountRepository(apiHttpClient),
-);
-
-const createAccount = new CreateAccount(accountRepository);
-const findAccount = new FindAccount(accountRepository);
-const findAccounts = new FindAccounts(accountRepository);
-const updateAccount = new UpdateAccount(accountRepository);
-const archiveAccount = new ArchiveAccount(accountRepository);
-const restoreAccount = new RestoreAccount(accountRepository);
+export const baseKey = "accounts";
 
 export const useAccountActions = () => {
   const queryClient = useQueryClient();
   return {
     createAccount: () =>
       mutationOptions({
-        mutationKey: accountKeys.all,
+        mutationKey: [baseKey],
         mutationFn: (
           request: CreateAccountRequest,
-        ): ReturnType<typeof createAccount.execute> => {
-          return createAccount.execute(request);
+        ): Promise<CreateAccountResponse> => {
+          return container.account.create.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     findAccount: (request: FindAccountRequest) =>
       queryOptions({
-        queryKey: [...accountKeys.all, request.id],
-        queryFn: (): ReturnType<typeof findAccount.execute> => {
-          return findAccount.execute(request);
+        queryKey: [baseKey, request.id],
+        queryFn: (): Promise<FindAccountResponse> => {
+          return container.account.findOne.execute(request);
         },
       }),
     findAccountsInfinite: (request?: FindAccountsRequest) =>
       infiniteQueryOptions({
-        queryKey: [...accountKeys.all, request],
+        queryKey: [baseKey, request],
         queryFn: ({ pageParam }) =>
-          findAccounts.execute({
+          container.account.find.execute({
             ...request,
             cursor: pageParam ?? undefined,
           }),
@@ -76,32 +56,32 @@ export const useAccountActions = () => {
       }),
     updateAccount: (request: UpdateAccountRequest) =>
       mutationOptions({
-        mutationKey: [...accountKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof updateAccount.execute> => {
-          return updateAccount.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<UpdateAccountResponse> => {
+          return container.account.update.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     archiveAccount: (request: ArchiveAccountRequest) =>
       mutationOptions({
-        mutationKey: [...accountKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof archiveAccount.execute> => {
-          return archiveAccount.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<ArchiveAccountResponse> => {
+          return container.account.archive.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
     restoreAccount: (request: RestoreAccountRequest) =>
       mutationOptions({
-        mutationKey: [...accountKeys.all, request.id],
-        mutationFn: (): ReturnType<typeof restoreAccount.execute> => {
-          return restoreAccount.execute(request);
+        mutationKey: [baseKey, request.id],
+        mutationFn: (): Promise<RestoreAccountResponse> => {
+          return container.account.restore.execute(request);
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
   };

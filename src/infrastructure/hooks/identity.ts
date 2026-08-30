@@ -1,51 +1,35 @@
-import {
-  RefreshSession,
-  ResetPassword,
-  SendAccountVerification,
-  SendPasswordReset,
-  SignIn,
-  SignUp,
-  VerifyAccount,
-  type ResetPasswordRequest,
-  type SendAccountVerificationRequest,
-  type SendPasswordResetRequest,
-  type SignInRequest,
-  type SignUpRequest,
-  type VerifyAccountRequest,
-  type RefreshSessionRequest,
+import type {
+  RefreshSessionRequest,
+  RefreshSessionResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  SendAccountVerificationRequest,
+  SendAccountVerificationResponse,
+  SendPasswordResetRequest,
+  SendPasswordResetResponse,
+  SignInRequest,
+  SignInResponse,
+  SignUpRequest,
+  SignUpResponse,
+  VerifyAccountRequest,
+  VerifyAccountResponse,
 } from "@/application/use-cases";
 import { mutationOptions, useQueryClient } from "@tanstack/react-query";
-import {
-  CognitoIdentityProvider,
-  DecoratedIdentityProvider,
-} from "../adapters/identity-provider";
-import { accountKeys } from "./account";
-import { categoryKeys } from "./category";
+import { container } from "../container";
 
 const baseKey = "identity";
-
-const identityProvider = new DecoratedIdentityProvider(
-  new CognitoIdentityProvider(),
-);
-
-const signIn = new SignIn(identityProvider);
-const refreshSession = new RefreshSession(identityProvider);
-const signUp = new SignUp(identityProvider);
-const verifyAccount = new VerifyAccount(identityProvider);
-const sendAccountVerification = new SendAccountVerification(identityProvider);
-const sendPasswordReset = new SendPasswordReset(identityProvider);
-const resetPassword = new ResetPassword(identityProvider);
 
 export const useIdentityActions = () => {
   const queryClient = useQueryClient();
   return {
     signIn: () =>
       mutationOptions({
-        mutationKey: [baseKey, "sign_in"],
+        mutationKey: [baseKey],
         mutationFn: async (
           request: SignInRequest,
-        ): ReturnType<typeof signIn.execute> => {
-          const authenticatedSession = await signIn.execute(request);
+        ): Promise<SignInResponse> => {
+          const authenticatedSession =
+            await container.identity.signIn.execute(request);
 
           localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
           localStorage.setItem(
@@ -60,17 +44,17 @@ export const useIdentityActions = () => {
           return authenticatedSession;
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries();
         },
       }),
     refresh: () =>
       mutationOptions({
-        mutationKey: [baseKey, "refresh"],
+        mutationKey: [baseKey],
         mutationFn: async (
           request: RefreshSessionRequest,
-        ): ReturnType<typeof refreshSession.execute> => {
-          const authenticatedSession = await refreshSession.execute(request);
+        ): Promise<RefreshSessionResponse> => {
+          const authenticatedSession =
+            await container.identity.refresh.execute(request);
 
           localStorage.setItem("ID_TOKEN", authenticatedSession.idToken);
           localStorage.setItem(
@@ -85,53 +69,52 @@ export const useIdentityActions = () => {
           return authenticatedSession;
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all });
-          queryClient.invalidateQueries({ queryKey: accountKeys.all });
+          queryClient.invalidateQueries();
         },
       }),
     signUp: () =>
       mutationOptions({
-        mutationKey: [baseKey, "sign_up"],
+        mutationKey: [baseKey],
         mutationFn: (
           request: SignUpRequest,
-        ): ReturnType<typeof signUp.execute> => {
-          return signUp.execute(request);
+        ): Promise<SignUpResponse> => {
+          return container.identity.signUp.execute(request);
         },
       }),
     verifyAccount: () =>
       mutationOptions({
-        mutationKey: [baseKey, "verify"],
+        mutationKey: [baseKey],
         mutationFn: (
           request: VerifyAccountRequest,
-        ): ReturnType<typeof verifyAccount.execute> => {
-          return verifyAccount.execute(request);
+        ): Promise<VerifyAccountResponse> => {
+          return container.identity.verifyAccount.execute(request);
         },
       }),
     sendAccountVerification: () =>
       mutationOptions({
-        mutationKey: [baseKey, "send_verification"],
+        mutationKey: [baseKey],
         mutationFn: (
           request: SendAccountVerificationRequest,
-        ): ReturnType<typeof sendAccountVerification.execute> => {
-          return sendAccountVerification.execute(request);
+        ): Promise<SendAccountVerificationResponse> => {
+          return container.identity.sendAccountVerification.execute(request);
         },
       }),
     sendPasswordReset: () =>
       mutationOptions({
-        mutationKey: [baseKey, "request_password_reset"],
+        mutationKey: [baseKey],
         mutationFn: (
           request: SendPasswordResetRequest,
-        ): ReturnType<typeof sendPasswordReset.execute> => {
-          return sendPasswordReset.execute(request);
+        ): Promise<SendPasswordResetResponse> => {
+          return container.identity.sendPasswordReset.execute(request);
         },
       }),
     resetPassword: () =>
       mutationOptions({
-        mutationKey: [baseKey, "reset_password"],
+        mutationKey: [baseKey],
         mutationFn: (
           request: ResetPasswordRequest,
-        ): ReturnType<typeof resetPassword.execute> => {
-          return resetPassword.execute(request);
+        ): Promise<ResetPasswordResponse> => {
+          return container.identity.resetPassword.execute(request);
         },
       }),
   };
