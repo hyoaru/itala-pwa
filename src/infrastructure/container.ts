@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import {
   DecoratedAccountRepository,
   HttpAccountRepository,
@@ -54,9 +54,10 @@ const verifyAccount = new VerifyAccount(identityProvider);
 const sendAccountVerification = new SendAccountVerification(identityProvider);
 const sendPasswordReset = new SendPasswordReset(identityProvider);
 const resetPassword = new ResetPassword(identityProvider);
-const apiHttpClient = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
 // API Client
+const apiHttpClient = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+
 apiHttpClient.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("ACCESS_TOKEN");
   if (accessToken) {
@@ -64,6 +65,58 @@ apiHttpClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+let isRefreshing = false;
+let refreshPromise: Promise<void> | null = null;
+
+apiHttpClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    if (error.response?.status !== 401) throw error;
+    if (originalRequest._retry) throw error;
+    originalRequest._retry = true;
+
+    const refreshToken = localStorage.getItem("REFRESH_TOKEN");
+    if (!refreshToken) throw error;
+
+    if (!isRefreshing) {
+      isRefreshing = true;
+
+      refreshPromise = refreshSession
+        .execute({ refreshToken })
+        .then((session) => {
+          localStorage.setItem("ACCESS_TOKEN", session.accessToken);
+          localStorage.setItem("ID_TOKEN", session.idToken);
+          localStorage.setItem("REFRESH_TOKEN", session.refreshToken);
+        })
+        .finally(() => {
+          isRefreshing = false;
+          refreshPromise = null;
+        });
+    }
+
+    try {
+      await refreshPromise;
+      const accessToken = localStorage.getItem("ACCESS_TOKEN");
+
+      if (accessToken) {
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      return apiHttpClient(originalRequest);
+    } catch (refreshError) {
+      localStorage.removeItem("ACCESS_TOKEN");
+      localStorage.removeItem("ID_TOKEN");
+      localStorage.removeItem("REFRESH_TOKEN");
+
+      throw refreshError;
+    }
+  },
+);
 
 // Account
 const accountRepository = new DecoratedAccountRepository(
