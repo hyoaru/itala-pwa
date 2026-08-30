@@ -2,7 +2,7 @@ import { Button, ListBox, Select } from "@heroui/react";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { ArrowRight, Plus, WalletCards } from "lucide-react";
 import type { ComponentProps } from "react";
-import { useAccountActions } from "../actions";
+import { useAccountActions } from "../hooks";
 
 interface AccountSelectProps extends ComponentProps<typeof Select> {
   onCreateAccount: () => void;

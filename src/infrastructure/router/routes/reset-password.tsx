@@ -4,7 +4,7 @@ import {
   IdentityProviderInvalidPasswordError,
   IdentityProviderUserNotFoundError,
 } from "@/application/ports/identity-provider";
-import { useIdentityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/hooks/identity";
 import { getFieldError } from "@/infrastructure/forms";
 import { passwordSchema } from "@/infrastructure/validators";
 import {

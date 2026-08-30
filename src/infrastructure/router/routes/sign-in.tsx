@@ -4,7 +4,7 @@ import {
   IdentityProviderPasswordResetRequiredError,
   IdentityProviderUserNotVerifiedError,
 } from "@/application/ports/identity-provider";
-import { useIdentityActions } from "@/infrastructure/actions/identity";
+import { useIdentityActions } from "@/infrastructure/hooks/identity";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { getFieldError } from "@/infrastructure/forms";
 import {

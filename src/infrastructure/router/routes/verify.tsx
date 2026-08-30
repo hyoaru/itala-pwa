@@ -4,7 +4,7 @@ import {
   IdentityProviderInvalidCodeError,
   IdentityProviderUserNotFoundError,
 } from "@/application/ports/identity-provider";
-import { useIdentityActions } from "@/infrastructure/actions";
+import { useIdentityActions } from "@/infrastructure/hooks";
 import { getFieldError } from "@/infrastructure/forms";
 import { Button, Form, InputOTP, TextField, toast } from "@heroui/react";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";

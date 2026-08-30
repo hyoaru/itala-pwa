@@ -18,7 +18,7 @@ import { ArrowRight, Pilcrow, Shapes } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
 import { useMutation } from "@tanstack/react-query";
-import { useCategoryActions } from "../actions";
+import { useCategoryActions } from "../hooks";
 
 interface NewCategoryModalProps {
   isOpen: boolean;

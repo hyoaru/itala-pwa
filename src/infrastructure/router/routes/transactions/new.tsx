@@ -8,7 +8,7 @@ import {
 import { AsyncBoundary } from "@/infrastructure/components/ui/async-boundary";
 import { getFieldError } from "@/infrastructure/forms";
 import { TransactionRepositoryError } from "@/application/ports/transaction-repository";
-import { useTransactionActions } from "@/infrastructure/actions";
+import { useTransactionActions } from "@/infrastructure/hooks";
 import {
   Button,
   Calendar,

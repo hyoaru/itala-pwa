@@ -3,7 +3,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Shapes, ArrowRight, Plus } from "lucide-react";
 import type { ComponentProps } from "react";
 import type { TransactionType } from "@/domain/value-objects";
-import { useCategoryActions } from "../actions";
+import { useCategoryActions } from "../hooks";
 
 interface CategorySelectProps extends ComponentProps<typeof Select> {
   onCreateCategory: () => void;

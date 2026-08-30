@@ -1,6 +1,6 @@
 import { Tabs } from "@heroui/react";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useTransactionActions } from "../actions";
+import { useTransactionActions } from "../hooks";
 
 interface AllTransactionsPanelProps {
   id: string;

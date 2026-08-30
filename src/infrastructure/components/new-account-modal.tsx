@@ -15,7 +15,7 @@ import { Pilcrow, WalletCards } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
 import { useMutation } from "@tanstack/react-query";
-import { useAccountActions } from "../actions";
+import { useAccountActions } from "../hooks";
 
 interface NewAccountModalProps {
   isOpen: boolean;

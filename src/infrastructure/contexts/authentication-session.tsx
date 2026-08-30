@@ -2,7 +2,7 @@ import { AuthenticatedSession, User } from "@/domain/entities";
 import { useMutation } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useIdentityActions } from "../actions";
+import { useIdentityActions } from "../hooks";
 
 export type AuthenticationSessionState = {
   user: User | null;
