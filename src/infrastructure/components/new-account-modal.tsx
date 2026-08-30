@@ -20,6 +20,7 @@ import { useAccountActions } from "../hooks";
 interface NewAccountModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  onCreate?: (id: string) => void;
 }
 
 const { fieldContext, formContext } = createFormHookContexts();
@@ -50,12 +51,13 @@ export const NewAccountModal = (props: NewAccountModalProps) => {
     },
     onSubmit: async ({ value }) => {
       try {
-        await createAccountMutation.mutateAsync({
+        const id = await createAccountMutation.mutateAsync({
           name: value.name,
         });
 
         form.reset();
         toast("Account created", { variant: "success" });
+        props.onCreate?.(id);
         props.onOpenChange(false);
       } catch (error) {
         if (error instanceof AccountAlreadyExistsError) {

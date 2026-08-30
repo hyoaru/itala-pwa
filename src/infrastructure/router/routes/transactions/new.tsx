@@ -387,14 +387,21 @@ function RouteComponent() {
         </form.AppForm>
       </Form>
 
-      <NewCategoryModal
-        isOpen={createCategoryModalState.isOpen}
-        onOpenChange={createCategoryModalState.setOpen}
-      />
+      <form.Subscribe selector={(state) => state.values.transactionType}>
+        {(transactionType) => (
+          <NewCategoryModal
+            isOpen={createCategoryModalState.isOpen}
+            onOpenChange={createCategoryModalState.setOpen}
+            defaultValues={{ transactionType: transactionType }}
+            onCreate={(id) => form.setFieldValue("categoryId", id)}
+          />
+        )}
+      </form.Subscribe>
 
       <NewAccountModal
         isOpen={createAccountModalState.isOpen}
         onOpenChange={createAccountModalState.setOpen}
+        onCreate={(id) => form.setFieldValue("accountId", id)}
       />
     </>
   );

@@ -23,6 +23,11 @@ import { useCategoryActions } from "../hooks";
 interface NewCategoryModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  onCreate?: (id: string) => void;
+  defaultValues?: {
+    name?: string;
+    transactionType?: TransactionType;
+  };
 }
 
 const { fieldContext, formContext } = createFormHookContexts();
@@ -45,8 +50,10 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
 
   const form = useAppForm({
     defaultValues: {
-      name: "",
-      transactionType: TransactionType.Expense as TransactionType,
+      name: props.defaultValues?.name ?? "",
+      transactionType:
+        props.defaultValues?.transactionType ??
+        (TransactionType.Expense as TransactionType),
     },
     validators: {
       onChange: z.object({
@@ -56,13 +63,14 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
     },
     onSubmit: async ({ value }) => {
       try {
-        await createCategoryMutation.mutateAsync({
+        const id = await createCategoryMutation.mutateAsync({
           name: value.name,
           transactionType: value.transactionType,
         });
 
         form.reset();
         toast("Category created", { variant: "success" });
+        props.onCreate?.(id);
         props.onOpenChange(false);
       } catch (error) {
         if (error instanceof CategoryAlreadyExistsError) {
