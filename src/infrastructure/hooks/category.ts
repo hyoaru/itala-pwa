@@ -13,16 +13,16 @@ import {
   type UpdateCategoryRequest,
 } from "@/application/use-cases";
 import {
-  mutationOptions,
   infiniteQueryOptions,
+  mutationOptions,
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
 import {
   DecoratedCategoryRepository,
   HttpCategoryRepository,
 } from "../adapters/category-repository";
+import { apiHttpClient } from "./api-client";
 
 const baseKey = "categories";
 
@@ -30,20 +30,8 @@ export const categoryKeys = {
   all: [baseKey] as const,
 };
 
-const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-httpClient.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("ACCESS_TOKEN");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
 const categoryRepository = new DecoratedCategoryRepository(
-  new HttpCategoryRepository(httpClient),
+  new HttpCategoryRepository(apiHttpClient),
 );
 
 const createCategory = new CreateCategory(categoryRepository);

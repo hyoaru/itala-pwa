@@ -11,17 +11,17 @@ import {
   type UpdateTransactionRequest,
 } from "@/application/use-cases";
 import {
-  mutationOptions,
   infiniteQueryOptions,
+  mutationOptions,
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
 import {
   DecoratedTransactionRepository,
   HttpTransactionRepository,
 } from "../adapters/transaction-repository";
 import { accountKeys } from "./account";
+import { apiHttpClient } from "./api-client";
 
 const baseKey = "transactions";
 
@@ -29,20 +29,8 @@ export const transactionKeys = {
   all: [baseKey] as const,
 };
 
-const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-httpClient.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("ACCESS_TOKEN");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
 const transactionRepository = new DecoratedTransactionRepository(
-  new HttpTransactionRepository(httpClient),
+  new HttpTransactionRepository(apiHttpClient),
 );
 
 const createTransaction = new CreateTransaction(transactionRepository);

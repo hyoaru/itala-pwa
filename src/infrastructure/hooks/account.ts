@@ -13,16 +13,16 @@ import {
   type UpdateAccountRequest,
 } from "@/application/use-cases";
 import {
-  mutationOptions,
   infiniteQueryOptions,
+  mutationOptions,
   queryOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
 import {
   DecoratedAccountRepository,
   HttpAccountRepository,
 } from "../adapters/account-repository";
+import { apiHttpClient } from "./api-client";
 
 const baseKey = "accounts";
 
@@ -30,20 +30,8 @@ export const accountKeys = {
   all: [baseKey] as const,
 };
 
-const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-httpClient.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("ACCESS_TOKEN");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
 const accountRepository = new DecoratedAccountRepository(
-  new HttpAccountRepository(httpClient),
+  new HttpAccountRepository(apiHttpClient),
 );
 
 const createAccount = new CreateAccount(accountRepository);
