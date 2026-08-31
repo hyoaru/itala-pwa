@@ -5,7 +5,7 @@ import {
   TransactionsPanel,
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
-import { Button, Tabs } from "@heroui/react";
+import { Button, Popover, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
@@ -69,7 +69,16 @@ function RouteComponent() {
           </AsyncBoundary>
         </div>
         <div className="flex justify-between gap-3">
-          <Button className="w-full font-semibold">View insights</Button>
+          <Popover>
+            <Button className="w-full font-semibold">View insights</Button>
+            <Popover.Content placement="right" className="max-w-48">
+              <Popover.Dialog className="p-2 px-3">
+                <Popover.Arrow />
+                <Popover.Heading>Coming soon</Popover.Heading>
+                {/* <p className="text-muted mt-2 text-sm">Coming soon</p> */}
+              </Popover.Dialog>
+            </Popover.Content>
+          </Popover>
           <Link
             to="/transactions/new"
             className="button button--secondary w-full font-semibold"
