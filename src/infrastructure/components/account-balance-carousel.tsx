@@ -29,12 +29,16 @@ export const AccountBalanceCarousel = (props: AccountBalanceCarouselProps) => {
 
   return (
     <Carousel onSelect={onSelect} className="h-full">
-      <AccountBalanceCard name="Overall account" balance={overallBalance} />
+      <AccountBalanceCard
+        name="Overall account balance"
+        balance={overallBalance}
+      />
       {accounts.map((account) => (
         <AccountBalanceCard
           key={account.id}
           name={account.name}
           balance={parseFloat(account.balance)}
+          createdAt={account.createdAt}
         />
       ))}
     </Carousel>
