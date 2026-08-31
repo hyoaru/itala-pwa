@@ -7,7 +7,7 @@ import {
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Popover, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Ellipsis, Shapes, WalletCards } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -75,7 +75,6 @@ function RouteComponent() {
               <Popover.Dialog className="p-2 px-3">
                 <Popover.Arrow />
                 <Popover.Heading>Coming soon</Popover.Heading>
-                {/* <p className="text-muted mt-2 text-sm">Coming soon</p> */}
               </Popover.Dialog>
             </Popover.Content>
           </Popover>
@@ -108,9 +107,32 @@ function RouteComponent() {
                   </Tabs.List>
                 </Tabs.ListContainer>
               </div>
-              <Button isIconOnly size="sm" variant="secondary">
-                <ArrowUpRight className="size-4" />
-              </Button>
+              <Popover>
+                <Button isIconOnly size="sm" variant="secondary">
+                  <Ellipsis className="h-[1.5em] w-[1.5em]" />
+                </Button>
+                <Popover.Content placement="left" className="max-w-48">
+                  <Popover.Dialog className="p-1">
+                    <Popover.Arrow />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="w-full justify-start gap-3"
+                    >
+                      <WalletCards />
+                      Manage accounts
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="w-full justify-start gap-3"
+                    >
+                      <Shapes />
+                      Manage categories
+                    </Button>
+                  </Popover.Dialog>
+                </Popover.Content>
+              </Popover>
             </div>
             <div className="relative flex-1">
               <div className="absolute inset-0">
