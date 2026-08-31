@@ -54,17 +54,19 @@ export const useCategoryActions = () => {
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       }),
-    updateCategory: (request: UpdateCategoryRequest) =>
+    updateCategory: (request: Pick<UpdateCategoryRequest, "id">) =>
       mutationOptions({
         mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<UpdateCategoryResponse> => {
-          return container.category.update.execute(request);
+        mutationFn: (
+          variables: UpdateCategoryRequest,
+        ): Promise<UpdateCategoryResponse> => {
+          return container.category.update.execute(variables);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
-    archiveCategory: (request: ArchiveCategoryRequest) =>
+    archiveCategory: (request: Pick<ArchiveCategoryRequest, "id">) =>
       mutationOptions({
         mutationKey: [baseKey, request.id],
         mutationFn: (): Promise<ArchiveCategoryResponse> => {
