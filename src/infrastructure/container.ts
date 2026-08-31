@@ -101,20 +101,19 @@ apiHttpClient.interceptors.response.use(
 
     try {
       await refreshPromise;
-      const accessToken = localStorage.getItem("ACCESS_TOKEN");
-
-      if (accessToken) {
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      return apiHttpClient(originalRequest);
     } catch (refreshError) {
       localStorage.removeItem("ACCESS_TOKEN");
       localStorage.removeItem("ID_TOKEN");
       localStorage.removeItem("REFRESH_TOKEN");
-
       throw refreshError;
     }
+
+    const accessToken = localStorage.getItem("ACCESS_TOKEN");
+    if (accessToken) {
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return apiHttpClient(originalRequest);
   },
 );
 
