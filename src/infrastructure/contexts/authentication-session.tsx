@@ -2,7 +2,6 @@ import { AuthenticatedSession, User } from "@/domain/entities";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
-import { container } from "../container";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -75,21 +74,6 @@ export function AuthenticationSessionProvider({
       setIsLoading(false);
       return;
     }
-
-    container.identity.refresh
-      .execute({ refreshToken })
-      .then((session) => {
-        localStorage.setItem("ACCESS_TOKEN", session.accessToken);
-        localStorage.setItem("ID_TOKEN", session.idToken);
-        localStorage.setItem("REFRESH_TOKEN", session.refreshToken);
-        setUser(createUserFromIdToken(session.idToken));
-      })
-      .catch(() => {
-        localStorage.removeItem("ACCESS_TOKEN");
-        localStorage.removeItem("ID_TOKEN");
-        localStorage.removeItem("REFRESH_TOKEN");
-      })
-      .finally(() => setIsLoading(false));
   }, []);
 
   const isAuthenticated = user !== null;

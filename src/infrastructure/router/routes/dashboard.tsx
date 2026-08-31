@@ -8,6 +8,7 @@ import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authe
 import { Button, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: ({ context }) => {
@@ -39,6 +40,11 @@ function RouteComponent() {
   const { user } = useAuthenticationSessionContext();
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
+
+  const [selectedAccountId, setSelectedAccountId] = useState<
+    string | undefined
+  >();
+
   const transactionTabs: TransactionTab[] = [
     { name: "all" },
     { name: "income", query: { type: TransactionType.Income } },
@@ -59,7 +65,7 @@ function RouteComponent() {
         </div>
         <div className="h-30">
           <AsyncBoundary>
-            <AccountBalanceCarousel />
+            <AccountBalanceCarousel onSelect={setSelectedAccountId} />
           </AsyncBoundary>
         </div>
         <div className="flex justify-between gap-3">
@@ -100,13 +106,15 @@ function RouteComponent() {
             <div className="relative flex-1">
               <div className="absolute inset-0">
                 <AsyncBoundary>
-                  {transactionTabs.map((item) => (
-                    <TransactionsPanel
-                      query={item.query}
-                      key={`TabPanel-${item.name}`}
-                      id={item.name}
-                    />
-                  ))}
+                  {transactionTabs.map((item) => {
+                    return (
+                      <TransactionsPanel
+                        query={{ ...item.query, accountId: selectedAccountId }}
+                        key={`TabPanel-${item.name}`}
+                        id={item.name}
+                      />
+                    );
+                  })}
                 </AsyncBoundary>
               </div>
             </div>

@@ -3,7 +3,11 @@ import { useAccountActions } from "../hooks";
 import { AccountBalanceCard } from "./account-balance-card";
 import { Carousel } from "./ui/carousel";
 
-export const AccountBalanceCarousel = () => {
+type AccountBalanceCarouselProps = {
+  onSelect?: (id: string | undefined) => void;
+};
+
+export const AccountBalanceCarousel = (props: AccountBalanceCarouselProps) => {
   const { findAccountsInfinite } = useAccountActions();
   const { data } = useSuspenseInfiniteQuery(findAccountsInfinite());
   const accounts = data.pages.flatMap((page) => page.items);
@@ -13,8 +17,18 @@ export const AccountBalanceCarousel = () => {
     0,
   );
 
+  const onSelect = (index: number) => {
+    if (index <= 0) {
+      props.onSelect?.(undefined);
+      return;
+    }
+
+    const accountId = accounts[index - 1].id;
+    props.onSelect?.(accountId);
+  };
+
   return (
-    <Carousel className="h-full">
+    <Carousel onSelect={onSelect} className="h-full">
       <AccountBalanceCard name="Overall account" balance={overallBalance} />
       {accounts.map((account) => (
         <AccountBalanceCard

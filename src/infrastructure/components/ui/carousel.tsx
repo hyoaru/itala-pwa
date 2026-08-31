@@ -9,12 +9,13 @@ import {
 } from "react";
 import { cn } from "@heroui/styles";
 
-interface CardCarouselProps {
+interface CarouselProps {
   children: ReactNode;
   className?: string;
+  onSelect?: (index: number) => void;
 }
 
-export const Carousel = ({ children, className }: CardCarouselProps) => {
+export const Carousel = ({ children, ...props }: CarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     align: "start",
@@ -22,9 +23,13 @@ export const Carousel = ({ children, className }: CardCarouselProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const slideCount = Children.count(children);
 
-  const onSelect = useCallback((api: EmblaCarouselType) => {
-    setSelectedIndex(api.selectedScrollSnap());
-  }, []);
+  const onSelect = useCallback(
+    (api: EmblaCarouselType) => {
+      setSelectedIndex(api.selectedScrollSnap());
+      props.onSelect?.(api.selectedScrollSnap());
+    },
+    [props],
+  );
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -38,7 +43,7 @@ export const Carousel = ({ children, className }: CardCarouselProps) => {
   }, [emblaApi, onSelect]);
 
   return (
-    <div className={cn("relative h-full", className)}>
+    <div className={cn("relative h-full", props.className)}>
       <div ref={emblaRef} className="h-full overflow-hidden">
         <div className="flex h-full">
           {Children.map(children, (child) => (
