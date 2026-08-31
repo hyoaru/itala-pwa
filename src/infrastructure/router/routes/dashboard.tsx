@@ -6,8 +6,13 @@ import {
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Popover, Tabs } from "@heroui/react";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ArrowUpRight, Ellipsis, Shapes, WalletCards } from "lucide-react";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useRouter,
+} from "@tanstack/react-router";
+import { Ellipsis, LogOut, Shapes, User, WalletCards } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -37,9 +42,10 @@ function getGreeting(): string {
 }
 
 function RouteComponent() {
-  const { user } = useAuthenticationSessionContext();
+  const { user, clearSession } = useAuthenticationSessionContext();
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
+  const router = useRouter();
 
   const [selectedAccountId, setSelectedAccountId] = useState<
     string | undefined
@@ -51,6 +57,11 @@ function RouteComponent() {
     { name: "expense", query: { type: TransactionType.Expense } },
   ];
 
+  const onSignOut = () => {
+    clearSession();
+    router.navigate({ to: "/sign-in" });
+  };
+
   return (
     <>
       <div className="flex h-full w-full flex-col space-y-3">
@@ -59,9 +70,34 @@ function RouteComponent() {
             {greeting}, {user?.firstName}
           </p>
 
-          <Button isIconOnly size="sm" variant="primary" className="">
-            <p className="p-1 text-xs font-semibold">{initials}</p>
-          </Button>
+          <Popover>
+            <Button isIconOnly size="sm" variant="primary" className="">
+              <p className="p-1 text-xs font-semibold">{initials}</p>
+            </Button>
+            <Popover.Content placement="left top" className="max-w-34">
+              <Popover.Dialog className="p-1">
+                <Popover.Arrow />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  isDisabled
+                  className="w-full justify-start gap-3"
+                >
+                  <User />
+                  Identity
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-danger w-full justify-start gap-3"
+                  onClick={onSignOut}
+                >
+                  <LogOut />
+                  Sign out
+                </Button>
+              </Popover.Dialog>
+            </Popover.Content>
+          </Popover>
         </div>
         <div className="h-30">
           <AsyncBoundary>
