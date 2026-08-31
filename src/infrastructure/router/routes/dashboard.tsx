@@ -1,6 +1,6 @@
 import { TransactionType } from "@/domain/value-objects";
 import {
-  AccountBalanceCard,
+  AccountBalanceCarousel,
   AsyncBoundary,
   TransactionsPanel,
 } from "@/infrastructure/components";
@@ -59,7 +59,7 @@ function RouteComponent() {
         </div>
         <div className="h-30">
           <AsyncBoundary>
-            <AccountBalanceCard />
+            <AccountBalanceCarousel />
           </AsyncBoundary>
         </div>
         <div className="flex justify-between gap-3">
