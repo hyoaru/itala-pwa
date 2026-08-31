@@ -1,5 +1,5 @@
 import { TransactionType } from "@/domain/value-objects";
-import { TransactionsPanel, AsyncBoundary } from "@/infrastructure/components";
+import { AsyncBoundary, TransactionsPanel } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
@@ -43,7 +43,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex w-full flex-col space-y-4 self-stretch">
+      <div className="flex h-full w-full flex-col space-y-4">
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">
             {greeting}, {user?.firstName}
@@ -70,11 +70,11 @@ function RouteComponent() {
           </Link>
         </div>
         <div className="flex flex-1 flex-col space-y-3">
-          <p className="font-heading text-sm font-medium">
+          <p className="font-heading shrink text-sm font-medium">
             Recent transactions
           </p>
           <Tabs className="flex flex-1 flex-col">
-            <div className="flex items-center">
+            <div className="flex shrink items-center">
               <div className="grow">
                 <Tabs.ListContainer className="bg-default w-max">
                   <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent">
@@ -91,19 +91,23 @@ function RouteComponent() {
                   </Tabs.List>
                 </Tabs.ListContainer>
               </div>
-              <Button isIconOnly size="sm" variant="secondary" className="">
+              <Button isIconOnly size="sm" variant="secondary">
                 <ArrowUpRight className="size-4" />
               </Button>
             </div>
-            <AsyncBoundary>
-              {transactionTabs.map((item) => (
-                <TransactionsPanel
-                  query={item.query}
-                  key={`TabPanel-${item.name}`}
-                  id={item.name}
-                />
-              ))}
-            </AsyncBoundary>
+            <div className="relative flex-1">
+              <div className="absolute inset-0">
+                <AsyncBoundary>
+                  {transactionTabs.map((item) => (
+                    <TransactionsPanel
+                      query={item.query}
+                      key={`TabPanel-${item.name}`}
+                      id={item.name}
+                    />
+                  ))}
+                </AsyncBoundary>
+              </div>
+            </div>
           </Tabs>
         </div>
       </div>

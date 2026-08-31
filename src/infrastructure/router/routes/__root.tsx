@@ -15,7 +15,7 @@ export const Route = createRootRouteWithContext<{
 function Root() {
   return (
     <>
-      <div className="flex min-h-dvh items-start justify-start p-8">
+      <div className="h-dvh items-start justify-start p-8">
         <Outlet />
       </div>
       <Toast.Provider />

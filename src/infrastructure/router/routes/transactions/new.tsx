@@ -141,13 +141,14 @@ function RouteComponent() {
             {(field) => (
               <field.ToggleButton
                 id={field.name}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   const next =
                     field.state.value == TransactionType.Income
                       ? TransactionType.Expense
                       : TransactionType.Income;
                   field.handleChange(next);
-                  field.form.setFieldValue("categoryId", "");
+                  field.form.resetField("categoryId");
                 }}
                 className="data-[selected=true]:text-foreground h-0 text-sm font-semibold uppercase"
               >

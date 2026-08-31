@@ -69,14 +69,8 @@ export function AuthenticationSessionProvider({
     }
 
     try {
-      const { exp } = jwtDecode<{ exp: number }>(accessToken);
-      const isExpired = Math.floor(Date.now() / 1000) >= exp;
-
-      if (!isExpired) {
-        setUser(createUserFromIdToken(idToken));
-        setIsLoading(false);
-        return;
-      }
+      setUser(createUserFromIdToken(idToken));
+      setIsLoading(false);
     } catch {
       setIsLoading(false);
       return;

@@ -1,4 +1,4 @@
-import { Tabs } from "@heroui/react";
+import { ScrollShadow, Tabs } from "@heroui/react";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useTransactionActions } from "../hooks";
 import { TransactionType } from "@/domain/value-objects";
@@ -20,20 +20,23 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
 
   return (
     <>
-      <Tabs.Panel className="space-y-2 p-0" id={props.id}>
-        {transactions.map((t) => {
-          return (
-            <div
-              key={`AllTransactions-${t.id}`}
-              className="bg-default-soft flex justify-between rounded-3xl p-3 text-sm"
-            >
-              <p className="font-medium">{t.description}</p>
-              <p className="font-semibold">
-                {t.type == TransactionType.Income ? "+" : "-"}₱{t.amount}
-              </p>
-            </div>
-          );
-        })}
+      <Tabs.Panel className="h-full p-0" id={props.id}>
+        <ScrollShadow className="h-full space-y-2">
+          {transactions.map((t) => {
+            return (
+              <div
+                key={`AllTransactions-${t.id}`}
+                className="bg-default-soft flex justify-between rounded-3xl p-3 text-sm"
+              >
+                <p className="font-medium">{t.description}</p>
+                <p className="font-semibold">
+                  {t.type == TransactionType.Income ? "+" : "-"}₱
+                  {Number(t.amount).toLocaleString()}
+                </p>
+              </div>
+            );
+          })}
+        </ScrollShadow>
       </Tabs.Panel>
     </>
   );
