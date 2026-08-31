@@ -43,7 +43,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex h-full w-full flex-col space-y-4">
+      <div className="flex h-full w-full flex-col space-y-3">
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">
             {greeting}, {user?.firstName}
@@ -55,10 +55,10 @@ function RouteComponent() {
         </div>
         <div className="bg-default rounded-3xl p-5">
           <div className="space-y-1">
-            <p className="text-muted text-sm">Available balance</p>
+            <p className="text-muted text-xs">Available balance</p>
             <p className="font-heading text-4xl font-semibold">₱4,280.50</p>
           </div>
-          <p className="text-sm font-medium">+ ₱500 this month </p>
+          <p className="text-xs font-medium">+ ₱500 this month </p>
         </div>
         <div className="flex justify-between gap-3">
           <Button className="w-full font-semibold">View insights</Button>
