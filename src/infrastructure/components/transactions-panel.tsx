@@ -61,16 +61,16 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
                     <BanknoteArrowDown className="text-muted h-[1.6em] w-[1.6em]" />
                   </div>
                 )}
-                <div className="flex flex-1 justify-between rounded-3xl p-2.5">
-                  <div className="flex items-center gap-1">
-                    <p className="inline-flex items-center gap-1 font-medium">
-                      {t.description}
-                      <span className="text-muted text-xs">
+                <div className="flex min-w-0 flex-1 items-center justify-between gap-4 rounded-3xl p-2.5">
+                  <div className="flex min-w-0 items-center gap-1">
+                    <p className="inline-flex w-full min-w-0 items-center gap-1 font-medium">
+                      <span className="truncate">{t.description}</span>
+                      <span className="text-muted shrink-0 text-xs">
                         on {formattedDate}
                       </span>
                     </p>
                   </div>
-                  <p className="font-semibold">
+                  <p className="shrink-0 font-semibold">
                     {t.type == TransactionType.Income ? "+" : "-"}
                     {" ₱"}
                     {formattedAmount}
