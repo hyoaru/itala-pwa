@@ -1,11 +1,9 @@
-import {
-  AllTransactionsPanel,
-  AsyncBoundary,
-} from "@/infrastructure/components";
+import { TransactionType } from "@/domain/value-objects";
+import { TransactionsPanel, AsyncBoundary } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ArrowUpRight, SquareArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: ({ context }) => {
@@ -15,6 +13,11 @@ export const Route = createFileRoute("/dashboard")({
   },
   component: RouteComponent,
 });
+
+type TransactionTab = {
+  name: string;
+  query?: Parameters<typeof TransactionsPanel>[0]["query"];
+};
 
 function getGreeting(): string {
   const date = new Date();
@@ -32,10 +35,10 @@ function RouteComponent() {
   const { user } = useAuthenticationSessionContext();
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
-  const transactionTabs = [
-    { name: "all", panel: AllTransactionsPanel },
-    { name: "income", panel: AllTransactionsPanel },
-    { name: "expense", panel: AllTransactionsPanel },
+  const transactionTabs: TransactionTab[] = [
+    { name: "all" },
+    { name: "income", query: { type: TransactionType.Income } },
+    { name: "expense", query: { type: TransactionType.Expense } },
   ];
 
   return (
@@ -45,9 +48,10 @@ function RouteComponent() {
           <p className="text-sm">
             {greeting}, {user?.firstName}
           </p>
-          <div className="bg-accent rounded-full">
+
+          <Button isIconOnly size="sm" variant="primary" className="">
             <p className="p-1 text-xs font-semibold">{initials}</p>
-          </div>
+          </Button>
         </div>
         <div className="bg-default rounded-3xl p-5">
           <div className="space-y-1">
@@ -88,18 +92,18 @@ function RouteComponent() {
                 </Tabs.ListContainer>
               </div>
               <Button isIconOnly size="sm" variant="secondary" className="">
-                <ArrowUpRight className="size-6" />
+                <ArrowUpRight className="size-4" />
               </Button>
             </div>
-            <div className="h-full bg-black">hey</div>
-            {/* <div className="flex-1 border">test</div> */}
-            {/* {transactionTabs.map((item) => ( */}
-            {/*   <div key={`TabPanel-${item.name}`} className="h-full border"> */}
-            {/*     <AsyncBoundary> */}
-            {/*       <item.panel id={item.name} /> */}
-            {/*     </AsyncBoundary> */}
-            {/*   </div> */}
-            {/* ))} */}
+            <AsyncBoundary>
+              {transactionTabs.map((item) => (
+                <TransactionsPanel
+                  query={item.query}
+                  key={`TabPanel-${item.name}`}
+                  id={item.name}
+                />
+              ))}
+            </AsyncBoundary>
           </Tabs>
         </div>
       </div>
