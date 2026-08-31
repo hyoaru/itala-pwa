@@ -158,14 +158,13 @@ function RouteComponent() {
                       <WalletCards />
                       Manage accounts
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="w-full justify-start gap-3"
+                    <Link
+                      to="/categories"
+                      className="button button--ghost button--sm w-full justify-start gap-3"
                     >
                       <Shapes />
                       Manage categories
-                    </Button>
+                    </Link>
                   </Popover.Dialog>
                 </Popover.Content>
               </Popover>

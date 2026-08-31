@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as CategoriesIndexRouteImport } from './routes/categories/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as TransactionsNewRouteImport } from './routes/transactions/new'
 
@@ -54,6 +55,11 @@ const VerifyRoute = VerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
   id: '/transactions/',
   path: '/transactions/',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/sign-up': typeof SignUpRoute
   '/verify': typeof VerifyRoute
   '/transactions/new': typeof TransactionsNewRoute
+  '/categories/': typeof CategoriesIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/sign-up': typeof SignUpRoute
   '/verify': typeof VerifyRoute
   '/transactions/new': typeof TransactionsNewRoute
+  '/categories': typeof CategoriesIndexRoute
   '/transactions': typeof TransactionsIndexRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/verify': typeof VerifyRoute
   '/transactions/new': typeof TransactionsNewRoute
+  '/categories/': typeof CategoriesIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/verify'
     | '/transactions/new'
+    | '/categories/'
     | '/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/verify'
     | '/transactions/new'
+    | '/categories'
     | '/transactions'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/verify'
     | '/transactions/new'
+    | '/categories/'
     | '/transactions/'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   SignUpRoute: typeof SignUpRoute
   VerifyRoute: typeof VerifyRoute
   TransactionsNewRoute: typeof TransactionsNewRoute
+  CategoriesIndexRoute: typeof CategoriesIndexRoute
   TransactionsIndexRoute: typeof TransactionsIndexRoute
 }
 
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categories/': {
+      id: '/categories/'
+      path: '/categories'
+      fullPath: '/categories/'
+      preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transactions/': {
       id: '/transactions/'
       path: '/transactions'
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignUpRoute: SignUpRoute,
   VerifyRoute: VerifyRoute,
   TransactionsNewRoute: TransactionsNewRoute,
+  CategoriesIndexRoute: CategoriesIndexRoute,
   TransactionsIndexRoute: TransactionsIndexRoute,
 }
 export const routeTree = rootRouteImport

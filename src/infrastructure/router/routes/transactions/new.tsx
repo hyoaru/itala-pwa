@@ -127,14 +127,17 @@ function RouteComponent() {
   return (
     <>
       <Form
-        className="w-full space-y-3"
+        className="w-full"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit(e);
         }}
       >
         <div className="flex w-full items-center justify-between">
-          <Link to="/dashboard" className="text-muted text-sm">
+          <Link
+            to="/dashboard"
+            className="button button--icon button--secondary"
+          >
             <ArrowLeft className="" />
           </Link>
           <form.AppField name="transactionType">
@@ -157,235 +160,240 @@ function RouteComponent() {
             )}
           </form.AppField>
         </div>
-
-        <div className="space-y-1 rounded-3xl p-5 text-center">
-          <form.Subscribe selector={(state) => state.values.transactionType}>
-            {(transactionType) => (
-              <p className="text-muted text-sm">
-                {transactionType === TransactionType.Income
-                  ? "How much did you receive?"
-                  : "How much did you spend?"}
-              </p>
-            )}
-          </form.Subscribe>
-          <form.AppField name="amount">
-            {(field) => {
-              const { isInvalid } = getFieldError(field);
-              return (
-                <field.NumberField
-                  minValue={0}
-                  maxValue={1000000}
-                  variant="secondary"
-                  isInvalid={isInvalid}
-                  className="font-heading selection:bg-default m-0 p-0 font-semibold selection:text-inherit"
-                  fullWidth
-                  formatOptions={{
-                    currency: "PHP",
-                    currencySign: "standard",
-                    style: "currency",
-                  }}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(value) => field.handleChange(value)}
-                  onFocus={(e) => {
-                    const input = e.currentTarget as HTMLInputElement;
-                    input.select();
-                  }}
-                >
-                  <NumberField.Input className="m-0 p-0 text-center text-4xl" />
-                </field.NumberField>
-              );
-            }}
-          </form.AppField>
-        </div>
-
-        <form.AppField name="description">
-          {(field) => {
-            const { isInvalid } = getFieldError(field);
-            return (
-              <field.TextField
-                isInvalid={isInvalid}
-                variant="secondary"
-                fullWidth
-              >
-                <InputGroup className="">
-                  <InputGroup.Prefix className="">
-                    <Pilcrow className="h-[1.2em] w-[1.2em]" />
-                  </InputGroup.Prefix>
-                  <InputGroup.Input
-                    className="text-sm"
-                    placeholder="What is this transaction for?"
+        <div className="w-full space-y-3">
+          <div className="space-y-1 rounded-3xl p-5 text-center">
+            <form.Subscribe selector={(state) => state.values.transactionType}>
+              {(transactionType) => (
+                <p className="text-muted text-sm">
+                  {transactionType === TransactionType.Income
+                    ? "How much did you receive?"
+                    : "How much did you spend?"}
+                </p>
+              )}
+            </form.Subscribe>
+            <form.AppField name="amount">
+              {(field) => {
+                const { isInvalid } = getFieldError(field);
+                return (
+                  <field.NumberField
+                    minValue={0}
+                    maxValue={1000000}
+                    variant="secondary"
+                    isInvalid={isInvalid}
+                    className="font-heading selection:bg-default m-0 p-0 font-semibold selection:text-inherit"
+                    fullWidth
+                    formatOptions={{
+                      currency: "PHP",
+                      currencySign: "standard",
+                      style: "currency",
+                    }}
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                </InputGroup>
-              </field.TextField>
-            );
-          }}
-        </form.AppField>
+                    onChange={(value) => field.handleChange(value)}
+                    onFocus={(e) => {
+                      const input = e.currentTarget as HTMLInputElement;
+                      input.select();
+                    }}
+                  >
+                    <NumberField.Input className="m-0 p-0 text-center text-4xl" />
+                  </field.NumberField>
+                );
+              }}
+            </form.AppField>
+          </div>
 
-        <form.AppField name="occurredAt">
-          {(field) => {
-            const { isInvalid } = getFieldError(field);
-            return (
-              <field.DatePicker
-                className="w-full"
-                isInvalid={isInvalid}
-                granularity="minute"
-                onChange={(value) =>
-                  field.handleChange(value as CalendarDateTime)
-                }
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-              >
-                {(values) => (
-                  <>
-                    <div className="relative w-full">
-                      <DateField.Group
-                        className="px-3"
-                        variant="secondary"
-                        fullWidth
-                      >
-                        <div className=" ">
-                          <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
-                        </div>
-
-                        <DateField.Input className="text-sm">
-                          {(segment) => <DateField.Segment segment={segment} />}
-                        </DateField.Input>
-                      </DateField.Group>
-                      <DatePicker.Trigger className="absolute inset-0 h-full w-full cursor-pointer"></DatePicker.Trigger>
-                    </div>
-                    <DatePicker.Popover className="flex flex-col gap-3">
-                      <Calendar aria-label="Event date">
-                        <Calendar.Header>
-                          <Calendar.YearPickerTrigger>
-                            <Calendar.YearPickerTriggerHeading />
-                            <Calendar.YearPickerTriggerIndicator />
-                          </Calendar.YearPickerTrigger>
-                          <Calendar.NavButton slot="previous" />
-                          <Calendar.NavButton slot="next" />
-                        </Calendar.Header>
-                        <Calendar.Grid>
-                          <Calendar.GridHeader>
-                            {(day) => (
-                              <Calendar.HeaderCell>{day}</Calendar.HeaderCell>
-                            )}
-                          </Calendar.GridHeader>
-                          <Calendar.GridBody>
-                            {(date) => <Calendar.Cell date={date} />}
-                          </Calendar.GridBody>
-                        </Calendar.Grid>
-                        <Calendar.YearPickerGrid>
-                          <Calendar.YearPickerGridBody>
-                            {({ year }) => (
-                              <Calendar.YearPickerCell year={year} />
-                            )}
-                          </Calendar.YearPickerGridBody>
-                        </Calendar.YearPickerGrid>
-                      </Calendar>
-                      <div className="flex items-center justify-between">
-                        <Label>Time</Label>
-                        <TimeField
-                          hourCycle={24}
-                          hideTimeZone={true}
-                          shouldForceLeadingZeros={true}
-                          granularity={"minute"}
-                          value={values.state.timeValue ?? new Time(0, 0)}
-                          onChange={(time) => {
-                            if (time) values.state.setTimeValue(time);
-                          }}
-                        >
-                          <TimeField.Group variant="secondary">
-                            <TimeField.Input>
-                              {(segment) => (
-                                <TimeField.Segment segment={segment} />
-                              )}
-                            </TimeField.Input>
-                          </TimeField.Group>
-                        </TimeField>
-                      </div>
-                    </DatePicker.Popover>
-                  </>
-                )}
-              </field.DatePicker>
-            );
-          }}
-        </form.AppField>
-
-        <form.AppField name="categoryId">
-          {(field) => {
-            const { isInvalid } = getFieldError(field);
-            return (
-              <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
-                <form.Subscribe
-                  selector={(state) => state.values.transactionType}
+          <form.AppField name="description">
+            {(field) => {
+              const { isInvalid } = getFieldError(field);
+              return (
+                <field.TextField
+                  isInvalid={isInvalid}
+                  variant="secondary"
+                  fullWidth
                 >
-                  {(transactionType) => (
-                    <field.CategorySelect
-                      isInvalid={isInvalid}
-                      variant="secondary"
-                      placeholder="Choose a category"
-                      fullWidth
+                  <InputGroup className="">
+                    <InputGroup.Prefix className="">
+                      <Pilcrow className="h-[1.2em] w-[1.2em]" />
+                    </InputGroup.Prefix>
+                    <InputGroup.Input
+                      className="text-sm"
+                      placeholder="What is this transaction for?"
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(value) => field.handleChange(value as string)}
-                      isOpen={isCategorySelectOpen}
-                      onOpenChange={setIsCategorySelectOpen}
-                      transactionType={transactionType}
-                      onCreateCategory={() => {
-                        setIsCategorySelectOpen(false);
-                        createCategoryModalState.open();
-                      }}
+                      onChange={(e) => field.handleChange(e.target.value)}
                     />
-                  )}
-                </form.Subscribe>
-              </AsyncBoundary>
-            );
-          }}
-        </form.AppField>
+                  </InputGroup>
+                </field.TextField>
+              );
+            }}
+          </form.AppField>
 
-        <form.AppField name="accountId">
-          {(field) => {
-            const { isInvalid } = getFieldError(field);
-            return (
-              <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
-                <field.AccountSelect
+          <form.AppField name="occurredAt">
+            {(field) => {
+              const { isInvalid } = getFieldError(field);
+              return (
+                <field.DatePicker
+                  className="w-full"
                   isInvalid={isInvalid}
-                  variant="secondary"
-                  placeholder="Choose an account"
-                  fullWidth
+                  granularity="minute"
+                  onChange={(value) =>
+                    field.handleChange(value as CalendarDateTime)
+                  }
                   id={field.name}
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(value) => field.handleChange(value as string)}
-                  isOpen={isAccountSelectOpen}
-                  onOpenChange={setIsAccountSelectOpen}
-                  onCreateAccount={() => {
-                    setIsAccountSelectOpen(false);
-                    createAccountModalState.open();
-                  }}
-                />
-              </AsyncBoundary>
-            );
-          }}
-        </form.AppField>
+                >
+                  {(values) => (
+                    <>
+                      <div className="relative w-full">
+                        <DateField.Group
+                          className="px-3"
+                          variant="secondary"
+                          fullWidth
+                        >
+                          <div className=" ">
+                            <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
+                          </div>
 
-        <form.AppForm>
-          <form.Button type="submit" className="w-full">
-            Save transaction
-          </form.Button>
-        </form.AppForm>
+                          <DateField.Input className="text-sm">
+                            {(segment) => (
+                              <DateField.Segment segment={segment} />
+                            )}
+                          </DateField.Input>
+                        </DateField.Group>
+                        <DatePicker.Trigger className="absolute inset-0 h-full w-full cursor-pointer"></DatePicker.Trigger>
+                      </div>
+                      <DatePicker.Popover className="flex flex-col gap-3">
+                        <Calendar aria-label="Event date">
+                          <Calendar.Header>
+                            <Calendar.YearPickerTrigger>
+                              <Calendar.YearPickerTriggerHeading />
+                              <Calendar.YearPickerTriggerIndicator />
+                            </Calendar.YearPickerTrigger>
+                            <Calendar.NavButton slot="previous" />
+                            <Calendar.NavButton slot="next" />
+                          </Calendar.Header>
+                          <Calendar.Grid>
+                            <Calendar.GridHeader>
+                              {(day) => (
+                                <Calendar.HeaderCell>{day}</Calendar.HeaderCell>
+                              )}
+                            </Calendar.GridHeader>
+                            <Calendar.GridBody>
+                              {(date) => <Calendar.Cell date={date} />}
+                            </Calendar.GridBody>
+                          </Calendar.Grid>
+                          <Calendar.YearPickerGrid>
+                            <Calendar.YearPickerGridBody>
+                              {({ year }) => (
+                                <Calendar.YearPickerCell year={year} />
+                              )}
+                            </Calendar.YearPickerGridBody>
+                          </Calendar.YearPickerGrid>
+                        </Calendar>
+                        <div className="flex items-center justify-between">
+                          <Label>Time</Label>
+                          <TimeField
+                            hourCycle={24}
+                            hideTimeZone={true}
+                            shouldForceLeadingZeros={true}
+                            granularity={"minute"}
+                            value={values.state.timeValue ?? new Time(0, 0)}
+                            onChange={(time) => {
+                              if (time) values.state.setTimeValue(time);
+                            }}
+                          >
+                            <TimeField.Group variant="secondary">
+                              <TimeField.Input>
+                                {(segment) => (
+                                  <TimeField.Segment segment={segment} />
+                                )}
+                              </TimeField.Input>
+                            </TimeField.Group>
+                          </TimeField>
+                        </div>
+                      </DatePicker.Popover>
+                    </>
+                  )}
+                </field.DatePicker>
+              );
+            }}
+          </form.AppField>
+
+          <form.AppField name="categoryId">
+            {(field) => {
+              const { isInvalid } = getFieldError(field);
+              return (
+                <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
+                  <form.Subscribe
+                    selector={(state) => state.values.transactionType}
+                  >
+                    {(transactionType) => (
+                      <field.CategorySelect
+                        isInvalid={isInvalid}
+                        variant="secondary"
+                        placeholder="Choose a category"
+                        fullWidth
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(value) =>
+                          field.handleChange(value as string)
+                        }
+                        isOpen={isCategorySelectOpen}
+                        onOpenChange={setIsCategorySelectOpen}
+                        transactionType={transactionType}
+                        onCreateCategory={() => {
+                          setIsCategorySelectOpen(false);
+                          createCategoryModalState.open();
+                        }}
+                      />
+                    )}
+                  </form.Subscribe>
+                </AsyncBoundary>
+              );
+            }}
+          </form.AppField>
+
+          <form.AppField name="accountId">
+            {(field) => {
+              const { isInvalid } = getFieldError(field);
+              return (
+                <AsyncBoundary classNames={{ base: "h-9", icon: "size-6" }}>
+                  <field.AccountSelect
+                    isInvalid={isInvalid}
+                    variant="secondary"
+                    placeholder="Choose an account"
+                    fullWidth
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(value) => field.handleChange(value as string)}
+                    isOpen={isAccountSelectOpen}
+                    onOpenChange={setIsAccountSelectOpen}
+                    onCreateAccount={() => {
+                      setIsAccountSelectOpen(false);
+                      createAccountModalState.open();
+                    }}
+                  />
+                </AsyncBoundary>
+              );
+            }}
+          </form.AppField>
+
+          <form.AppForm>
+            <form.Button type="submit" className="w-full">
+              Save transaction
+            </form.Button>
+          </form.AppForm>
+        </div>
       </Form>
 
       <form.Subscribe selector={(state) => state.values.transactionType}>
