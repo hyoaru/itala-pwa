@@ -1,5 +1,9 @@
 import { TransactionType } from "@/domain/value-objects";
-import { AsyncBoundary, TransactionsPanel } from "@/infrastructure/components";
+import {
+  AccountBalanceCard,
+  AsyncBoundary,
+  TransactionsPanel,
+} from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
 import { Button, Tabs } from "@heroui/react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
@@ -53,12 +57,10 @@ function RouteComponent() {
             <p className="p-1 text-xs font-semibold">{initials}</p>
           </Button>
         </div>
-        <div className="bg-default rounded-3xl p-5">
-          <div className="space-y-1">
-            <p className="text-muted text-xs">Available balance</p>
-            <p className="font-heading text-4xl font-semibold">₱4,280.50</p>
-          </div>
-          <p className="text-xs font-medium">+ ₱500 this month </p>
+        <div className="h-30">
+          <AsyncBoundary>
+            <AccountBalanceCard />
+          </AsyncBoundary>
         </div>
         <div className="flex justify-between gap-3">
           <Button className="w-full font-semibold">View insights</Button>

@@ -5,3 +5,4 @@ export * from "./new-account-modal";
 export * from "./category-select";
 export * from "./account-select";
 export * from "./transactions-panel";
+export * from "./account-balance-card";
