@@ -22,7 +22,20 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
   return (
     <>
       <Tabs.Panel className="h-full p-0" id={props.id}>
-        <ScrollShadow hideScrollBar className="h-full space-y-2">
+        <ScrollShadow
+          onScroll={(e) => {
+            const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+            if (
+              hasNextPage &&
+              !isFetchingNextPage &&
+              scrollHeight - scrollTop - clientHeight < 40
+            ) {
+              fetchNextPage();
+            }
+          }}
+          hideScrollBar
+          className="h-full space-y-2"
+        >
           {transactions.map((t) => {
             const formattedAmount = Number(t.amount).toLocaleString();
             const formattedDate = new Date(t.occurredAt).toLocaleDateString(
