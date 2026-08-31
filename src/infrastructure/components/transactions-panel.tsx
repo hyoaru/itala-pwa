@@ -1,8 +1,8 @@
-import { cn, ScrollShadow, Tabs } from "@heroui/react";
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useTransactionActions } from "../hooks";
 import { TransactionType } from "@/domain/value-objects";
+import { ScrollShadow, Tabs } from "@heroui/react";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
+import { useTransactionActions } from "../hooks";
 
 type Query = Parameters<
   ReturnType<typeof useTransactionActions>["findTransactionsInfinite"]
@@ -22,32 +22,45 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
   return (
     <>
       <Tabs.Panel className="h-full p-0" id={props.id}>
-        <ScrollShadow className="h-full space-y-2">
-          {transactions.map((t, i) => {
+        <ScrollShadow hideScrollBar className="h-full space-y-2">
+          {transactions.map((t) => {
+            const formattedAmount = Number(t.amount).toLocaleString();
+            const formattedDate = new Date(t.occurredAt).toLocaleDateString(
+              "en-US",
+              {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              },
+            );
+
             return (
               <div
                 key={`Transaction-${t.id}`}
-                className="flex items-center gap-2 px-3"
+                className="flex items-center gap-1 px-3"
               >
                 {t.type == TransactionType.Income ? (
                   <div className="relative">
-                    <div className="bg-success/50 absolute inset-0 m-auto size-1.5 rounded-full"></div>
-                    <BanknoteArrowUp className="text-muted/50 h-[1.6em] w-[1.6em]" />
+                    <BanknoteArrowUp className="text-muted h-[1.6em] w-[1.6em]" />
                   </div>
                 ) : (
                   <div className="relative">
-                    <div className="bg-danger/50 absolute inset-0 m-auto size-1.5 rounded-full"></div>
-                    <BanknoteArrowDown className="text-muted/50 h-[1.6em] w-[1.6em]" />
+                    <BanknoteArrowDown className="text-muted h-[1.6em] w-[1.6em]" />
                   </div>
                 )}
-                <div className="bg-default-soft flex flex-1 justify-between rounded-3xl p-3 text-sm">
+                <div className="flex flex-1 justify-between rounded-3xl p-2.5">
                   <div className="flex items-center gap-1">
-                    <p className="font-medium">{t.description}</p>
+                    <p className="inline-flex items-center gap-1 font-medium">
+                      {t.description}
+                      <span className="text-muted text-xs">
+                        on {formattedDate}
+                      </span>
+                    </p>
                   </div>
                   <p className="font-semibold">
                     {t.type == TransactionType.Income ? "+" : "-"}
                     {" ₱"}
-                    {Number(t.amount).toLocaleString()}
+                    {formattedAmount}
                   </p>
                 </div>
               </div>
