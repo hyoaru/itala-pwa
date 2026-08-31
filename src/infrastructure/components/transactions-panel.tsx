@@ -23,6 +23,7 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
     <>
       <Tabs.Panel className="h-full p-0" id={props.id}>
         <ScrollShadow
+          size={80}
           onScroll={(e) => {
             const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
             if (
@@ -50,7 +51,7 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
             return (
               <div
                 key={`Transaction-${t.id}`}
-                className="flex items-center gap-1 px-3"
+                className="flex items-center gap-1 px-1"
               >
                 {t.type == TransactionType.Income ? (
                   <div className="relative">
@@ -61,7 +62,7 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
                     <BanknoteArrowDown className="text-muted h-[1.6em] w-[1.6em]" />
                   </div>
                 )}
-                <div className="flex min-w-0 flex-1 items-center justify-between gap-4 rounded-3xl p-2.5">
+                <div className="flex min-w-0 flex-1 items-center justify-between gap-4 rounded-3xl py-2.5 ps-2.5">
                   <div className="flex min-w-0 items-center gap-1">
                     <p className="inline-flex w-full min-w-0 items-center gap-1 font-medium">
                       <span className="truncate">{t.description}</span>
