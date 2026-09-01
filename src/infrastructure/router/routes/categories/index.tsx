@@ -1,6 +1,6 @@
 import {
   AsyncBoundary,
-  CategoriesList,
+  CategoryList,
   NewCategoryModal,
 } from "@/infrastructure/components";
 import { Button, useOverlayState } from "@heroui/react";
@@ -21,7 +21,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex w-full flex-1 flex-col">
+      <div className="flex h-full w-full flex-col gap-y-3">
         <div className="flex w-full items-center justify-between">
           <Link to="/" className="button button--icon button--secondary">
             <ArrowLeft className="" />
@@ -35,17 +35,21 @@ function RouteComponent() {
           </Button>
         </div>
 
-        <div className="flex w-full flex-1 flex-col space-y-3">
-          <div className="flex flex-col items-center">
+        <div className="flex w-full flex-1 flex-col gap-y-3">
+          <div className="strink flex min-h-0 flex-col items-center">
             <p className="font-heading text-2xl font-medium">Categories</p>
             <p className="text-muted text-sm">
               Keep your spending organized with categories that fit your life.
             </p>
           </div>
 
-          <AsyncBoundary>
-            <CategoriesList />
-          </AsyncBoundary>
+          <div className="relative h-full flex-1">
+            <div className="absolute h-full min-h-0 w-full">
+              <AsyncBoundary>
+                <CategoryList />
+              </AsyncBoundary>
+            </div>
+          </div>
         </div>
       </div>
 

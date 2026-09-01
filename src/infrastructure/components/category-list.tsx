@@ -12,7 +12,7 @@ import { Archive } from "lucide-react";
 import { useState } from "react";
 import type { Category } from "@/domain/entities";
 
-export const CategoriesList = () => {
+export const CategoryList = () => {
   const editCategoryModalState = useOverlayState();
   const archiveConfirmState = useOverlayState();
 
@@ -68,7 +68,7 @@ export const CategoriesList = () => {
           }
         }}
         hideScrollBar
-        className="flex-1 space-y-1"
+        className="h-full space-y-2"
       >
         {categories.map((category) => (
           <CategoryTile

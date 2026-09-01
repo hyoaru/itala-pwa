@@ -3,7 +3,7 @@ export * from "./ui";
 export * from "./new-category-modal";
 export * from "./edit-category-modal";
 export * from "./category-tile";
-export * from "./categories-list";
+export * from "./category-list";
 export * from "./new-account-modal";
 export * from "./category-select";
 export * from "./account-select";

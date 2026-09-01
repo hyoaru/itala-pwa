@@ -12,7 +12,7 @@ export const CategoryTile = (props: CategoryTileProps) => {
   const popoverState = useOverlayState();
 
   return (
-    <div className="bg-default flex items-center justify-between rounded-3xl px-4 py-2">
+    <div className="flex items-center justify-between rounded-3xl px-4 py-1">
       <div className="flex items-center gap-2">
         <p className="text-sm font-medium">{props.category.name}</p>
         <p className="text-muted text-xs capitalize">
