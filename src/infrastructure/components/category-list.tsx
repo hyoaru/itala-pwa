@@ -1,4 +1,5 @@
-import { CategoryTile, EditCategoryModal } from "@/infrastructure/components";
+import { CategoryTile } from "./category-tile";
+import { EditCategoryModal } from "./edit-category-modal";
 import { useCategoryActions } from "@/infrastructure/hooks";
 import {
   Button,

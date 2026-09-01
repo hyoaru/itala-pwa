@@ -1,4 +1,5 @@
-import { AccountTile, EditAccountModal } from "@/infrastructure/components";
+import { AccountTile } from "./account-tile";
+import { EditAccountModal } from "./edit-account-modal";
 import { useAccountActions } from "@/infrastructure/hooks";
 import {
   Button,

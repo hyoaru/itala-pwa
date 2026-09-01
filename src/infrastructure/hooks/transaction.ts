@@ -54,22 +54,24 @@ export const useTransactionActions = () => {
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       }),
-    updateTransaction: (request: UpdateTransactionRequest) =>
+    updateTransaction: () =>
       mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<UpdateTransactionResponse> => {
-          return container.transaction.update.execute(request);
+        mutationFn: (
+          variables: UpdateTransactionRequest,
+        ): Promise<UpdateTransactionResponse> => {
+          return container.transaction.update.execute(variables);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
           queryClient.invalidateQueries({ queryKey: [accountBaseKey] });
         },
       }),
-    deleteTransaction: (request: DeleteTransactionRequest) =>
+    deleteTransaction: () =>
       mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<DeleteTransactionResponse> => {
-          return container.transaction.delete.execute(request);
+        mutationFn: (
+          variables: DeleteTransactionRequest,
+        ): Promise<DeleteTransactionResponse> => {
+          return container.transaction.delete.execute(variables);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });

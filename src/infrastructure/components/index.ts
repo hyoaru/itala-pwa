@@ -8,6 +8,8 @@ export * from "./new-account-modal";
 export * from "./edit-account-modal";
 export * from "./account-tile";
 export * from "./account-list";
+export * from "./transaction-tile";
+export * from "./edit-transaction-modal";
 export * from "./category-select";
 export * from "./account-select";
 export * from "./transactions-panel";
