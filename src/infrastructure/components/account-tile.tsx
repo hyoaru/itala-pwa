@@ -10,13 +10,20 @@ interface AccountTileProps {
 
 export const AccountTile = (props: AccountTileProps) => {
   const popoverState = useOverlayState();
+  const formattedDate = new Date(props.account.createdAt).toLocaleDateString(
+    "en-US",
+    { month: "short", day: "numeric", year: "numeric" },
+  );
 
   return (
-    <div className="flex items-center justify-between rounded-3xl px-4 py-1">
-      <p className="text-sm font-medium">{props.account.name}</p>
+    <div className="flex items-center justify-between gap-8 rounded-3xl px-4 py-1">
+      <div className="flex min-w-0 items-center gap-2">
+        <p className="truncate text-sm font-semibold">{props.account.name}</p>
+        <p className="font-heading text-muted shrink text-xs font-medium">{formattedDate}</p>
+      </div>
 
       <Popover isOpen={popoverState.isOpen} onOpenChange={popoverState.setOpen}>
-        <Button isIconOnly size="sm" variant="secondary">
+        <Button className="shrink" isIconOnly size="sm" variant="secondary">
           <Ellipsis className="h-[1.5em] w-[1.5em]" />
         </Button>
         <Popover.Content placement="left" className="max-w-40">
