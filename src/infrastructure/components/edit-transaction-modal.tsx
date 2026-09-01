@@ -30,6 +30,7 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { CalendarDays, Pilcrow } from "lucide-react";
 import { CalendarDateTime, Time } from "@internationalized/date";
+import isEqual from "lodash/isEqual";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -64,6 +65,8 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
   const createAccountModalState = useOverlayState();
   const { updateTransaction } = useTransactionActions();
   const updateTransactionMutation = useMutation(updateTransaction());
+  const [failedMutationSnapshot, setFailedMutationSnapshot] =
+    useState<Record<string, unknown>>();
 
   const transaction = props.transaction;
 
@@ -105,6 +108,10 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
     onSubmit: async ({ value }) => {
       if (!transaction) return;
 
+      if (failedMutationSnapshot && !isEqual(value, failedMutationSnapshot)) {
+        setIdempotencyKey(null);
+      }
+
       const key = idempotencyKey ?? crypto.randomUUID();
       setIdempotencyKey(key);
 
@@ -123,6 +130,7 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
         toast("Transaction updated", { variant: "success" });
         props.onOpenChange(false);
       } catch (error) {
+        setFailedMutationSnapshot(value);
         if (error instanceof TransactionLockedError) {
           toast("Operation in progress, please try again", {
             variant: "warning",

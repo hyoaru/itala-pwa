@@ -1,3 +1,7 @@
+import {
+  TransactionLockedError,
+  TransactionRepositoryError,
+} from "@/application/ports/transaction-repository";
 import { TransactionType } from "@/domain/value-objects";
 import {
   AccountSelect,
@@ -7,10 +11,6 @@ import {
 } from "@/infrastructure/components";
 import { AsyncBoundary } from "@/infrastructure/components/ui/async-boundary";
 import { getFieldError } from "@/infrastructure/forms";
-import {
-  TransactionLockedError,
-  TransactionRepositoryError,
-} from "@/application/ports/transaction-repository";
 import { useTransactionActions } from "@/infrastructure/hooks";
 import {
   Button,
@@ -23,16 +23,16 @@ import {
   NumberField,
   TextField,
   TimeField,
-  ToggleButton,
   toast,
+  ToggleButton,
   useOverlayState,
 } from "@heroui/react";
+import { CalendarDateTime, Time } from "@internationalized/date";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { CalendarDays } from "lucide-react";
-import { ArrowLeft, Pilcrow } from "lucide-react";
-import { CalendarDateTime, Time } from "@internationalized/date";
+import isEqual from "lodash/isEqual";
+import { ArrowLeft, CalendarDays, Pilcrow } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -77,11 +77,13 @@ const { useAppForm } = createFormHook({
 function RouteComponent() {
   const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
   const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
-  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null);
   const createCategoryModalState = useOverlayState();
   const createAccountModalState = useOverlayState();
+  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null);
   const { createTransaction } = useTransactionActions();
   const createTransactionMutation = useMutation(createTransaction());
+  const [failedMutationSnapshot, setFailedMutationSnapshot] =
+    useState<Record<string, unknown>>();
 
   const form = useAppForm({
     defaultValues: {
@@ -103,6 +105,10 @@ function RouteComponent() {
       }),
     },
     onSubmit: async ({ value }) => {
+      if (failedMutationSnapshot && !isEqual(value, failedMutationSnapshot)) {
+        setIdempotencyKey(null);
+      }
+
       const key = idempotencyKey ?? crypto.randomUUID();
       setIdempotencyKey(key);
 
@@ -121,6 +127,7 @@ function RouteComponent() {
         form.resetField("description");
         toast("Transaction saved", { variant: "success" });
       } catch (error) {
+        setFailedMutationSnapshot(value);
         if (error instanceof TransactionLockedError) {
           toast("Operation in progress, please try again", {
             variant: "warning",
@@ -137,6 +144,7 @@ function RouteComponent() {
       }
     },
   });
+
   return (
     <>
       <Form
