@@ -24,7 +24,7 @@ export const AccountBalanceCard = (props: AccountBalanceCardProps) => {
       <p className="font-heading text-4xl font-semibold">
         ₱{props.balance.toLocaleString()}
       </p>
-      <p className="text-xs font-medium">+ ₱500 this month </p>
+      <p className="text-xs font-medium">+ ₱xxx this month </p>
     </div>
   );
 };
