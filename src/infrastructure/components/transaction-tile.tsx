@@ -2,7 +2,7 @@ import type { Transaction } from "@/domain/entities";
 import { TransactionType } from "@/domain/value-objects";
 import { useAccountActions, useCategoryActions } from "@/infrastructure/hooks";
 import { Button, Popover, useOverlayState } from "@heroui/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Archive,
   BanknoteArrowDown,
@@ -21,10 +21,10 @@ export const TransactionTile = (props: TransactionTileProps) => {
   const { findAccount } = useAccountActions();
   const { findCategory } = useCategoryActions();
 
-  const { data: account } = useSuspenseQuery(
+  const { data: account } = useQuery(
     findAccount({ id: props.transaction.accountId }),
   );
-  const { data: category } = useSuspenseQuery(
+  const { data: category } = useQuery(
     findCategory({ id: props.transaction.categoryId }),
   );
 
@@ -41,7 +41,7 @@ export const TransactionTile = (props: TransactionTileProps) => {
     <Popover isOpen={popoverState.isOpen} onOpenChange={popoverState.setOpen}>
       <Button
         variant="ghost"
-        className="h-full w-full justify-start gap-1 px-1"
+        className="h-auto w-full justify-start gap-1 px-1"
       >
         {props.transaction.type == TransactionType.Income ? (
           <BanknoteArrowUp className="text-muted h-[1.5em] w-[1.5em] shrink-0" />
@@ -88,13 +88,13 @@ export const TransactionTile = (props: TransactionTileProps) => {
               <div className="flex items-center justify-between">
                 <span className="text-muted text-xs">Account</span>
                 <span className="font-heading text-xs font-medium">
-                  {account.name}
+                  {account?.name ?? "Deleted"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted text-xs">Category</span>
                 <span className="font-heading text-xs font-medium">
-                  {category.name}
+                  {category?.name ?? "Deleted"}
                 </span>
               </div>
             </div>
