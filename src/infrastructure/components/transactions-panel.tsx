@@ -13,6 +13,7 @@ import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Archive } from "lucide-react";
 import { useState } from "react";
 import type { Transaction } from "@/domain/entities";
+import { AsyncBoundary } from "./ui";
 
 type Query = Parameters<
   ReturnType<typeof useTransactionActions>["findTransactionsInfinite"]
@@ -82,12 +83,16 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
         className="h-full space-y-2"
       >
         {transactions.map((t) => (
-          <TransactionTile
+          <AsyncBoundary
+            classNames={{ base: "h-10", icon: "size-6" }}
             key={`Transaction-${t.id}`}
-            transaction={t}
-            onEdit={handleEdit}
-            onDelete={handleDeleteClick}
-          />
+          >
+            <TransactionTile
+              transaction={t}
+              onEdit={handleEdit}
+              onDelete={handleDeleteClick}
+            />
+          </AsyncBoundary>
         ))}
       </ScrollShadow>
 
