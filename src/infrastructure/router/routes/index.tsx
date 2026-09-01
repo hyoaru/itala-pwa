@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <>
-      <div className="mt-auto flex w-full flex-col items-center gap-4 py-8">
+      <div className="flex h-full w-full flex-col items-end justify-end gap-4 py-8">
         <div className="flex w-full flex-col items-center gap-2">
           <span className="inline-flex items-center gap-1 text-4xl">
             <NotebookPen className="bg-accent h-[1em] w-[1em] rounded-xl p-0.5" />
