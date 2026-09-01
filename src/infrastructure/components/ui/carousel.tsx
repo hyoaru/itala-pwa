@@ -52,7 +52,7 @@ export const Carousel = ({ children, ...props }: CarouselProps) => {
         </div>
       </div>
       {slideCount > 1 && (
-        <div className="bg-accent-soft absolute right-4 bottom-4 flex items-center gap-1.5 rounded-xl p-1.5">
+        <div className="bg-accent-soft absolute right-4 bottom-4 flex items-center gap-1 rounded-xl p-1.5">
           {Array.from({ length: slideCount }).map((_, index) => (
             <button
               type="button"
@@ -60,7 +60,7 @@ export const Carousel = ({ children, ...props }: CarouselProps) => {
               aria-label={`Go to slide ${index + 1}`}
               onClick={() => emblaApi?.scrollTo(index)}
               className={cn(
-                "size-1.5 rounded-full transition-colors",
+                "size-1 rounded-full transition-colors",
                 index === selectedIndex
                   ? "bg-foreground/40"
                   : "bg-foreground/20",
