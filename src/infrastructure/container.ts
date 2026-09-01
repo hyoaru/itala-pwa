@@ -91,21 +91,18 @@ apiHttpClient.interceptors.response.use(
           localStorage.setItem("ID_TOKEN", session.idToken);
           localStorage.setItem("REFRESH_TOKEN", session.refreshToken);
         })
+        .catch(() => {
+          localStorage.removeItem("ACCESS_TOKEN");
+          localStorage.removeItem("ID_TOKEN");
+          localStorage.removeItem("REFRESH_TOKEN");
+        })
         .finally(() => {
           isRefreshing = false;
           refreshPromise = null;
         });
     }
 
-    try {
-      await refreshPromise;
-    } catch (refreshError) {
-      localStorage.removeItem("ACCESS_TOKEN");
-      localStorage.removeItem("ID_TOKEN");
-      localStorage.removeItem("REFRESH_TOKEN");
-      throw refreshError;
-    }
-
+    await refreshPromise;
     const accessToken = localStorage.getItem("ACCESS_TOKEN");
     if (accessToken) {
       originalRequest.headers.Authorization = `Bearer ${accessToken}`;
