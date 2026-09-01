@@ -184,7 +184,11 @@ function RouteComponent() {
           </p>
 
           <form.AppForm>
-            <form.Button type="submit" className="w-full">
+            <form.Button
+              type="submit"
+              className="w-full"
+              isDisabled={signInMutation.isPending}
+            >
               Continue to Workspace
             </form.Button>
           </form.AppForm>

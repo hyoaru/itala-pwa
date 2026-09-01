@@ -127,7 +127,11 @@ export const EditCategoryModal = (props: EditCategoryModalProps) => {
               </form.AppField>
 
               <form.AppForm>
-                <form.Button type="submit" className="w-full">
+                <form.Button
+                  type="submit"
+                  className="w-full"
+                  isDisabled={updateCategoryMutation.isPending}
+                >
                   Save
                 </form.Button>
               </form.AppForm>

@@ -135,7 +135,11 @@ function RouteComponent() {
           </form.AppField>
 
           <form.AppForm>
-            <form.Button type="submit" className="w-full">
+            <form.Button
+              type="submit"
+              className="w-full"
+              isDisabled={sendPasswordResetMutation.isPending}
+            >
               Send reset code
             </form.Button>
           </form.AppForm>

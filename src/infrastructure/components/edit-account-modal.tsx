@@ -127,7 +127,11 @@ export const EditAccountModal = (props: EditAccountModalProps) => {
               </form.AppField>
 
               <form.AppForm>
-                <form.Button type="submit" className="w-full">
+                <form.Button
+                  type="submit"
+                  className="w-full"
+                  isDisabled={updateAccountMutation.isPending}
+                >
                   Save
                 </form.Button>
               </form.AppForm>

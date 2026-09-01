@@ -181,7 +181,11 @@ function RouteComponent() {
           </form.AppField>
 
           <form.AppForm>
-            <form.Button type="submit" className="w-full">
+            <form.Button
+              type="submit"
+              className="w-full"
+              isDisabled={verifyAccountMutation.isPending}
+            >
               Verify account
             </form.Button>
           </form.AppForm>

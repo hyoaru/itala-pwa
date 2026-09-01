@@ -227,7 +227,11 @@ function RouteComponent() {
           </p>
 
           <form.AppForm>
-            <form.Button type="submit" className="w-full">
+            <form.Button
+              type="submit"
+              className="w-full"
+              isDisabled={signUpMutation.isPending}
+            >
               Create account
             </form.Button>
           </form.AppForm>

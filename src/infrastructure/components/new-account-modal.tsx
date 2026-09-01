@@ -125,7 +125,11 @@ export const NewAccountModal = (props: NewAccountModalProps) => {
               </form.AppField>
 
               <form.AppForm>
-                <form.Button type="submit" className="w-full">
+                <form.Button
+                  type="submit"
+                  className="w-full"
+                  isDisabled={createAccountMutation.isPending}
+                >
                   Create
                 </form.Button>
               </form.AppForm>

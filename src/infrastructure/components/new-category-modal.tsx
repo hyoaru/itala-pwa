@@ -190,7 +190,11 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
               </form.AppField>
 
               <form.AppForm>
-                <form.Button type="submit" className="w-full">
+                <form.Button
+                  type="submit"
+                  className="w-full"
+                  isDisabled={createCategoryMutation.isPending}
+                >
                   Create
                 </form.Button>
               </form.AppForm>
