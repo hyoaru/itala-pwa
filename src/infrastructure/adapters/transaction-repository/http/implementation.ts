@@ -12,8 +12,9 @@ import {
   type TransactionPage,
   type TransactionQuery,
   type TransactionRepository,
+  TransactionConflictError,
+  TransactionLockedError,
   TransactionNotFoundError,
-  TransactionRepositoryError,
 } from "@/application/ports/transaction-repository";
 import { toTransaction, transactionTypeToServer } from "./mapper";
 
@@ -24,12 +25,26 @@ export class HttpTransactionRepository implements TransactionRepository {
     this.httpClient = httpClient;
   }
 
+  private handle409(error: unknown): never {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      const { code } = error.response.data as { code?: string };
+      if (code === "RESOURCE_LOCKED") {
+        throw new TransactionLockedError({ cause: error });
+      }
+    }
+    throw new TransactionConflictError(
+      "Cannot complete transaction: conflict occurred",
+      { cause: error },
+    );
+  }
+
   public async create(
     amount: string,
     accountId: string,
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<string> {
     try {
       const response = await this.httpClient.post<CreateResponse>(
@@ -41,15 +56,17 @@ export class HttpTransactionRepository implements TransactionRepository {
           description,
           occurred_at: occurredAt.toISOString(),
         } satisfies CreateRequest,
+        {
+          headers: {
+            "Idempotency-Key": idempotencyKey,
+          },
+        },
       );
 
       return response.data.id;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        throw new TransactionRepositoryError(
-          "Cannot create transaction: account or category is archived",
-          { cause: error },
-        );
+        this.handle409(error);
       }
 
       throw error;
@@ -107,21 +124,27 @@ export class HttpTransactionRepository implements TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<void> {
     try {
-      await this.httpClient.put(`/transactions/${id}`, {
-        amount,
-        account_id: accountId,
-        category_id: categoryId,
-        description,
-        occurred_at: occurredAt.toISOString(),
-      } satisfies UpdateRequest);
+      await this.httpClient.put(
+        `/transactions/${id}`,
+        {
+          amount,
+          account_id: accountId,
+          category_id: categoryId,
+          description,
+          occurred_at: occurredAt.toISOString(),
+        } satisfies UpdateRequest,
+        {
+          headers: {
+            "Idempotency-Key": idempotencyKey,
+          },
+        },
+      );
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        throw new TransactionRepositoryError(
-          "Cannot update transaction: account or category is archived",
-          { cause: error },
-        );
+        this.handle409(error);
       }
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         throw new TransactionNotFoundError(id);

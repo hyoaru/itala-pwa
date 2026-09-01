@@ -23,6 +23,7 @@ export class UpdateTransaction implements UseCase<
       request.categoryId,
       request.description,
       request.occurredAt,
+      request.idempotencyKey,
     );
   }
 }

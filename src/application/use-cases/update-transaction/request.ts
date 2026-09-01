@@ -5,4 +5,5 @@ export type UpdateTransactionRequest = {
   categoryId: string;
   description: string;
   occurredAt: Date;
+  idempotencyKey: string;
 };

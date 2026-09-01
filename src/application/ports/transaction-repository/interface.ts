@@ -22,6 +22,7 @@ export interface TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<string>;
   findOne(id: string): Promise<Transaction>;
   find(query?: TransactionQuery): Promise<TransactionPage>;
@@ -32,6 +33,7 @@ export interface TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<void>;
   delete(id: string): Promise<void>;
 }

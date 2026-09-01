@@ -37,6 +37,7 @@ export class LoggingTransactionRepository implements TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<string> {
     try {
       logger.debug("Creating transaction", { accountId, categoryId });
@@ -46,6 +47,7 @@ export class LoggingTransactionRepository implements TransactionRepository {
         categoryId,
         description,
         occurredAt,
+        idempotencyKey,
       );
       logger.info("Transaction created", { accountId, categoryId });
       return result;
@@ -90,6 +92,7 @@ export class LoggingTransactionRepository implements TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<void> {
     try {
       logger.debug("Updating transaction", { id, accountId, categoryId });
@@ -100,6 +103,7 @@ export class LoggingTransactionRepository implements TransactionRepository {
         categoryId,
         description,
         occurredAt,
+        idempotencyKey,
       );
       logger.info("Transaction updated", { id, accountId, categoryId });
     } catch (error) {

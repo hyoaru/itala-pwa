@@ -7,7 +7,10 @@ import {
 } from "@/infrastructure/components";
 import { AsyncBoundary } from "@/infrastructure/components/ui/async-boundary";
 import { getFieldError } from "@/infrastructure/forms";
-import { TransactionRepositoryError } from "@/application/ports/transaction-repository";
+import {
+  TransactionLockedError,
+  TransactionRepositoryError,
+} from "@/application/ports/transaction-repository";
 import { useTransactionActions } from "@/infrastructure/hooks";
 import {
   Button,
@@ -74,6 +77,7 @@ const { useAppForm } = createFormHook({
 function RouteComponent() {
   const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
   const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
+  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null);
   const createCategoryModalState = useOverlayState();
   const createAccountModalState = useOverlayState();
   const { createTransaction } = useTransactionActions();
@@ -99,6 +103,9 @@ function RouteComponent() {
       }),
     },
     onSubmit: async ({ value }) => {
+      const key = idempotencyKey ?? crypto.randomUUID();
+      setIdempotencyKey(key);
+
       try {
         await createTransactionMutation.mutateAsync({
           amount: String(value.amount),
@@ -106,13 +113,19 @@ function RouteComponent() {
           categoryId: value.categoryId,
           description: value.description,
           occurredAt: value.occurredAt.toDate("UTC"),
+          idempotencyKey: key,
         });
 
+        setIdempotencyKey(null);
         form.resetField("amount");
         form.resetField("description");
         toast("Transaction saved", { variant: "success" });
       } catch (error) {
-        if (error instanceof TransactionRepositoryError) {
+        if (error instanceof TransactionLockedError) {
+          toast("Operation in progress, please try again", {
+            variant: "warning",
+          });
+        } else if (error instanceof TransactionRepositoryError) {
           toast(`An unexpected error has occured: ${error.message}`, {
             variant: "danger",
           });
@@ -389,7 +402,11 @@ function RouteComponent() {
           </form.AppField>
 
           <form.AppForm>
-            <form.Button type="submit" className="w-full">
+            <form.Button
+              type="submit"
+              className="w-full"
+              isDisabled={createTransactionMutation.isPending}
+            >
               Save transaction
             </form.Button>
           </form.AppForm>

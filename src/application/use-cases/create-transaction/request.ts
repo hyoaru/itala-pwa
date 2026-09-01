@@ -4,4 +4,5 @@ export type CreateTransactionRequest = {
   categoryId: string;
   description: string;
   occurredAt: Date;
+  idempotencyKey: string;
 };

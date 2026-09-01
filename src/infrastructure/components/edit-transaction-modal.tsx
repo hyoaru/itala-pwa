@@ -6,7 +6,10 @@ import { CategorySelect } from "./category-select";
 import { NewAccountModal } from "./new-account-modal";
 import { NewCategoryModal } from "./new-category-modal";
 import { getFieldError } from "@/infrastructure/forms";
-import { TransactionRepositoryError } from "@/application/ports/transaction-repository";
+import {
+  TransactionLockedError,
+  TransactionRepositoryError,
+} from "@/application/ports/transaction-repository";
 import { useTransactionActions } from "@/infrastructure/hooks";
 import {
   Button,
@@ -56,6 +59,7 @@ const { useAppForm } = createFormHook({
 export const EditTransactionModal = (props: EditTransactionModalProps) => {
   const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
   const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
+  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null);
   const createCategoryModalState = useOverlayState();
   const createAccountModalState = useOverlayState();
   const { updateTransaction } = useTransactionActions();
@@ -101,6 +105,9 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
     onSubmit: async ({ value }) => {
       if (!transaction) return;
 
+      const key = idempotencyKey ?? crypto.randomUUID();
+      setIdempotencyKey(key);
+
       try {
         await updateTransactionMutation.mutateAsync({
           id: transaction.id,
@@ -109,12 +116,18 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
           categoryId: value.categoryId,
           description: value.description,
           occurredAt: value.occurredAt.toDate("UTC"),
+          idempotencyKey: key,
         });
 
+        setIdempotencyKey(null);
         toast("Transaction updated", { variant: "success" });
         props.onOpenChange(false);
       } catch (error) {
-        if (error instanceof TransactionRepositoryError) {
+        if (error instanceof TransactionLockedError) {
+          toast("Operation in progress, please try again", {
+            variant: "warning",
+          });
+        } else if (error instanceof TransactionRepositoryError) {
           toast(`An unexpected error has occured: ${error.message}`, {
             variant: "danger",
           });
@@ -366,7 +379,11 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
                 </form.AppField>
 
                 <form.AppForm>
-                  <form.Button type="submit" className="w-full">
+                  <form.Button
+                    type="submit"
+                    className="w-full"
+                    isDisabled={updateTransactionMutation.isPending}
+                  >
                     Save
                   </form.Button>
                 </form.AppForm>

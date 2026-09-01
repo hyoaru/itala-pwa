@@ -19,6 +19,7 @@ export class DecoratedTransactionRepository implements TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<string> {
     return this.inner.create(
       amount,
@@ -26,6 +27,7 @@ export class DecoratedTransactionRepository implements TransactionRepository {
       categoryId,
       description,
       occurredAt,
+      idempotencyKey,
     );
   }
 
@@ -44,6 +46,7 @@ export class DecoratedTransactionRepository implements TransactionRepository {
     categoryId: string,
     description: string,
     occurredAt: Date,
+    idempotencyKey: string,
   ): Promise<void> {
     return this.inner.update(
       id,
@@ -52,6 +55,7 @@ export class DecoratedTransactionRepository implements TransactionRepository {
       categoryId,
       description,
       occurredAt,
+      idempotencyKey,
     );
   }
 
