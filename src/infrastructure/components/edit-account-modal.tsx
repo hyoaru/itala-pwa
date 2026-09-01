@@ -57,7 +57,6 @@ export const EditAccountModal = (props: EditAccountModalProps) => {
         await updateAccountMutation.mutateAsync({
           id: props.account.id,
           name: value.name,
-          status: props.account.status,
         });
 
         toast("Account updated", { variant: "success" });

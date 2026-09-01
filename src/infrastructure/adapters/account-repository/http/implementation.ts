@@ -8,7 +8,6 @@ import type {
   UpdateRequest,
 } from "./dto";
 import type { Account } from "@/domain/entities";
-import { AccountStatus } from "@/domain/value-objects";
 import {
   type AccountPage,
   type AccountQuery,
@@ -16,7 +15,7 @@ import {
   AccountAlreadyExistsError,
   AccountNotFoundError,
 } from "@/application/ports/account-repository";
-import { toAccount, statusToServer } from "./mapper";
+import { toAccount } from "./mapper";
 
 export class HttpAccountRepository implements AccountRepository {
   private httpClient: AxiosInstance;
@@ -60,9 +59,6 @@ export class HttpAccountRepository implements AccountRepository {
     if (query?.name) {
       requestParams.name = query.name;
     }
-    if (query?.status) {
-      requestParams.status = statusToServer[query.status];
-    }
     if (query?.cursor) {
       requestParams.cursor = query.cursor;
     }
@@ -76,15 +72,10 @@ export class HttpAccountRepository implements AccountRepository {
     };
   }
 
-  public async update(
-    id: string,
-    name: string,
-    status: AccountStatus,
-  ): Promise<void> {
+  public async update(id: string, name: string): Promise<void> {
     try {
       await this.httpClient.put(`/accounts/${id}`, {
         name,
-        status: statusToServer[status],
       } satisfies UpdateRequest);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
@@ -98,21 +89,9 @@ export class HttpAccountRepository implements AccountRepository {
     }
   }
 
-  public async archive(id: string): Promise<void> {
+  public async delete(id: string): Promise<void> {
     try {
-      await this.httpClient.post(`/accounts/${id}/archive`);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        throw new AccountNotFoundError(id);
-      }
-
-      throw error;
-    }
-  }
-
-  public async restore(id: string): Promise<void> {
-    try {
-      await this.httpClient.post(`/accounts/${id}/restore`);
+      await this.httpClient.delete(`/accounts/${id}`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         throw new AccountNotFoundError(id);

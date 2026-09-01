@@ -57,9 +57,9 @@ export const useTransactionActions = () => {
     updateTransaction: () =>
       mutationOptions({
         mutationFn: (
-          variables: UpdateTransactionRequest,
+          request: UpdateTransactionRequest,
         ): Promise<UpdateTransactionResponse> => {
-          return container.transaction.update.execute(variables);
+          return container.transaction.update.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
@@ -69,9 +69,9 @@ export const useTransactionActions = () => {
     deleteTransaction: () =>
       mutationOptions({
         mutationFn: (
-          variables: DeleteTransactionRequest,
+          request: DeleteTransactionRequest,
         ): Promise<DeleteTransactionResponse> => {
-          return container.transaction.delete.execute(variables);
+          return container.transaction.delete.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });

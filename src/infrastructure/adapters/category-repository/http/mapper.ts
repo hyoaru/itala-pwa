@@ -1,6 +1,6 @@
 import { Category } from "@/domain/entities";
 import type { FindItem } from "./dto";
-import { CategoryStatus, TransactionType } from "@/domain/value-objects";
+import { TransactionType } from "@/domain/value-objects";
 
 export const transactionTypeFromServer: Record<string, TransactionType> = {
   INCOME: TransactionType.Income,
@@ -12,22 +12,11 @@ export const transactionTypeToServer: Record<TransactionType, string> = {
   [TransactionType.Expense]: "EXPENSE",
 };
 
-export const categoryStatusMap: Record<string, CategoryStatus> = {
-  ACTIVE: CategoryStatus.Active,
-  ARCHIVED: CategoryStatus.Archived,
-};
-
-export const categoryStatusToServer: Record<CategoryStatus, string> = {
-  [CategoryStatus.Active]: "ACTIVE",
-  [CategoryStatus.Archived]: "ARCHIVED",
-};
-
 export function toCategory(data: FindItem): Category {
   return new Category({
     id: data.id,
     name: data.name,
     transactionType: transactionTypeFromServer[data.transaction_type],
-    status: categoryStatusMap[data.status],
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
   });

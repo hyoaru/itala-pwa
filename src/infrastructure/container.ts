@@ -4,11 +4,11 @@ import {
   HttpAccountRepository,
 } from "./adapters/account-repository";
 import {
-  ArchiveAccount,
-  ArchiveCategory,
   CreateAccount,
   CreateCategory,
   CreateTransaction,
+  DeleteAccount,
+  DeleteCategory,
   DeleteTransaction,
   FindAccount,
   FindAccounts,
@@ -18,8 +18,6 @@ import {
   FindTransactions,
   RefreshSession,
   ResetPassword,
-  RestoreAccount,
-  RestoreCategory,
   SendAccountVerification,
   SendPasswordReset,
   SignIn,
@@ -125,8 +123,7 @@ const createAccount = new CreateAccount(accountRepository);
 const findAccounts = new FindAccounts(accountRepository);
 const findOneAccount = new FindAccount(accountRepository);
 const updateAccount = new UpdateAccount(accountRepository);
-const archiveAccount = new ArchiveAccount(accountRepository);
-const restoreAccount = new RestoreAccount(accountRepository);
+const deleteAccount = new DeleteAccount(accountRepository);
 
 // Category
 const categoryRepository = new DecoratedCategoryRepository(
@@ -136,8 +133,7 @@ const createCategory = new CreateCategory(categoryRepository);
 const findOneCategory = new FindCategory(categoryRepository);
 const findCategories = new FindCategories(categoryRepository);
 const updateCategory = new UpdateCategory(categoryRepository);
-const archiveCategory = new ArchiveCategory(categoryRepository);
-const restoreCategory = new RestoreCategory(categoryRepository);
+const deleteCategory = new DeleteCategory(categoryRepository);
 
 // Transaction
 const transactionRepository = new DecoratedTransactionRepository(
@@ -165,16 +161,14 @@ export const container = {
     find: findAccounts,
     findOne: findOneAccount,
     update: updateAccount,
-    archive: archiveAccount,
-    restore: restoreAccount,
+    delete: deleteAccount,
   },
   category: {
     create: createCategory,
     find: findCategories,
     findOne: findOneCategory,
     update: updateCategory,
-    archive: archiveCategory,
-    restore: restoreCategory,
+    delete: deleteCategory,
   },
   transaction: {
     create: createTransaction,

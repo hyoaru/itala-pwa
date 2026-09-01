@@ -4,10 +4,7 @@ import type {
   CategoryPage,
 } from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
-import type {
-  CategoryStatus,
-  TransactionType,
-} from "@/domain/value-objects";
+import type { TransactionType } from "@/domain/value-objects";
 import { LoggingCategoryRepository } from "../logging";
 
 export class DecoratedCategoryRepository implements CategoryRepository {
@@ -32,19 +29,11 @@ export class DecoratedCategoryRepository implements CategoryRepository {
     return this.inner.find(query);
   }
 
-  public async update(
-    id: string,
-    name: string,
-    status: CategoryStatus,
-  ): Promise<void> {
-    return this.inner.update(id, name, status);
+  public async update(id: string, name: string): Promise<void> {
+    return this.inner.update(id, name);
   }
 
-  public async archive(id: string): Promise<void> {
-    return this.inner.archive(id);
-  }
-
-  public async restore(id: string): Promise<void> {
-    return this.inner.restore(id);
+  public async delete(id: string): Promise<void> {
+    return this.inner.delete(id);
   }
 }

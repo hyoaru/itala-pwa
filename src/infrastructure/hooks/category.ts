@@ -1,13 +1,11 @@
 import type {
-  ArchiveCategoryRequest,
-  ArchiveCategoryResponse,
   CreateCategoryRequest,
   CreateCategoryResponse,
+  DeleteCategoryRequest,
+  DeleteCategoryResponse,
   FindCategoriesRequest,
   FindCategoryRequest,
   FindCategoryResponse,
-  RestoreCategoryRequest,
-  RestoreCategoryResponse,
   UpdateCategoryRequest,
   UpdateCategoryResponse,
 } from "@/application/use-cases";
@@ -57,30 +55,20 @@ export const useCategoryActions = () => {
     updateCategory: () =>
       mutationOptions({
         mutationFn: (
-          variables: UpdateCategoryRequest,
+          request: UpdateCategoryRequest,
         ): Promise<UpdateCategoryResponse> => {
-          return container.category.update.execute(variables);
+          return container.category.update.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
-    archiveCategory: () =>
+    deleteCategory: () =>
       mutationOptions({
         mutationFn: (
-          variables: ArchiveCategoryRequest,
-        ): Promise<ArchiveCategoryResponse> => {
-          return container.category.archive.execute(variables);
-        },
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: [baseKey] });
-        },
-      }),
-    restoreCategory: (request: RestoreCategoryRequest) =>
-      mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<RestoreCategoryResponse> => {
-          return container.category.restore.execute(request);
+          request: DeleteCategoryRequest,
+        ): Promise<DeleteCategoryResponse> => {
+          return container.category.delete.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });

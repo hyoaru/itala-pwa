@@ -19,7 +19,6 @@ export class UpdateAccount implements UseCase<
     return await this.repository.update(
       request.id,
       request.name,
-      request.status,
     );
   }
 }

@@ -1,10 +1,9 @@
 import type { Category } from "@/domain/entities";
-import type { CategoryStatus, TransactionType } from "@/domain/value-objects";
+import type { TransactionType } from "@/domain/value-objects";
 
 export interface CategoryQuery {
   name?: string;
   transactionType?: TransactionType;
-  status?: CategoryStatus;
   cursor?: string;
 }
 
@@ -17,7 +16,6 @@ export interface CategoryRepository {
   create(name: string, transactionType: TransactionType): Promise<string>;
   findOne(id: string): Promise<Category>;
   find(query?: CategoryQuery): Promise<CategoryPage>;
-  update(id: string, name: string, status: CategoryStatus): Promise<void>;
-  archive(id: string): Promise<void>;
-  restore(id: string): Promise<void>;
+  update(id: string, name: string): Promise<void>;
+  delete(id: string): Promise<void>;
 }

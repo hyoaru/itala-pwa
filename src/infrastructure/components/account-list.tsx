@@ -9,23 +9,23 @@ import {
   useOverlayState,
 } from "@heroui/react";
 import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { Archive } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 import type { Account } from "@/domain/entities";
 
 export const AccountList = () => {
   const editAccountModalState = useOverlayState();
-  const archiveConfirmState = useOverlayState();
+  const deleteConfirmState = useOverlayState();
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
-  const { findAccountsInfinite, archiveAccount } = useAccountActions();
+  const { findAccountsInfinite, deleteAccount } = useAccountActions();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(findAccountsInfinite());
   const accounts = data.pages.flatMap((page) => page.items);
 
-  const archiveAccountMutation = useMutation(archiveAccount());
+  const deleteAccountMutation = useMutation(deleteAccount());
 
   const handleEdit = (account: Account) => {
     setSelectedAccount(account);
@@ -34,16 +34,16 @@ export const AccountList = () => {
 
   const handleDeleteClick = (account: Account) => {
     setSelectedAccount(account);
-    archiveConfirmState.open();
+    deleteConfirmState.open();
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedAccount) return;
 
     try {
-      await archiveAccountMutation.mutateAsync({ id: selectedAccount.id });
+      await deleteAccountMutation.mutateAsync({ id: selectedAccount.id });
       toast("Account deleted", { variant: "success" });
-      archiveConfirmState.close();
+      deleteConfirmState.close();
       setSelectedAccount(null);
     } catch {
       toast("An unexpected error has occured", { variant: "danger" });
@@ -84,15 +84,15 @@ export const AccountList = () => {
       />
 
       <Modal.Backdrop
-        isOpen={archiveConfirmState.isOpen}
-        onOpenChange={archiveConfirmState.setOpen}
+        isOpen={deleteConfirmState.isOpen}
+        onOpenChange={deleteConfirmState.setOpen}
       >
         <Modal.Container>
           <Modal.Dialog className="sm:max-w-90">
             <Modal.CloseTrigger />
             <Modal.Header>
               <Modal.Icon className="bg-default text-foreground">
-                <Archive className="size-5" />
+                <Trash className="size-5" />
               </Modal.Icon>
               <Modal.Heading>Delete account?</Modal.Heading>
             </Modal.Header>
@@ -106,7 +106,7 @@ export const AccountList = () => {
               <Button
                 variant="ghost"
                 className="w-full"
-                onClick={archiveConfirmState.close}
+                onClick={deleteConfirmState.close}
               >
                 Cancel
               </Button>

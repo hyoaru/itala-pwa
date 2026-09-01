@@ -9,25 +9,25 @@ import {
   useOverlayState,
 } from "@heroui/react";
 import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { Archive } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 import type { Category } from "@/domain/entities";
 
 export const CategoryList = () => {
   const editCategoryModalState = useOverlayState();
-  const archiveConfirmState = useOverlayState();
+  const deleteConfirmState = useOverlayState();
 
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
 
-  const { findCategoriesInfinite, archiveCategory } = useCategoryActions();
+  const { findCategoriesInfinite, deleteCategory } = useCategoryActions();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(findCategoriesInfinite());
   const categories = data.pages.flatMap((page) => page.items);
 
-  const archiveCategoryMutation = useMutation(archiveCategory());
+  const deleteCategoryMutation = useMutation(deleteCategory());
 
   const handleEdit = (category: Category) => {
     setSelectedCategory(category);
@@ -36,16 +36,16 @@ export const CategoryList = () => {
 
   const handleDeleteClick = (category: Category) => {
     setSelectedCategory(category);
-    archiveConfirmState.open();
+    deleteConfirmState.open();
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedCategory) return;
 
     try {
-      await archiveCategoryMutation.mutateAsync({ id: selectedCategory.id });
+      await deleteCategoryMutation.mutateAsync({ id: selectedCategory.id });
       toast("Category deleted", { variant: "success" });
-      archiveConfirmState.close();
+      deleteConfirmState.close();
       setSelectedCategory(null);
     } catch {
       toast("An unexpected error has occured", { variant: "danger" });
@@ -86,15 +86,15 @@ export const CategoryList = () => {
       />
 
       <Modal.Backdrop
-        isOpen={archiveConfirmState.isOpen}
-        onOpenChange={archiveConfirmState.setOpen}
+        isOpen={deleteConfirmState.isOpen}
+        onOpenChange={deleteConfirmState.setOpen}
       >
         <Modal.Container>
           <Modal.Dialog className="sm:max-w-90">
             <Modal.CloseTrigger />
             <Modal.Header>
               <Modal.Icon className="bg-default text-foreground">
-                <Archive className="size-5" />
+                <Trash className="size-5" />
               </Modal.Icon>
               <Modal.Heading>Delete category?</Modal.Heading>
             </Modal.Header>
@@ -108,7 +108,7 @@ export const CategoryList = () => {
               <Button
                 variant="ghost"
                 className="w-full"
-                onClick={archiveConfirmState.close}
+                onClick={deleteConfirmState.close}
               >
                 Cancel
               </Button>

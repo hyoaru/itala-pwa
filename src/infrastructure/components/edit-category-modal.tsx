@@ -57,7 +57,6 @@ export const EditCategoryModal = (props: EditCategoryModalProps) => {
         await updateCategoryMutation.mutateAsync({
           id: props.category.id,
           name: value.name,
-          status: props.category.status,
         });
 
         toast("Category updated", { variant: "success" });

@@ -11,7 +11,6 @@ export interface FindItem {
   id: string;
   name: string;
   transaction_type: string;
-  status: string;
   created_at: string;
   updated_at: string;
 }
@@ -26,11 +25,9 @@ export interface FindResponse {
 export interface FindRequest {
   name?: string;
   transaction_type?: string;
-  status?: string;
   cursor?: string;
 }
 
 export interface UpdateRequest {
   name: string;
-  status: string;
 }

@@ -1,1 +1,0 @@
-export type ArchiveAccountResponse = void;

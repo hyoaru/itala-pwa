@@ -1,13 +1,11 @@
 import type {
-  ArchiveAccountRequest,
-  ArchiveAccountResponse,
   CreateAccountRequest,
   CreateAccountResponse,
+  DeleteAccountRequest,
+  DeleteAccountResponse,
   FindAccountRequest,
   FindAccountResponse,
   FindAccountsRequest,
-  RestoreAccountRequest,
-  RestoreAccountResponse,
   UpdateAccountRequest,
   UpdateAccountResponse,
 } from "@/application/use-cases";
@@ -57,30 +55,20 @@ export const useAccountActions = () => {
     updateAccount: () =>
       mutationOptions({
         mutationFn: (
-          variables: UpdateAccountRequest,
+          request: UpdateAccountRequest,
         ): Promise<UpdateAccountResponse> => {
-          return container.account.update.execute(variables);
+          return container.account.update.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
-    archiveAccount: () =>
+    deleteAccount: () =>
       mutationOptions({
         mutationFn: (
-          variables: ArchiveAccountRequest,
-        ): Promise<ArchiveAccountResponse> => {
-          return container.account.archive.execute(variables);
-        },
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: [baseKey] });
-        },
-      }),
-    restoreAccount: (request: RestoreAccountRequest) =>
-      mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<RestoreAccountResponse> => {
-          return container.account.restore.execute(request);
+          request: DeleteAccountRequest,
+        ): Promise<DeleteAccountResponse> => {
+          return container.account.delete.execute(request);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });

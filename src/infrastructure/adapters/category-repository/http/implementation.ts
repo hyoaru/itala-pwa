@@ -8,15 +8,8 @@ import type {
   UpdateRequest,
 } from "./dto";
 import type { Category } from "@/domain/entities";
-import type {
-  CategoryStatus,
-  TransactionType,
-} from "@/domain/value-objects";
-import {
-  categoryStatusToServer,
-  toCategory,
-  transactionTypeToServer,
-} from "./mapper";
+import type { TransactionType } from "@/domain/value-objects";
+import { toCategory, transactionTypeToServer } from "./mapper";
 import {
   type CategoryQuery,
   type CategoryPage,
@@ -78,9 +71,6 @@ export class HttpCategoryRepository implements CategoryRepository {
       requestParams.transaction_type =
         transactionTypeToServer[query.transactionType];
     }
-    if (query?.status) {
-      requestParams.status = categoryStatusToServer[query.status];
-    }
     if (query?.cursor) {
       requestParams.cursor = query.cursor;
     }
@@ -94,15 +84,10 @@ export class HttpCategoryRepository implements CategoryRepository {
     };
   }
 
-  public async update(
-    id: string,
-    name: string,
-    status: CategoryStatus,
-  ): Promise<void> {
+  public async update(id: string, name: string): Promise<void> {
     try {
       await this.httpClient.put(`/categories/${id}`, {
         name,
-        status: categoryStatusToServer[status],
       } satisfies UpdateRequest);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
@@ -116,21 +101,9 @@ export class HttpCategoryRepository implements CategoryRepository {
     }
   }
 
-  public async archive(id: string): Promise<void> {
+  public async delete(id: string): Promise<void> {
     try {
-      await this.httpClient.post(`/categories/${id}/archive`);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        throw new CategoryNotFoundError(id);
-      }
-
-      throw error;
-    }
-  }
-
-  public async restore(id: string): Promise<void> {
-    try {
-      await this.httpClient.post(`/categories/${id}/restore`);
+      await this.httpClient.delete(`/categories/${id}`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         throw new CategoryNotFoundError(id);

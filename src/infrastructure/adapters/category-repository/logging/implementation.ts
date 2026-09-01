@@ -5,10 +5,7 @@ import {
   type CategoryRepository,
 } from "@/application/ports/category-repository";
 import type { Category } from "@/domain/entities";
-import type {
-  CategoryStatus,
-  TransactionType,
-} from "@/domain/value-objects";
+import type { TransactionType } from "@/domain/value-objects";
 import { logger } from "@/infrastructure/logger";
 
 export class LoggingCategoryRepository implements CategoryRepository {
@@ -78,39 +75,24 @@ export class LoggingCategoryRepository implements CategoryRepository {
     }
   }
 
-  public async update(
-    id: string,
-    name: string,
-    status: CategoryStatus,
-  ): Promise<void> {
+  public async update(id: string, name: string): Promise<void> {
     try {
-      logger.debug("Updating category", { id, name, status });
-      await this.inner.update(id, name, status);
-      logger.info("Category updated", { id, name, status });
+      logger.debug("Updating category", { id, name });
+      await this.inner.update(id, name);
+      logger.info("Category updated", { id, name });
     } catch (error) {
-      this.logFailure("Failed to update category", { id, name, status }, error);
+      this.logFailure("Failed to update category", { id, name }, error);
       throw error;
     }
   }
 
-  public async archive(id: string): Promise<void> {
+  public async delete(id: string): Promise<void> {
     try {
-      logger.debug("Archiving category", { id });
-      await this.inner.archive(id);
-      logger.info("Category archived", { id });
+      logger.debug("Deleting category", { id });
+      await this.inner.delete(id);
+      logger.info("Category deleted", { id });
     } catch (error) {
-      this.logFailure("Failed to archive category", { id }, error);
-      throw error;
-    }
-  }
-
-  public async restore(id: string): Promise<void> {
-    try {
-      logger.debug("Restoring category", { id });
-      await this.inner.restore(id);
-      logger.info("Category restored", { id });
-    } catch (error) {
-      this.logFailure("Failed to restore category", { id }, error);
+      this.logFailure("Failed to delete category", { id }, error);
       throw error;
     }
   }
