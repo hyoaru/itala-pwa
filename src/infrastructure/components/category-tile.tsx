@@ -1,5 +1,5 @@
 import type { Category } from "@/domain/entities";
-import { Button, Popover } from "@heroui/react";
+import { Button, Popover, useOverlayState } from "@heroui/react";
 import { Archive, Ellipsis, Pencil } from "lucide-react";
 
 interface CategoryTileProps {
@@ -9,6 +9,8 @@ interface CategoryTileProps {
 }
 
 export const CategoryTile = (props: CategoryTileProps) => {
+  const popoverState = useOverlayState();
+
   return (
     <div className="bg-default flex items-center justify-between rounded-3xl px-4 py-2">
       <div className="flex items-center gap-2">
@@ -18,7 +20,7 @@ export const CategoryTile = (props: CategoryTileProps) => {
         </p>
       </div>
 
-      <Popover>
+      <Popover isOpen={popoverState.isOpen} onOpenChange={popoverState.setOpen}>
         <Button isIconOnly size="sm" variant="secondary">
           <Ellipsis className="h-[1.5em] w-[1.5em]" />
         </Button>
@@ -29,7 +31,10 @@ export const CategoryTile = (props: CategoryTileProps) => {
               size="sm"
               variant="ghost"
               className="w-full justify-start gap-2"
-              onClick={() => props.onEdit(props.category)}
+              onClick={() => {
+                popoverState.close();
+                props.onEdit(props.category);
+              }}
             >
               <Pencil className="size-4" />
               Edit
@@ -38,7 +43,10 @@ export const CategoryTile = (props: CategoryTileProps) => {
               size="sm"
               variant="ghost"
               className="text-danger w-full justify-start gap-2"
-              onClick={() => props.onDelete(props.category)}
+              onClick={() => {
+                popoverState.close();
+                props.onDelete(props.category);
+              }}
             >
               <Archive className="size-4" />
               Delete
