@@ -54,21 +54,23 @@ export const useAccountActions = () => {
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       }),
-    updateAccount: (request: UpdateAccountRequest) =>
+    updateAccount: () =>
       mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<UpdateAccountResponse> => {
-          return container.account.update.execute(request);
+        mutationFn: (
+          variables: UpdateAccountRequest,
+        ): Promise<UpdateAccountResponse> => {
+          return container.account.update.execute(variables);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });
         },
       }),
-    archiveAccount: (request: ArchiveAccountRequest) =>
+    archiveAccount: () =>
       mutationOptions({
-        mutationKey: [baseKey, request.id],
-        mutationFn: (): Promise<ArchiveAccountResponse> => {
-          return container.account.archive.execute(request);
+        mutationFn: (
+          variables: ArchiveAccountRequest,
+        ): Promise<ArchiveAccountResponse> => {
+          return container.account.archive.execute(variables);
         },
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [baseKey] });

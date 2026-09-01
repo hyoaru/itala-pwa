@@ -1,4 +1,4 @@
-import type { Category } from "@/domain/entities";
+import type { Account } from "@/domain/entities";
 import {
   Button,
   Form,
@@ -8,20 +8,20 @@ import {
   toast,
 } from "@heroui/react";
 import {
-  CategoryAlreadyExistsError,
-  CategoryRepositoryError,
-} from "@/application/ports/category-repository";
+  AccountAlreadyExistsError,
+  AccountRepositoryError,
+} from "@/application/ports/account-repository";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
-import { Pilcrow, Shapes } from "lucide-react";
+import { Pilcrow, WalletCards } from "lucide-react";
 import { z } from "zod";
 import { getFieldError } from "../forms";
 import { useMutation } from "@tanstack/react-query";
-import { useCategoryActions } from "../hooks";
+import { useAccountActions } from "../hooks";
 
-interface EditCategoryModalProps {
+interface EditAccountModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  category: Category | null;
+  account: Account | null;
 }
 
 const { fieldContext, formContext } = createFormHookContexts();
@@ -37,13 +37,13 @@ const { useAppForm } = createFormHook({
   formContext,
 });
 
-export const EditCategoryModal = (props: EditCategoryModalProps) => {
-  const { updateCategory } = useCategoryActions();
-  const updateCategoryMutation = useMutation(updateCategory());
+export const EditAccountModal = (props: EditAccountModalProps) => {
+  const { updateAccount } = useAccountActions();
+  const updateAccountMutation = useMutation(updateAccount());
 
   const form = useAppForm({
     defaultValues: {
-      name: props.category?.name ?? "",
+      name: props.account?.name ?? "",
     },
     validators: {
       onChange: z.object({
@@ -51,23 +51,23 @@ export const EditCategoryModal = (props: EditCategoryModalProps) => {
       }),
     },
     onSubmit: async ({ value }) => {
-      if (!props.category) return;
+      if (!props.account) return;
 
       try {
-        await updateCategoryMutation.mutateAsync({
-          id: props.category.id,
+        await updateAccountMutation.mutateAsync({
+          id: props.account.id,
           name: value.name,
-          status: props.category.status,
+          status: props.account.status,
         });
 
-        toast("Category updated", { variant: "success" });
+        toast("Account updated", { variant: "success" });
         props.onOpenChange(false);
       } catch (error) {
-        if (error instanceof CategoryAlreadyExistsError) {
-          toast("A category with this name already exists", {
+        if (error instanceof AccountAlreadyExistsError) {
+          toast("An account with this name already exists", {
             variant: "danger",
           });
-        } else if (error instanceof CategoryRepositoryError) {
+        } else if (error instanceof AccountRepositoryError) {
           toast(`An unexpected error has occured: ${error.message}`, {
             variant: "danger",
           });
@@ -87,9 +87,9 @@ export const EditCategoryModal = (props: EditCategoryModalProps) => {
           <Modal.CloseTrigger />
           <Modal.Header>
             <Modal.Icon className="bg-default text-foreground">
-              <Shapes className="size-5" />
+              <WalletCards className="size-5" />
             </Modal.Icon>
-            <Modal.Heading>Edit category</Modal.Heading>
+            <Modal.Heading>Edit account</Modal.Heading>
           </Modal.Header>
           <Modal.Body>
             <Form
@@ -114,7 +114,7 @@ export const EditCategoryModal = (props: EditCategoryModalProps) => {
                         </InputGroup.Prefix>
                         <InputGroup.Input
                           className="text-sm"
-                          placeholder="Category name"
+                          placeholder="Account name"
                           id={field.name}
                           name={field.name}
                           value={field.state.value}

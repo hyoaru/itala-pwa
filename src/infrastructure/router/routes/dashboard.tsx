@@ -150,14 +150,13 @@ function RouteComponent() {
                 <Popover.Content placement="left" className="max-w-48">
                   <Popover.Dialog className="p-1">
                     <Popover.Arrow />
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="w-full justify-start gap-3"
+                    <Link
+                      to="/accounts"
+                      className="button button--ghost button--sm w-full justify-start gap-3"
                     >
                       <WalletCards />
                       Manage accounts
-                    </Button>
+                    </Link>
                     <Link
                       to="/categories"
                       className="button button--ghost button--sm w-full justify-start gap-3"
