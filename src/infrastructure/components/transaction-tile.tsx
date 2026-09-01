@@ -21,12 +21,14 @@ export const TransactionTile = (props: TransactionTileProps) => {
   const { findAccount } = useAccountActions();
   const { findCategory } = useCategoryActions();
 
-  const { data: account } = useQuery(
-    findAccount({ id: props.transaction.accountId }),
-  );
-  const { data: category } = useQuery(
-    findCategory({ id: props.transaction.categoryId }),
-  );
+  const { data: account } = useQuery({
+    ...findAccount({ id: props.transaction.accountId }),
+    retry: 2,
+  });
+  const { data: category } = useQuery({
+    ...findCategory({ id: props.transaction.categoryId }),
+    retry: 2,
+  });
 
   const formattedAmount = Number(props.transaction.amount).toLocaleString();
   const formattedDate = new Date(
