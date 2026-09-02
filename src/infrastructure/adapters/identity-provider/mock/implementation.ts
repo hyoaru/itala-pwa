@@ -1,4 +1,5 @@
 import { type IdentityProvider } from "@/application/ports/identity-provider";
+import { AuthenticatedSession } from "@/domain/entities";
 
 export class MockIdentityProvider implements IdentityProvider {
   public async signUp(
@@ -8,7 +9,24 @@ export class MockIdentityProvider implements IdentityProvider {
     _password: string,
   ): Promise<void> {}
 
-  public async signIn(_email: string, _password: string): Promise<void> {}
+  public async signIn(
+    _email: string,
+    _password: string,
+  ): Promise<AuthenticatedSession> {
+    return new AuthenticatedSession({
+      accessToken: "accessToken",
+      idToken: "idToken",
+      refreshToken: "refreshToken",
+    });
+  }
+
+  public async refresh(_refreshToken: string): Promise<AuthenticatedSession> {
+    return new AuthenticatedSession({
+      accessToken: "accessToken",
+      idToken: "idToken",
+      refreshToken: "refreshToken",
+    });
+  }
 
   public async verify(_email: string, _code: string): Promise<void> {}
 
