@@ -1,4 +1,5 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
+import { sessionEvents } from "@/infrastructure/events/session";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -74,6 +75,17 @@ export function AuthenticationSessionProvider({
       setIsLoading(false);
       return;
     }
+  }, []);
+
+  useEffect(() => {
+    const off1 = sessionEvents.on("refreshed", (session) =>
+      setSession(session!),
+    );
+    const off2 = sessionEvents.on("expired", () => clearSession());
+    return () => {
+      off1();
+      off2();
+    };
   }, []);
 
   const isAuthenticated = user !== null;

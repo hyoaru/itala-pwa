@@ -39,6 +39,7 @@ import {
   CognitoIdentityProvider,
   DecoratedIdentityProvider,
 } from "./adapters/identity-provider";
+import { sessionEvents } from "./events/session";
 
 // Identity
 const identityProvider = new DecoratedIdentityProvider(
@@ -90,11 +91,13 @@ apiHttpClient.interceptors.response.use(
           localStorage.setItem("ACCESS_TOKEN", session.accessToken);
           localStorage.setItem("ID_TOKEN", session.idToken);
           localStorage.setItem("REFRESH_TOKEN", session.refreshToken);
+          sessionEvents.emit("refreshed", session);
         })
         .catch(() => {
           localStorage.removeItem("ACCESS_TOKEN");
           localStorage.removeItem("ID_TOKEN");
           localStorage.removeItem("REFRESH_TOKEN");
+          sessionEvents.emit("expired");
         })
         .finally(() => {
           isRefreshing = false;
