@@ -90,7 +90,7 @@ jobs:
       name: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: hyoaru/actions/download-artifact@v1
         with:
           name: build-artifact
           path: dist/
