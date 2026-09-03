@@ -37,11 +37,11 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 
 export class CognitoIdentityProvider implements IdentityProvider {
-  private cognitoClientId: string;
+  private userPoolClientId: string;
   private cognitoClient: CognitoIdentityProviderClient;
 
   public constructor() {
-    this.cognitoClientId = import.meta.env.VITE_AWS_COGNITO_CLIENT_ID;
+    this.userPoolClientId = import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID;
     this.cognitoClient = new CognitoIdentityProviderClient({
       region: import.meta.env.VITE_AWS_REGION,
     });
@@ -56,7 +56,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       await this.cognitoClient.send(
         new SignUpCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           Username: email,
           Password: password,
           UserAttributes: [
@@ -101,7 +101,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       const result = await this.cognitoClient.send(
         new InitiateAuthCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           AuthFlow: "USER_PASSWORD_AUTH",
           AuthParameters: {
             USERNAME: email,
@@ -152,7 +152,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       const result = await this.cognitoClient.send(
         new GetTokensFromRefreshTokenCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           RefreshToken: refreshToken,
         }),
       );
@@ -186,7 +186,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       await this.cognitoClient.send(
         new ConfirmSignUpCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           Username: email,
           ConfirmationCode: code,
         }),
@@ -215,7 +215,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       await this.cognitoClient.send(
         new ResendConfirmationCodeCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           Username: email,
         }),
       );
@@ -245,7 +245,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       await this.cognitoClient.send(
         new ForgotPasswordCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           Username: email,
         }),
       );
@@ -279,7 +279,7 @@ export class CognitoIdentityProvider implements IdentityProvider {
     try {
       await this.cognitoClient.send(
         new ConfirmForgotPasswordCommand({
-          ClientId: this.cognitoClientId,
+          ClientId: this.userPoolClientId,
           Username: email,
           ConfirmationCode: code,
           Password: newPassword,
