@@ -1,0 +1,119 @@
+name: CD
+
+on:
+  push:
+    branches: [master, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: ap-southeast-1
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.setup.outputs.environment }}
+    steps:
+      - id: setup
+        run: |
+          if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
+            echo "environment=staging" >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF_NAME" == "master" ]]; then
+            echo "environment=production" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unsupported branch: $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+  build:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+
+      - name: Setup Node
+        uses: hyoaru/actions/setup-node@v1
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure AWS credentials
+        uses: hyoaru/actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get configuration
+        run: |
+          USER_POOL_CLIENT_ID=$(aws ssm get-parameter \
+            --name "/itala/user-pool-client-id" \
+            --query "Parameter.Value" \
+            --output text)
+
+          echo "VITE_AWS_USER_POOL_CLIENT_ID=$USER_POOL_CLIENT_ID" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: hyoaru/actions/upload-artifact@v1
+        with:
+          name: build-artifact
+          path: dist/
+          if-no-files-found: error
+
+  deploy:
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: dist/
+
+      - name: Configure AWS credentials
+        uses: hyoaru/actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get configuration
+        run: |
+          CLIENT_ARTIFACT_BUCKET_NAME=$(aws ssm get-parameter \
+            --name "/itala/client-artifact-bucket-name" \
+            --query "Parameter.Value" \
+            --output text)
+          CLIENT_DISTRIBUTION_ID=$(aws ssm get-parameter \
+            --name "/itala/client-distribution-id" \
+            --query "Parameter.Value" \
+            --output text)
+
+          echo "CLIENT_ARTIFACT_BUCKET_NAME=$CLIENT_ARTIFACT_BUCKET_NAME" >> "$GITHUB_ENV"
+          echo "CLIENT_DISTRIBUTION_ID=$CLIENT_DISTRIBUTION_ID" >> "$GITHUB_ENV"
+
+      - name: Deploy to S3
+        run: aws s3 sync dist/ "s3://${{ env.CLIENT_ARTIFACT_BUCKET_NAME }}" --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ env.CLIENT_DISTRIBUTION_ID }}" \
+            --paths "/*"
