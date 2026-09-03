@@ -55,7 +55,9 @@ const sendPasswordReset = new SendPasswordReset(identityProvider);
 const resetPassword = new ResetPassword(identityProvider);
 
 // API Client
-const apiHttpClient = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+const apiHttpClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
 
 apiHttpClient.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("ACCESS_TOKEN");
