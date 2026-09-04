@@ -1,4 +1,4 @@
-import { Loading } from "@/infrastructure/components/defaults";
+import { Footer, Loading } from "@/infrastructure/components";
 import type { AuthenticationSessionState } from "@/infrastructure/contexts/authentication-session";
 import { Toast } from "@heroui/react";
 import type { QueryClient } from "@tanstack/react-query";
@@ -15,9 +15,13 @@ export const Route = createRootRouteWithContext<{
 function Root() {
   return (
     <>
-      <div className="h-dvh items-start justify-start p-4">
-        <Outlet />
+      <div className="h-dvh p-4">
+        <div className="flex h-full flex-col items-start justify-start">
+          <Outlet />
+          <Footer />
+        </div>
       </div>
+
       <Toast.Provider />
     </>
   );
