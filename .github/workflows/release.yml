@@ -1,16 +1,12 @@
-name: CD
+name: Release
 
 on:
   push:
-    branches: [develop]
+    branches: [master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
-
-permissions:
-  contents: read
-  id-token: write
 
 env:
   AWS_REGION: ap-southeast-1
@@ -23,26 +19,58 @@ jobs:
       environment: ${{ steps.setup.outputs.environment }}
     steps:
       - id: setup
+        run: echo "environment=staging" >> "$GITHUB_OUTPUT"
+
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: hyoaru/actions/setup-node@v1
+        with:
+          node-version: 24
+
+      - name: Release
         run: |
-          if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
-            echo "environment=staging" >> "$GITHUB_OUTPUT"
-          elif [[ "$GITHUB_REF_NAME" == "master" ]]; then
-            echo "environment=production" >> "$GITHUB_OUTPUT"
-          else
-            echo "Unsupported branch: $GITHUB_REF_NAME"
-            exit 1
-          fi
+          npx \
+            -p semantic-release \
+            -p @semantic-release/commit-analyzer \
+            -p @semantic-release/release-notes-generator \
+            -p @semantic-release/changelog \
+            -p @semantic-release/git \
+            semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version
+        id: version
+        run: |
+          TAG=$(git tag --sort=-v:refname | head -n1)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
   build:
-    needs: [setup]
+    needs: [setup, version]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     environment:
       name: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Checkout
         uses: hyoaru/actions/checkout@v1
+        with:
+          ref: ${{ needs.version.outputs.tag }}
 
-      - name: Setup Node
+      - name: Setup node
         uses: hyoaru/actions/setup-node@v1
         with:
           node-version: 24
@@ -79,20 +107,23 @@ jobs:
       - name: Upload build artifact
         uses: hyoaru/actions/upload-artifact@v1
         with:
-          name: build-artifact
+          name: build-${{ needs.version.outputs.tag }}
           path: dist/
           if-no-files-found: error
 
   deploy:
-    needs: [setup, build]
+    needs: [setup, version, build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     environment:
       name: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Download build artifact
         uses: hyoaru/actions/download-artifact@v1
         with:
-          name: build-artifact
+          name: build-${{ needs.version.outputs.tag }}
           path: dist/
 
       - name: Configure AWS credentials
@@ -125,7 +156,7 @@ jobs:
             --paths "/*"
 
   notify:
-    needs: [setup, build, deploy]
+    needs: [setup, version, build, deploy]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -133,9 +164,11 @@ jobs:
         uses: hyoaru/actions/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          status: ${{ job.status }}
-          title: "Itala PWA deployment"
+          status: ${{ needs.deploy.result }}
+          title: "Itala PWA Release - ${{ needs.version.outputs.tag }}"
           description: |
             Environment: `${{ needs.setup.outputs.environment }}`
+            Setup: `${{ needs.setup.result }}`
+            Version: `${{ needs.version.result }}`
             Build: `${{ needs.build.result }}`
             Deploy: `${{ needs.deploy.result }}`
