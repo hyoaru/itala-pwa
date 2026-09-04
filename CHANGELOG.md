@@ -1,3 +1,17 @@
+# [0.3.0](https://github.com/hyoaru/itala-pwa/compare/v0.2.0...v0.3.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* auth bug on mount ([802c28d](https://github.com/hyoaru/itala-pwa/commit/802c28ddd9134859d0d865ddf0221e505f3dd811))
+* responsiveness on small screen ([3de6fef](https://github.com/hyoaru/itala-pwa/commit/3de6feff3a9d360cce3cae0de05ae6c1d82746d4))
+* uneven roundness of app icon in ios ([740c36d](https://github.com/hyoaru/itala-pwa/commit/740c36d559ea60bd63a62a23b4c62c98eebae3e0))
+
+
+### Features
+
+* add empty state ([0dc602c](https://github.com/hyoaru/itala-pwa/commit/0dc602c64b127dbe3be86fbfaebbcfaf6a13c8af))
+
 # [0.2.0](https://github.com/hyoaru/itala-pwa/compare/v0.1.2...v0.2.0) (2026-09-04)
 
 
