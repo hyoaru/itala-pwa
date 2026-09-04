@@ -23,8 +23,8 @@ export default defineConfig({
         short_name: "itala",
         description: "Finance tracker",
         display: "standalone",
-        theme_color: "#ffffff",
-        background_color: "#ffffff",
+        // theme_color: "#ffffff",
+        // background_color: "#ffffff",
         icons: [
           {
             src: "/android-chrome-192x192.png",
