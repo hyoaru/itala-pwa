@@ -5,14 +5,24 @@ import {
   TransactionsPanel,
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
-import { Button, Popover, Tabs } from "@heroui/react";
+import { Button, Popover, Tabs, useOverlayState } from "@heroui/react";
 import {
   createFileRoute,
   Link,
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import { Ellipsis, LogOut, Shapes, User, WalletCards } from "lucide-react";
+import { useTheme } from "next-themes";
+import {
+  Ellipsis,
+  LogOut,
+  Monitor,
+  Moon,
+  Shapes,
+  Sun,
+  User,
+  WalletCards,
+} from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -43,6 +53,8 @@ function getGreeting(): string {
 
 function RouteComponent() {
   const { user, clearSession } = useAuthenticationSessionContext();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const popoverState = useOverlayState();
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
   const router = useRouter();
@@ -58,6 +70,7 @@ function RouteComponent() {
   ];
 
   const onSignOut = () => {
+    popoverState.close();
     clearSession();
     router.navigate({ to: "/sign-in" });
   };
@@ -77,6 +90,33 @@ function RouteComponent() {
             <Popover.Content placement="left top" className="max-w-34">
               <Popover.Dialog className="p-1">
                 <Popover.Arrow />
+                <div className="flex gap-1 rounded-2xl px-1 pb-1">
+                  {[
+                    { mode: "system" as const, icon: Monitor },
+                    { mode: "light" as const, icon: Sun },
+                    { mode: "dark" as const, icon: Moon },
+                  ].map(({ mode, icon: Icon }) => (
+                    <Button
+                      key={mode}
+                      size="sm"
+                      variant={
+                        (mode === "system" && theme === "system") ||
+                        (mode !== "system" &&
+                          resolvedTheme === mode &&
+                          theme !== "system")
+                          ? "primary"
+                          : "ghost"
+                      }
+                      className="flex-1 justify-center gap-1"
+                      onClick={() => {
+                        setTheme(mode);
+                        popoverState.close();
+                      }}
+                    >
+                      <Icon className="" />
+                    </Button>
+                  ))}
+                </div>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -129,7 +169,7 @@ function RouteComponent() {
             <div className="flex shrink items-center">
               <div className="grow">
                 <Tabs.ListContainer className="bg-default w-max">
-                  <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent">
+                  <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent **:data-[slot=tabs-tab]:data-[selected=true]:text-accent-foreground">
                     {transactionTabs.map((item) => (
                       <Tabs.Tab
                         className="capitalize"
@@ -143,7 +183,10 @@ function RouteComponent() {
                   </Tabs.List>
                 </Tabs.ListContainer>
               </div>
-              <Popover>
+              <Popover
+                isOpen={popoverState.isOpen}
+                onOpenChange={popoverState.setOpen}
+              >
                 <Button isIconOnly size="sm" variant="secondary">
                   <Ellipsis className="h-[1.5em] w-[1.5em]" />
                 </Button>

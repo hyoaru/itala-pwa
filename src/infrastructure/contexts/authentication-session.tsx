@@ -1,9 +1,14 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
-import { container } from "@/infrastructure/container";
 import { sessionEvents } from "@/infrastructure/events/session";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -69,23 +74,13 @@ export function AuthenticationSessionProvider({
       return;
     }
 
-    let cancelled = false;
-
-    container.identity.refresh
-      .execute({ refreshToken })
-      .then((session) => {
-        if (!cancelled) setSession(session);
-      })
-      .catch(() => {
-        if (!cancelled) clearSession();
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+    try {
+      setUser(createUserFromIdToken(idToken));
+    } catch {
+      clearSession();
+    } finally {
+      setIsLoading(false);
+    }
   }, [clearSession]);
 
   useEffect(() => {

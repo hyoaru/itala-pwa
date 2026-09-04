@@ -16,7 +16,7 @@ function RouteComponent() {
       <div className="flex h-full w-full flex-col justify-end gap-4 py-8">
         <div className="flex w-full flex-col items-center gap-2">
           <span className="inline-flex items-center gap-1 text-4xl">
-            <NotebookPen className="bg-accent h-[1em] w-[1em] rounded-xl p-0.5" />
+            <NotebookPen className="bg-accent text-accent-foreground h-[1em] w-[1em] rounded-xl p-0.5" />
             <span className="font-heading font-semibold">ITALA</span>
           </span>
           <p className="font-heading text-xl font-medium">

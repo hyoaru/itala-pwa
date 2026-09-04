@@ -11,11 +11,21 @@
 .default,
 [data-theme="light"],
 [data-theme="default"] {
+  --background: oklch(100% 0 0);
   --accent: oklch(0.9163 0.1927 114.69);
   --accent-foreground: var(--foreground);
   --default: oklch(97% 0.001 286.375);
   --radius: 0.25rem;
   --field-radius: 0.75rem;
+}
+
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: oklch(0% 0 0);
+  --accent: oklch(0.7163 0.1927 114.69);
+  --accent-foreground: var(--background);
+  --default: oklch(16% 0.001 286.375);
 }
 
 @layer components {

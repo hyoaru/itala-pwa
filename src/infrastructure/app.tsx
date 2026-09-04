@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "next-themes";
 import { RouterProvider } from "@tanstack/react-router";
 import { useState } from "react";
 import { Initializing } from "./components/defaults";
@@ -27,12 +28,14 @@ export default function App() {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthenticationSessionProvider>
-        <InnerApp />
-      </AuthenticationSessionProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ThemeProvider attribute="data-theme" defaultTheme="system">
+      <QueryClientProvider client={queryClient}>
+        <AuthenticationSessionProvider>
+          <InnerApp />
+        </AuthenticationSessionProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
