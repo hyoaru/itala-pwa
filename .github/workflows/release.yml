@@ -138,16 +138,23 @@ jobs:
             --name "/itala/client-artifact-s3-uri" \
             --query "Parameter.Value" \
             --output text)
+          CLIENT_ARTIFACT_S3_URI_BASE=$(aws ssm get-parameter \
+            --name "/itala/client-artifact-s3-uri-base" \
+            --query "Parameter.Value" \
+            --output text)
           CLOUDFRONT_DISTRIBUTION_ID=$(aws ssm get-parameter \
             --name "/itala/cloudfront-distribution-id" \
             --query "Parameter.Value" \
             --output text)
 
           echo "CLIENT_ARTIFACT_S3_URI=$CLIENT_ARTIFACT_S3_URI" >> "$GITHUB_ENV"
+          echo "CLIENT_ARTIFACT_S3_URI_BASE=$CLIENT_ARTIFACT_S3_URI_BASE" >> "$GITHUB_ENV"
           echo "CLOUDFRONT_DISTRIBUTION_ID=$CLOUDFRONT_DISTRIBUTION_ID" >> "$GITHUB_ENV"
 
       - name: Deploy to S3
-        run: aws s3 sync dist/ "${{ env.CLIENT_ARTIFACT_S3_URI }}" --delete
+        run: |
+          aws s3 sync dist/ "${{ env.CLIENT_ARTIFACT_S3_URI }}" --delete
+          aws s3 sync dist/ "${{ env.CLIENT_ARTIFACT_S3_URI_BASE }}/${{ needs.version.outputs.tag }}" --delete
 
       - name: Invalidate CloudFront
         run: |
