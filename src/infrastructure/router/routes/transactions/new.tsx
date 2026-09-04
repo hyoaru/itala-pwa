@@ -148,7 +148,7 @@ function RouteComponent() {
   return (
     <>
       <Form
-        className="w-full"
+        className="h-full w-full"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit(e);

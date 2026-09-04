@@ -108,7 +108,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="w-full space-y-8">
+      <div className="h-full w-full space-y-8">
         <div className="relative flex w-full items-center justify-center text-3xl">
           <div className="absolute flex w-full justify-start">
             <Link to="/" className="button button--icon button--secondary">
