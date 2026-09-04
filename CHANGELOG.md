@@ -1,3 +1,10 @@
+## [0.1.2](https://github.com/hyoaru/itala-pwa/compare/v0.1.1...v0.1.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* layout ([3573ec2](https://github.com/hyoaru/itala-pwa/commit/3573ec201a92a873c747f2472930d2e622162b4a))
+
 ## [0.1.1](https://github.com/hyoaru/itala-pwa/compare/v0.1.0...v0.1.1) (2026-09-04)
 
 
