@@ -46,7 +46,7 @@ function RouteComponent() {
           <div className="relative h-full flex-1">
             <div className="absolute h-full min-h-0 w-full">
               <AsyncBoundary>
-                <AccountList />
+                <AccountList onCreate={createAccountModalState.open} />
               </AsyncBoundary>
             </div>
           </div>

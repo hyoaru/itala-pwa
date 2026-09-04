@@ -9,11 +9,15 @@ import {
   useOverlayState,
 } from "@heroui/react";
 import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { Trash } from "lucide-react";
+import { Ghost, Trash } from "lucide-react";
 import { useState } from "react";
 import type { Account } from "@/domain/entities";
 
-export const AccountList = () => {
+interface AccountListProps {
+  onCreate?: () => void;
+}
+
+export const AccountList = ({ onCreate }: AccountListProps) => {
   const editAccountModalState = useOverlayState();
   const deleteConfirmState = useOverlayState();
 
@@ -49,6 +53,23 @@ export const AccountList = () => {
       toast("An unexpected error has occured", { variant: "danger" });
     }
   };
+
+  if (accounts.length === 0) {
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-y-[14px]">
+        <Ghost className="text-muted size-8" />
+        <div className="flex flex-col items-center">
+          <p className="text-muted text-xl font-medium">No accounts yet</p>
+          <p className="text-muted text-center text-sm">
+            Create an account to start tracking your balances.
+          </p>
+        </div>
+        <Button variant="tertiary" size="sm" className="uppercase" onClick={onCreate}>
+          Create
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <>

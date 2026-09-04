@@ -10,8 +10,9 @@ import {
   useOverlayState,
 } from "@heroui/react";
 import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { Archive } from "lucide-react";
+import { Archive, Ghost } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import type { Transaction } from "@/domain/entities";
 import { AsyncBoundary } from "./ui";
 
@@ -64,6 +65,29 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
       toast("An unexpected error has occured", { variant: "danger" });
     }
   };
+
+  if (transactions.length === 0) {
+    return (
+      <Tabs.Panel className="h-full p-0" id={props.id}>
+        <div className="flex h-full w-full flex-col items-center justify-center gap-y-3.5">
+          <Ghost className="text-muted size-8" />
+          <div className="flex flex-col items-center">
+            <p className="text-muted text-xl font-medium">
+              No transactions yet
+            </p>
+            <p className="text-muted text-center text-sm">
+              Add a transaction to start tracking your income and expenses.
+            </p>
+          </div>
+          <Link to="/transactions/new">
+            <Button variant="tertiary" size="sm" className="uppercase">
+              Create
+            </Button>
+          </Link>
+        </div>
+      </Tabs.Panel>
+    );
+  }
 
   return (
     <Tabs.Panel className="h-full p-0" id={props.id}>
