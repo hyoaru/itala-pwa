@@ -46,9 +46,9 @@ export const TransactionTile = (props: TransactionTileProps) => {
         className="h-auto w-full justify-start gap-1 px-1"
       >
         {props.transaction.type == TransactionType.Income ? (
-          <BanknoteArrowUp className="text-muted h-[1.5em] w-[1.5em] shrink-0" />
+          <BanknoteArrowUp className="text-muted h-[1.8em] w-[1.8em] shrink-0" />
         ) : (
-          <BanknoteArrowDown className="text-muted h-[1.5em] w-[1.5em] shrink-0" />
+          <BanknoteArrowDown className="text-muted h-[1.8em] w-[1.8em] shrink-0" />
         )}
         <div className="flex min-w-0 flex-1 items-center justify-between gap-12 rounded-3xl py-2.5 ps-2.5">
           <div className="flex min-w-0 items-center gap-1">

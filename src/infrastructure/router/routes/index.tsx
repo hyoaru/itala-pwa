@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <>
-      <div className="flex h-full w-full flex-col items-end justify-end gap-4 py-8">
+      <div className="flex h-full w-full flex-col justify-end gap-4 py-8">
         <div className="flex w-full flex-col items-center gap-2">
           <span className="inline-flex items-center gap-1 text-4xl">
             <NotebookPen className="bg-accent h-[1em] w-[1em] rounded-xl p-0.5" />
@@ -22,7 +22,7 @@ function RouteComponent() {
           <p className="font-heading text-xl font-medium">
             Spend with intention.
           </p>
-          <p className="text-muted w-1/2 text-center text-xs">
+          <p className="text-muted w-3/4 text-center text-xs sm:text-sm">
             A calmer way to track every peso, plan ahead, and feel in control.
           </p>
         </div>

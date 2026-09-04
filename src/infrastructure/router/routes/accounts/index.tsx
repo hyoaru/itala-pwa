@@ -29,7 +29,7 @@ function RouteComponent() {
           <Button
             onClick={createAccountModalState.open}
             className="uppercase"
-            variant="ghost"
+            variant="secondary"
           >
             Create
           </Button>
@@ -38,7 +38,7 @@ function RouteComponent() {
         <div className="flex w-full flex-1 flex-col gap-y-3">
           <div className="strink flex min-h-0 flex-col items-center">
             <p className="font-heading text-2xl font-medium">Accounts</p>
-            <p className="text-muted text-sm">
+            <p className="text-muted text-center text-sm">
               Manage your accounts and keep track of your balances.
             </p>
           </div>

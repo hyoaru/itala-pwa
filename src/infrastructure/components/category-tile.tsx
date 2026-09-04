@@ -14,8 +14,8 @@ export const CategoryTile = (props: CategoryTileProps) => {
   return (
     <div className="flex items-center justify-between gap-8 rounded-3xl px-4 py-1">
       <div className="flex min-w-0 items-center gap-2">
-        <p className="truncate text-sm font-semibold">{props.category.name}</p>
-        <p className="font-heading text-muted shrink text-xs font-medium capitalize">
+        <p className="truncate font-medium">{props.category.name}</p>
+        <p className="font-heading text-muted shrink text-xs capitalize">
           {props.category.transactionType}
         </p>
       </div>

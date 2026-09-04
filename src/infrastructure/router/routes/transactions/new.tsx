@@ -174,7 +174,7 @@ function RouteComponent() {
                   field.handleChange(next);
                   field.form.resetField("categoryId");
                 }}
-                className="data-[selected=true]:text-foreground h-0 text-sm font-semibold uppercase"
+                className="data-[selected=true]:text-foreground button--secondary text-sm font-semibold uppercase"
               >
                 {field.state.value}
               </field.ToggleButton>

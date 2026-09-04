@@ -7,10 +7,10 @@ export const Footer = () => {
 
   return (
     <>
-      <div className="text-muted flex w-full items-center justify-between gap-4 text-xs">
+      <div className="text-muted/40 mt-2 flex w-full items-center justify-between gap-4 text-[0.65rem] sm:text-xs">
         <div className="flex items-center gap-4">
-          <p>Client Version: {version}</p>
-          <p>API Version: {apiVersion ?? "unknown"}</p>
+          <p>Client: {version}</p>
+          <p>API: {apiVersion ?? "unknown"}</p>
         </div>
         <p>
           © {new Date().getFullYear()} Itala · Built by{" "}
@@ -20,7 +20,7 @@ export const Footer = () => {
             rel="noopener noreferrer"
             className="underline"
           >
-            hyoaru
+            {"hyoaru"}
           </a>
         </p>
       </div>

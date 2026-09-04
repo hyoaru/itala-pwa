@@ -126,7 +126,7 @@ function RouteComponent() {
           <p className="font-heading text-2xl font-medium">
             Create your account
           </p>
-          <p className="text-muted text-sm">
+          <p className="text-muted text-center text-sm">
             Start building a clearer picture of your money.
           </p>
         </div>
@@ -222,7 +222,7 @@ function RouteComponent() {
             }}
           </form.AppField>
 
-          <p className="text-muted text-center text-sm">
+          <p className="text-muted pt-4 text-center text-sm">
             By continuing, you agree to Itala’s terms.
           </p>
 

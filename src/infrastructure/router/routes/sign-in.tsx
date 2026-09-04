@@ -176,7 +176,7 @@ function RouteComponent() {
             }}
           </form.AppField>
 
-          <p className="text-muted text-center text-sm">
+          <p className="text-muted pt-4 text-center text-sm">
             Trouble signing in?{" "}
             <Link className="font-medium underline" to="/forgot-password">
               Reset password

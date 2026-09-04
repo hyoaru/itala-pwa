@@ -72,7 +72,7 @@ function RouteComponent() {
 
           <Popover>
             <Button isIconOnly size="sm" variant="primary" className="">
-              <p className="p-1 text-xs font-semibold">{initials}</p>
+              <p className="p-1 text-xs font-semibold">{initials ?? "@"}</p>
             </Button>
             <Popover.Content placement="left top" className="max-w-34">
               <Popover.Dialog className="p-1">

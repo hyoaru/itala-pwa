@@ -162,7 +162,7 @@ export const NewCategoryModal = (props: NewCategoryModalProps) => {
                         <p className="text-muted">
                           <Shapes className="me-3 h-[1.2em] w-[1.2em]" />
                         </p>
-                        <Select.Value className="text-sm capitalize" />
+                        <Select.Value className="capitalize" />
                         <Select.Indicator className="">
                           <div className="">
                             <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />

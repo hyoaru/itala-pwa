@@ -12,14 +12,20 @@ export const AccountTile = (props: AccountTileProps) => {
   const popoverState = useOverlayState();
   const formattedDate = new Date(props.account.createdAt).toLocaleDateString(
     "en-US",
-    { month: "short", day: "numeric", year: "numeric" },
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    },
   );
 
   return (
     <div className="flex items-center justify-between gap-8 rounded-3xl px-4 py-1">
       <div className="flex min-w-0 items-center gap-2">
-        <p className="truncate text-sm font-semibold">{props.account.name}</p>
-        <p className="font-heading text-muted shrink text-xs font-medium">{formattedDate}</p>
+        <p className="truncate font-medium">{props.account.name}</p>
+        <p className="font-heading text-muted shrink text-xs">
+          {formattedDate}
+        </p>
       </div>
 
       <Popover isOpen={popoverState.isOpen} onOpenChange={popoverState.setOpen}>
