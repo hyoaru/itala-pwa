@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/hyoaru/itala-pwa/compare/v0.1.2...v0.2.0) (2026-09-04)
+
+
+### Features
+
+* add pwa support ([3fa0045](https://github.com/hyoaru/itala-pwa/commit/3fa004577b22d36125d3f91bbd4ed4ac7eae28ba))
+
 ## [0.1.2](https://github.com/hyoaru/itala-pwa/compare/v0.1.1...v0.1.2) (2026-09-04)
 
 
