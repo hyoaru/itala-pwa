@@ -24,10 +24,6 @@
   }
 
   .label {
-    @apply text-muted text-xs;
-  }
-
-  .input {
-    @apply py-3 text-sm;
+    @apply text-muted;
   }
 }

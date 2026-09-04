@@ -112,7 +112,6 @@ export const EditAccountModal = (props: EditAccountModalProps) => {
                           <Pilcrow className="h-[1.2em] w-[1.2em]" />
                         </InputGroup.Prefix>
                         <InputGroup.Input
-                          className="text-sm"
                           placeholder="Account name"
                           id={field.name}
                           name={field.name}

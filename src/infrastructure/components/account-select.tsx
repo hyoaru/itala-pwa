@@ -21,11 +21,11 @@ export const AccountSelect = (props: AccountSelectProps) => {
       placeholder="Choose an account"
       fullWidth
     >
-      <Select.Trigger className="">
+      <Select.Trigger className="items-center">
         <p className="text-muted">
           <WalletCards className="me-3 h-[1.2em] w-[1.2em]" />
         </p>
-        <Select.Value className="text-sm" />
+        <Select.Value className="" />
         <Select.Indicator className="">
           <div className="">
             <ArrowRight className="text-muted h-[1.2em] w-[1.2em]" />

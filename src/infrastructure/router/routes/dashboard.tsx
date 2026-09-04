@@ -152,14 +152,14 @@ function RouteComponent() {
                     <Popover.Arrow />
                     <Link
                       to="/accounts"
-                      className="button button--ghost button--sm w-full justify-start gap-3"
+                      className="button button--ghost w-full justify-start gap-3"
                     >
                       <WalletCards />
                       Manage accounts
                     </Link>
                     <Link
                       to="/categories"
-                      className="button button--ghost button--sm w-full justify-start gap-3"
+                      className="button button--ghost w-full justify-start gap-3"
                     >
                       <Shapes />
                       Manage categories

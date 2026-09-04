@@ -239,7 +239,6 @@ function RouteComponent() {
                       <Pilcrow className="h-[1.2em] w-[1.2em]" />
                     </InputGroup.Prefix>
                     <InputGroup.Input
-                      className="text-sm"
                       placeholder="What is this transaction for?"
                       id={field.name}
                       name={field.name}
@@ -281,7 +280,7 @@ function RouteComponent() {
                             <CalendarDays className="text-muted h-[1.2em] w-[1.2em]" />
                           </div>
 
-                          <DateField.Input className="text-sm">
+                          <DateField.Input>
                             {(segment) => (
                               <DateField.Segment segment={segment} />
                             )}
