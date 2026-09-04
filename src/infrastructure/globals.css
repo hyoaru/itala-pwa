@@ -11,6 +11,7 @@
 .default,
 [data-theme="light"],
 [data-theme="default"],
+.jiya-light,
 [data-theme="jiya-light"] {
   --background: oklch(100% 0 0);
   --accent: oklch(0.9163 0.1927 114.69);
@@ -20,6 +21,7 @@
   --field-radius: 0.75rem;
 }
 
+.jiya-light,
 [data-theme="jiya-light"] {
   --accent: oklch(0.7507 0.2536 328.52);
   --accent-foreground: var(--background);
@@ -29,6 +31,7 @@
 
 .dark,
 [data-theme="dark"],
+.jiya-dark,
 [data-theme="jiya-dark"] {
   color-scheme: dark;
   --background: oklch(0% 0 0);
@@ -37,6 +40,7 @@
   --default: oklch(16% 0.001 286.375);
 }
 
+.jiya-dark,
 [data-theme="jiya-dark"] {
   --accent: oklch(0.7507 0.2536 328.52);
   --accent-foreground: var(--foreground);

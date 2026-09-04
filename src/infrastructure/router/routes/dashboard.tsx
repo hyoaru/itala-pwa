@@ -5,6 +5,7 @@ import {
   TransactionsPanel,
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
+import { useGreeting, useThemeMode } from "@/infrastructure/hooks";
 import { Button, Popover, Tabs, useOverlayState } from "@heroui/react";
 import {
   createFileRoute,
@@ -12,7 +13,6 @@ import {
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import { useTheme } from "next-themes";
 import {
   Ellipsis,
   LogOut,
@@ -39,23 +39,18 @@ type TransactionTab = {
   query?: Parameters<typeof TransactionsPanel>[0]["query"];
 };
 
-function getGreeting(): string {
-  const date = new Date();
-  const hours = date.getHours();
-  if (hours >= 5 && hours < 12) {
-    return "Good morning";
-  } else if (hours >= 12 && hours < 18) {
-    return "Good afternoon";
-  } else {
-    return "Good evening";
-  }
-}
-
 function RouteComponent() {
   const { user, clearSession } = useAuthenticationSessionContext();
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const {
+    modes,
+    isAllowedUser,
+    currentMode,
+    onModeChange,
+    onLightDarkChange,
+    isLightDarkActive,
+  } = useThemeMode();
   const popoverState = useOverlayState();
-  const greeting = getGreeting();
+  const greeting = useGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
   const router = useRouter();
 
@@ -90,26 +85,34 @@ function RouteComponent() {
             <Popover.Content placement="left top" className="max-w-34">
               <Popover.Dialog className="p-1">
                 <Popover.Arrow />
+                {isAllowedUser && modes.length > 1 && (
+                  <div className="flex gap-1 rounded-2xl px-1 pb-1">
+                    {modes.map((mode) => (
+                      <Button
+                        key={mode.id}
+                        size="sm"
+                        variant={currentMode === mode.id ? "primary" : "ghost"}
+                        className="flex-1 justify-center"
+                        onClick={() => onModeChange(mode.id)}
+                      >
+                        {mode.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
                 <div className="flex gap-1 rounded-2xl px-1 pb-1">
-                  {[
-                    { mode: "system" as const, icon: Monitor },
-                    { mode: "light" as const, icon: Sun },
-                    { mode: "dark" as const, icon: Moon },
-                  ].map(({ mode, icon: Icon }) => (
+                  {([
+                    { id: "system" as const, icon: Monitor },
+                    { id: "light" as const, icon: Sun },
+                    { id: "dark" as const, icon: Moon },
+                  ]).map(({ id, icon: Icon }) => (
                     <Button
-                      key={mode}
+                      key={id}
                       size="sm"
-                      variant={
-                        (mode === "system" && theme === "system") ||
-                        (mode !== "system" &&
-                          resolvedTheme === mode &&
-                          theme !== "system")
-                          ? "primary"
-                          : "ghost"
-                      }
+                      variant={isLightDarkActive(id) ? "primary" : "ghost"}
                       className="flex-1 justify-center gap-1"
                       onClick={() => {
-                        setTheme(mode);
+                        onLightDarkChange(id);
                         popoverState.close();
                       }}
                     >
