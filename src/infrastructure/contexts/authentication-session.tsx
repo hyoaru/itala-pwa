@@ -1,8 +1,9 @@
 import { AuthenticatedSession, User } from "@/domain/entities";
+import { container } from "@/infrastructure/container";
 import { sessionEvents } from "@/infrastructure/events/session";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export type AuthenticationSessionState = {
   user: User | null;
@@ -24,6 +25,15 @@ export function AuthenticationSessionProvider({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
+
+  const clearSession = useCallback(() => {
+    queryClient.clear();
+    localStorage.removeItem("ACCESS_TOKEN");
+    localStorage.removeItem("ID_TOKEN");
+    localStorage.removeItem("REFRESH_TOKEN");
+
+    setUser(null);
+  }, [queryClient]);
 
   const createUserFromIdToken = (idToken: string): User => {
     const idClaims = jwtDecode<{
@@ -49,15 +59,6 @@ export function AuthenticationSessionProvider({
     setUser(createUserFromIdToken(newSession.idToken));
   };
 
-  const clearSession = () => {
-    queryClient.clear();
-    localStorage.removeItem("ACCESS_TOKEN");
-    localStorage.removeItem("ID_TOKEN");
-    localStorage.removeItem("REFRESH_TOKEN");
-
-    setUser(null);
-  };
-
   useEffect(() => {
     const accessToken = localStorage.getItem("ACCESS_TOKEN");
     const idToken = localStorage.getItem("ID_TOKEN");
@@ -68,14 +69,24 @@ export function AuthenticationSessionProvider({
       return;
     }
 
-    try {
-      setUser(createUserFromIdToken(idToken));
-      setIsLoading(false);
-    } catch {
-      setIsLoading(false);
-      return;
-    }
-  }, []);
+    let cancelled = false;
+
+    container.identity.refresh
+      .execute({ refreshToken })
+      .then((session) => {
+        if (!cancelled) setSession(session);
+      })
+      .catch(() => {
+        if (!cancelled) clearSession();
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [clearSession]);
 
   useEffect(() => {
     const off1 = sessionEvents.on("refreshed", (session) =>
@@ -86,7 +97,7 @@ export function AuthenticationSessionProvider({
       off1();
       off2();
     };
-  }, []);
+  }, [clearSession]);
 
   const isAuthenticated = user !== null;
 
