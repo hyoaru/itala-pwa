@@ -1,3 +1,15 @@
+# [0.4.0](https://github.com/hyoaru/itala-pwa/compare/v0.3.0...v0.4.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* bug on mount ([b9daed9](https://github.com/hyoaru/itala-pwa/commit/b9daed9d04a19c3e538a7f708e9a63c9fc3229e3))
+
+
+### Features
+
+* add dark mode ([6b982e7](https://github.com/hyoaru/itala-pwa/commit/6b982e714cc34b53f827ba7a277767b1dc268440))
+
 # [0.3.0](https://github.com/hyoaru/itala-pwa/compare/v0.2.0...v0.3.0) (2026-09-04)
 
 
