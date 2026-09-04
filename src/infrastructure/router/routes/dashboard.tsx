@@ -5,7 +5,7 @@ import {
   TransactionsPanel,
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
-import { Button, Popover, Tabs } from "@heroui/react";
+import { Button, Popover, Tabs, useOverlayState } from "@heroui/react";
 import {
   createFileRoute,
   Link,
@@ -54,6 +54,7 @@ function getGreeting(): string {
 function RouteComponent() {
   const { user, clearSession } = useAuthenticationSessionContext();
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const popoverState = useOverlayState();
   const greeting = getGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
   const router = useRouter();
@@ -69,6 +70,7 @@ function RouteComponent() {
   ];
 
   const onSignOut = () => {
+    popoverState.close();
     clearSession();
     router.navigate({ to: "/sign-in" });
   };
@@ -106,7 +108,10 @@ function RouteComponent() {
                           : "ghost"
                       }
                       className="flex-1 justify-center gap-1"
-                      onClick={() => setTheme(mode)}
+                      onClick={() => {
+                        setTheme(mode);
+                        popoverState.close();
+                      }}
                     >
                       <Icon className="" />
                     </Button>
@@ -164,7 +169,7 @@ function RouteComponent() {
             <div className="flex shrink items-center">
               <div className="grow">
                 <Tabs.ListContainer className="bg-default w-max">
-                  <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent">
+                  <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent **:data-[slot=tabs-tab]:data-[selected=true]:text-accent-foreground">
                     {transactionTabs.map((item) => (
                       <Tabs.Tab
                         className="capitalize"
@@ -178,7 +183,10 @@ function RouteComponent() {
                   </Tabs.List>
                 </Tabs.ListContainer>
               </div>
-              <Popover>
+              <Popover
+                isOpen={popoverState.isOpen}
+                onOpenChange={popoverState.setOpen}
+              >
                 <Button isIconOnly size="sm" variant="secondary">
                   <Ellipsis className="h-[1.5em] w-[1.5em]" />
                 </Button>

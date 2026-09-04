@@ -15,7 +15,7 @@ export const Route = createRootRouteWithContext<{
 function Root() {
   return (
     <>
-      <div className="container mx-auto h-dvh p-4">
+      <div className="bg-background container mx-auto h-dvh p-4">
         <div className="flex h-full flex-col items-start justify-start">
           <Outlet />
           <Footer />
