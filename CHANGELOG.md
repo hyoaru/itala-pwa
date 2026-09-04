@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/hyoaru/itala-pwa/compare/v0.4.0...v0.4.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* apple touch icon ([4989435](https://github.com/hyoaru/itala-pwa/commit/4989435b378d1d550b9164ba0e043b574252e82e))
+
 # [0.4.0](https://github.com/hyoaru/itala-pwa/compare/v0.3.0...v0.4.0) (2026-09-04)
 
 
