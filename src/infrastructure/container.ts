@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import {
   DecoratedAccountRepository,
@@ -148,6 +149,18 @@ const findTransactions = new FindTransactions(transactionRepository);
 const updateTransaction = new UpdateTransaction(transactionRepository);
 const deleteTransaction = new DeleteTransaction(transactionRepository);
 
+// Version
+const getVersion = () =>
+  queryOptions({
+    queryKey: ["version"],
+    queryFn: async () => {
+      const { data } = await apiHttpClient.get<{ version: string }>(
+        "/version",
+      );
+      return data.version;
+    },
+  });
+
 export const container = {
   identity: {
     signIn: signIn,
@@ -178,5 +191,8 @@ export const container = {
     findOne: findOneTransaction,
     update: updateTransaction,
     delete: deleteTransaction,
+  },
+  version: {
+    get: getVersion,
   },
 };
