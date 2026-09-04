@@ -123,3 +123,19 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "${{ env.CLOUDFRONT_DISTRIBUTION_ID }}" \
             --paths "/*"
+
+  notify:
+    needs: [setup, build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify discord
+        uses: hyoaru/actions/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: "Itala PWA deployment"
+          description: |
+            Environment: `${{ needs.setup.outputs.environment }}`
+            Build: `${{ needs.build.result }}`
+            Deploy: `${{ needs.deploy.result }}`
