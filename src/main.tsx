@@ -1,5 +1,6 @@
 import "@fontsource-variable/dm-sans";
 import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/baloo-2";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./infrastructure/app";

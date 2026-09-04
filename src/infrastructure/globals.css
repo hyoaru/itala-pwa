@@ -10,7 +10,8 @@
 .light,
 .default,
 [data-theme="light"],
-[data-theme="default"] {
+[data-theme="default"],
+[data-theme="jiya-light"] {
   --background: oklch(100% 0 0);
   --accent: oklch(0.9163 0.1927 114.69);
   --accent-foreground: var(--foreground);
@@ -19,13 +20,28 @@
   --field-radius: 0.75rem;
 }
 
+[data-theme="jiya-light"] {
+  --accent: oklch(0.7507 0.2536 328.52);
+  --accent-foreground: var(--background);
+  --font-heading: "Baloo 2 Variable", sans-serif;
+  --font-sans: "Baloo 2 Variable", sans-serif;
+}
+
 .dark,
-[data-theme="dark"] {
+[data-theme="dark"],
+[data-theme="jiya-dark"] {
   color-scheme: dark;
   --background: oklch(0% 0 0);
   --accent: oklch(0.7163 0.1927 114.69);
   --accent-foreground: var(--background);
   --default: oklch(16% 0.001 286.375);
+}
+
+[data-theme="jiya-dark"] {
+  --accent: oklch(0.7507 0.2536 328.52);
+  --accent-foreground: var(--foreground);
+  --font-heading: "Baloo 2 Variable", sans-serif;
+  --font-sans: "Baloo 2 Variable", sans-serif;
 }
 
 @layer components {
