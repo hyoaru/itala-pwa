@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/hyoaru/itala-pwa/compare/v0.5.0...v0.5.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* auth race condition in cross tab rotating refresh token by disabling it skill issue eksde ([0528953](https://github.com/hyoaru/itala-pwa/commit/0528953e996329ad2c104af16d01888b6de1b849))
+
 # [0.5.0](https://github.com/hyoaru/itala-pwa/compare/v0.4.1...v0.5.0) (2026-09-05)
 
 
