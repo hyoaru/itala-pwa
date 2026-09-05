@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/hyoaru/itala-pwa/compare/v0.5.1...v0.6.0) (2026-09-05)
+
+
+### Features
+
+* hide balance visibility ([8f47adc](https://github.com/hyoaru/itala-pwa/commit/8f47adc559bd62e9d6820e1de807540a143aedd1))
+
 ## [0.5.1](https://github.com/hyoaru/itala-pwa/compare/v0.5.0...v0.5.1) (2026-09-05)
 
 
