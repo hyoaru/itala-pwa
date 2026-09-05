@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/hyoaru/itala-pwa/compare/v0.4.1...v0.5.0) (2026-09-05)
+
+
+### Features
+
+* add jiya theme ([b501904](https://github.com/hyoaru/itala-pwa/commit/b5019042ed57b60f10c7f41d32f26b890173e74c))
+* custom theme ([df2d792](https://github.com/hyoaru/itala-pwa/commit/df2d792e71194155515b5fcc7fee79d5e0116217))
+* theme mode ([20d9be1](https://github.com/hyoaru/itala-pwa/commit/20d9be1e09a647e836b5b3149563046f420c2d3c))
+
 ## [0.4.1](https://github.com/hyoaru/itala-pwa/compare/v0.4.0...v0.4.1) (2026-09-04)
 
 
