@@ -30,6 +30,7 @@ import {
   NotAuthorizedException,
   PasswordResetRequiredException,
   ResendConfirmationCodeCommand,
+  RevokeTokenCommand,
   SignUpCommand,
   UsernameExistsException,
   UserNotConfirmedException,
@@ -161,15 +162,35 @@ export class CognitoIdentityProvider implements IdentityProvider {
       const idToken = result?.AuthenticationResult?.IdToken;
       const newRefreshToken = result?.AuthenticationResult?.RefreshToken;
 
-      if (!accessToken || !idToken || !newRefreshToken) {
+      if (!accessToken || !idToken) {
         throw new IdentityProviderError("Unexpected response from Cognito");
       }
 
       return new AuthenticatedSession({
         accessToken,
         idToken,
-        refreshToken: newRefreshToken,
+        refreshToken: newRefreshToken ?? refreshToken,
       });
+    } catch (error) {
+      if (error instanceof IdentityProviderError) {
+        throw error;
+      }
+
+      const message = error instanceof Error ? error.message : String(error);
+      throw new IdentityProviderError(`Identity provider error: ${message}`, {
+        cause: error,
+      });
+    }
+  }
+
+  public async revoke(refreshToken: string): Promise<void> {
+    try {
+      await this.cognitoClient.send(
+        new RevokeTokenCommand({
+          ClientId: this.userPoolClientId,
+          Token: refreshToken,
+        }),
+      );
     } catch (error) {
       if (error instanceof IdentityProviderError) {
         throw error;

@@ -28,6 +28,8 @@ export class MockIdentityProvider implements IdentityProvider {
     });
   }
 
+  public async revoke(_refreshToken: string): Promise<void> {}
+
   public async verify(_email: string, _code: string): Promise<void> {}
 
   public async sendVerification(_email: string): Promise<void> {}

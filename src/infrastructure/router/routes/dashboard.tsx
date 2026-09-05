@@ -5,7 +5,12 @@ import {
   TransactionsPanel,
 } from "@/infrastructure/components";
 import { useAuthenticationSessionContext } from "@/infrastructure/contexts/authentication-session";
-import { useGreeting, useThemeMode } from "@/infrastructure/hooks";
+import {
+  useGreeting,
+  useIdentityActions,
+  useThemeMode,
+} from "@/infrastructure/hooks";
+import { useMutation } from "@tanstack/react-query";
 import { Button, Popover, Tabs, useOverlayState } from "@heroui/react";
 import {
   createFileRoute,
@@ -53,6 +58,8 @@ function RouteComponent() {
   const greeting = useGreeting();
   const initials = (user?.firstName ?? "A")?.[0] + user?.lastName?.[0];
   const router = useRouter();
+  const { signOut } = useIdentityActions();
+  const signOutMutation = useMutation(signOut());
 
   const [selectedAccountId, setSelectedAccountId] = useState<
     string | undefined
@@ -64,8 +71,9 @@ function RouteComponent() {
     { name: "expense", query: { type: TransactionType.Expense } },
   ];
 
-  const onSignOut = () => {
+  const onSignOut = async () => {
     popoverState.close();
+    await signOutMutation.mutateAsync().catch(() => {});
     clearSession();
     router.navigate({ to: "/sign-in" });
   };

@@ -22,6 +22,7 @@ import {
   SendAccountVerification,
   SendPasswordReset,
   SignIn,
+  SignOut,
   SignUp,
   UpdateAccount,
   UpdateCategory,
@@ -48,6 +49,7 @@ const identityProvider = new DecoratedIdentityProvider(
 );
 
 const signIn = new SignIn(identityProvider);
+const signOut = new SignOut(identityProvider);
 const refreshSession = new RefreshSession(identityProvider);
 const signUp = new SignUp(identityProvider);
 const verifyAccount = new VerifyAccount(identityProvider);
@@ -164,6 +166,7 @@ const getVersion = () =>
 export const container = {
   identity: {
     signIn: signIn,
+    signOut: signOut,
     refresh: refreshSession,
     signUp: signUp,
     verifyAccount: verifyAccount,
