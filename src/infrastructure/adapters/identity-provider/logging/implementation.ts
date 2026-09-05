@@ -78,6 +78,18 @@ export class LoggingIdentityProvider implements IdentityProvider {
     }
   }
 
+  public async revoke(refreshToken: string): Promise<void> {
+    try {
+      logger.debug("Revoking session");
+      const result = await this.inner.revoke(refreshToken);
+      logger.info("Session revoked");
+      return result;
+    } catch (error) {
+      this.logFailure("Revoking session failed", undefined, error);
+      throw error;
+    }
+  }
+
   public async verify(email: string, code: string): Promise<void> {
     try {
       logger.debug("Verifying email", { email });

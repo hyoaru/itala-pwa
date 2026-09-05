@@ -12,6 +12,8 @@ export interface IdentityProvider {
 
   refresh(frefreshToken: string): Promise<AuthenticatedSession>;
 
+  revoke(refreshToken: string): Promise<void>;
+
   verify(email: string, code: string): Promise<void>;
 
   sendVerification(email: string): Promise<void>;

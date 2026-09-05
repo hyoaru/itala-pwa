@@ -45,6 +45,16 @@ export const useIdentityActions = () => {
           queryClient.invalidateQueries();
         },
       }),
+    signOut: () =>
+      mutationOptions({
+        mutationKey: [baseKey],
+        mutationFn: async (): Promise<void> => {
+          const refreshToken = localStorage.getItem("REFRESH_TOKEN");
+          if (refreshToken) {
+            await container.identity.signOut.execute({ refreshToken });
+          }
+        },
+      }),
     signUp: () =>
       mutationOptions({
         mutationKey: [baseKey],
