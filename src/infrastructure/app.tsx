@@ -28,12 +28,7 @@ export default function App() {
   );
 
   return (
-    <ThemeProvider
-      enableSystem
-      attribute="class"
-      defaultTheme="system"
-      themes={["light", "dark", "jiya-light", "jiya-dark"]}
-    >
+    <ThemeProvider enableSystem attribute="data-theme" defaultTheme="system">
       <QueryClientProvider client={queryClient}>
         <AuthenticationSessionProvider>
           <InnerApp />

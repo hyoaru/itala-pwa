@@ -75,7 +75,7 @@ function RouteComponent() {
       <div className="flex h-full w-full flex-col space-y-3">
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">
-            {greeting}, {user?.firstName}
+            {greeting}, {isAllowedUser ? "my love" : user?.firstName}
           </p>
 
           <Popover>
@@ -101,11 +101,11 @@ function RouteComponent() {
                   </div>
                 )}
                 <div className="flex gap-1 rounded-2xl px-1 pb-1">
-                  {([
+                  {[
                     { id: "system" as const, icon: Monitor },
                     { id: "light" as const, icon: Sun },
                     { id: "dark" as const, icon: Moon },
-                  ]).map(({ id, icon: Icon }) => (
+                  ].map(({ id, icon: Icon }) => (
                     <Button
                       key={id}
                       size="sm"
