@@ -79,10 +79,11 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
               Add a transaction to start tracking your income and expenses.
             </p>
           </div>
-          <Link to="/transactions/new">
-            <Button variant="tertiary" size="sm" className="uppercase">
-              Create
-            </Button>
+          <Link
+            to="/transactions/new"
+            className="button button--secondary w-full justify-center rounded-2xl px-3 py-1.5 text-xs font-semibold uppercase"
+          >
+            Create
           </Link>
         </div>
       </Tabs.Panel>
