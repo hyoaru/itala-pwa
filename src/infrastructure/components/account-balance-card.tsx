@@ -26,7 +26,13 @@ export const AccountBalanceCard = (props: AccountBalanceCardProps) => {
               Created {formattedDate}
             </p>
           )}
-          <Button isIconOnly size="sm" variant="ghost" onClick={toggle}>
+          <Button
+            className="h-0"
+            isIconOnly
+            size="sm"
+            variant="ghost"
+            onClick={toggle}
+          >
             {isVisible ? (
               <Eye className="text-muted size-4" />
             ) : (
