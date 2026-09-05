@@ -81,7 +81,7 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
           </div>
           <Link
             to="/transactions/new"
-            className="button button--secondary w-full justify-center rounded-2xl px-3 py-1.5 text-xs font-semibold uppercase"
+            className="button button--secondary uppercase"
           >
             Create
           </Link>
