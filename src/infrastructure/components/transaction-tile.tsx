@@ -1,6 +1,7 @@
 import type { Transaction } from "@/domain/entities";
 import { TransactionType } from "@/domain/value-objects";
 import { useAccountActions, useCategoryActions } from "@/infrastructure/hooks";
+import { useBalanceVisibilityStore } from "@/infrastructure/stores/balance-visibility";
 import { Button, Popover, useOverlayState } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -20,6 +21,7 @@ export const TransactionTile = (props: TransactionTileProps) => {
   const popoverState = useOverlayState();
   const { findAccount } = useAccountActions();
   const { findCategory } = useCategoryActions();
+  const isVisible = useBalanceVisibilityStore((s) => s.isVisible);
 
   const { data: account } = useQuery({
     ...findAccount({ id: props.transaction.accountId }),
@@ -60,9 +62,9 @@ export const TransactionTile = (props: TransactionTileProps) => {
             </p>
           </div>
           <p className="shrink-0 font-semibold">
-            {props.transaction.type == TransactionType.Income ? "+" : "-"}
-            {" ₱"}
-            {formattedAmount}
+            {isVisible
+              ? `${props.transaction.type == TransactionType.Income ? "+" : "-"} ₱${formattedAmount}`
+              : "****"}
           </p>
         </div>
       </Button>
@@ -82,9 +84,9 @@ export const TransactionTile = (props: TransactionTileProps) => {
               <div className="flex items-center justify-between">
                 <span className="text-muted text-xs">Amount</span>
                 <span className="text-sm font-semibold">
-                  {props.transaction.type == TransactionType.Income ? "+" : "-"}
-                  {" ₱"}
-                  {formattedAmount}
+                  {isVisible
+                    ? `${props.transaction.type == TransactionType.Income ? "+" : "-"} ₱${formattedAmount}`
+                    : "****"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
