@@ -1,3 +1,10 @@
+## [0.6.2](https://github.com/hyoaru/itala-pwa/compare/v0.6.1...v0.6.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* empty state button create compact width ([161417e](https://github.com/hyoaru/itala-pwa/commit/161417e5a14c51d68ff5f14c5d272ce1cd8a831b))
+
 ## [0.6.1](https://github.com/hyoaru/itala-pwa/compare/v0.6.0...v0.6.1) (2026-09-05)
 
 
