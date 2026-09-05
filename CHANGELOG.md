@@ -1,3 +1,10 @@
+## [0.6.3](https://github.com/hyoaru/itala-pwa/compare/v0.6.2...v0.6.3) (2026-09-05)
+
+
+### Bug Fixes
+
+* balance accoutn card spacing ([48ff35f](https://github.com/hyoaru/itala-pwa/commit/48ff35f150929f21540e36eca589a851c5e24346))
+
 ## [0.6.2](https://github.com/hyoaru/itala-pwa/compare/v0.6.1...v0.6.2) (2026-09-05)
 
 
