@@ -137,7 +137,6 @@ jobs:
         uses: hyoaru/actions/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          status: ${{ job.status }}
           title: "Itala PWA Release - ${{ github.event.release.tag_name }}"
           description: |
             Environment: `${{ needs.setup.outputs.environment }}`
