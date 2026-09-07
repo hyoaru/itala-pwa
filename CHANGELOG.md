@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/hyoaru/itala-pwa/compare/v0.7.0...v0.7.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* misleading notif status ([0ee7afe](https://github.com/hyoaru/itala-pwa/commit/0ee7afe8d8b2922486ef6734966c76bf7c2cbeb7))
+
 # [0.7.0](https://github.com/hyoaru/itala-pwa/compare/v0.6.3...v0.7.0) (2026-09-07)
 
 
