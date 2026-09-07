@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/hyoaru/itala-pwa/compare/v0.6.3...v0.7.0) (2026-09-07)
+
+
+### Features
+
+* add publish workflow ([47bf5ee](https://github.com/hyoaru/itala-pwa/commit/47bf5ee0421a444f62b40720990e9e55e124a5ea))
+
 ## [0.6.3](https://github.com/hyoaru/itala-pwa/compare/v0.6.2...v0.6.3) (2026-09-05)
 
 
