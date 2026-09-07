@@ -1,3 +1,10 @@
+## [0.7.2](https://github.com/hyoaru/itala-pwa/compare/v0.7.1...v0.7.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* status ([765bab6](https://github.com/hyoaru/itala-pwa/commit/765bab61b2feb5327658b8850b62ae121fb25e9e))
+
 ## [0.7.1](https://github.com/hyoaru/itala-pwa/compare/v0.7.0...v0.7.1) (2026-09-07)
 
 
