@@ -1,3 +1,10 @@
+## [0.7.6](https://github.com/hyoaru/itala-pwa/compare/v0.7.5...v0.7.6) (2026-09-08)
+
+
+### Bug Fixes
+
+* balance toggle a little too hard to click ([b676b67](https://github.com/hyoaru/itala-pwa/commit/b676b6708bb8dd070eb53504dc7fcd1904c077e8))
+
 ## [0.7.5](https://github.com/hyoaru/itala-pwa/compare/v0.7.4...v0.7.5) (2026-09-08)
 
 
