@@ -7,8 +7,8 @@ import {
   IdentityProviderInvalidEmailError,
   IdentityProviderInvalidPasswordError,
   IdentityProviderPasswordResetRequiredError,
-  IdentityProviderUserNotVerifiedError,
   IdentityProviderUserNotFoundError,
+  IdentityProviderUserNotVerifiedError,
   type IdentityProvider,
 } from "@/application/ports/identity-provider";
 import { AuthenticatedSession } from "@/domain/entities";
@@ -21,7 +21,6 @@ import {
   ConfirmSignUpCommand,
   ExpiredCodeException,
   ForgotPasswordCommand,
-  GetTokensFromRefreshTokenCommand,
   InitiateAuthCommand,
   InvalidEmailRoleAccessPolicyException,
   InvalidParameterException,
@@ -152,9 +151,12 @@ export class CognitoIdentityProvider implements IdentityProvider {
   public async refresh(refreshToken: string): Promise<AuthenticatedSession> {
     try {
       const result = await this.cognitoClient.send(
-        new GetTokensFromRefreshTokenCommand({
+        new InitiateAuthCommand({
+          AuthFlow: "REFRESH_TOKEN_AUTH",
           ClientId: this.userPoolClientId,
-          RefreshToken: refreshToken,
+          AuthParameters: {
+            REFRESH_TOKEN: refreshToken,
+          },
         }),
       );
 
