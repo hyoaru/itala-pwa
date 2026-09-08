@@ -3,7 +3,8 @@ import {
   CategoryList,
   NewCategoryModal,
 } from "@/infrastructure/components";
-import { Button, useOverlayState } from "@heroui/react";
+import { Button, Tabs, useOverlayState } from "@heroui/react";
+import { TransactionType } from "@/domain/value-objects";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
@@ -16,8 +17,19 @@ export const Route = createFileRoute("/categories/")({
   component: RouteComponent,
 });
 
+type CategoryTab = {
+  name: string;
+  query?: { transactionType: TransactionType };
+};
+
 function RouteComponent() {
   const createCategoryModalState = useOverlayState();
+
+  const categoryTabs: CategoryTab[] = [
+    { name: "all" },
+    { name: "income", query: { transactionType: TransactionType.Income } },
+    { name: "expense", query: { transactionType: TransactionType.Expense } },
+  ];
 
   return (
     <>
@@ -43,13 +55,40 @@ function RouteComponent() {
             </p>
           </div>
 
-          <div className="relative h-full flex-1">
-            <div className="absolute h-full min-h-0 w-full">
-              <AsyncBoundary>
-                <CategoryList onCreate={createCategoryModalState.open} />
-              </AsyncBoundary>
+          <Tabs className="flex flex-1 flex-col">
+            <div className="flex shrink items-center">
+              <div className="grow">
+                <Tabs.ListContainer className="bg-default w-max">
+                  <Tabs.List className="**:data-[slot=tabs-indicator]:bg-accent **:data-[slot=tabs-tab]:data-[selected=true]:text-accent-foreground">
+                    {categoryTabs.map((item) => (
+                      <Tabs.Tab
+                        className="capitalize"
+                        key={item.name}
+                        id={item.name}
+                      >
+                        {item.name}
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                    ))}
+                  </Tabs.List>
+                </Tabs.ListContainer>
+              </div>
             </div>
-          </div>
+            <div className="relative flex-1">
+              <div className="absolute inset-0">
+                <AsyncBoundary>
+                  {categoryTabs.map((item) => (
+                    <CategoryList
+                      key={`TabPanel-${item.name}`}
+                      id={item.name}
+                      query={item.query}
+                      onCreate={createCategoryModalState.open}
+                    />
+                  ))}
+                </AsyncBoundary>
+              </div>
+            </div>
+          </Tabs>
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import {
   Button,
   Modal,
   ScrollShadow,
+  Tabs,
   toast,
   useOverlayState,
 } from "@heroui/react";
@@ -12,12 +13,17 @@ import { useMutation, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Ghost, Trash } from "lucide-react";
 import { useState } from "react";
 import type { Category } from "@/domain/entities";
+import type { FindCategoriesRequest } from "@/application/use-cases";
+
+type Query = FindCategoriesRequest;
 
 interface CategoryListProps {
+  id: string;
+  query?: Query;
   onCreate?: () => void;
 }
 
-export const CategoryList = ({ onCreate }: CategoryListProps) => {
+export const CategoryList = (props: CategoryListProps) => {
   const editCategoryModalState = useOverlayState();
   const deleteConfirmState = useOverlayState();
 
@@ -28,7 +34,7 @@ export const CategoryList = ({ onCreate }: CategoryListProps) => {
   const { findCategoriesInfinite, deleteCategory } = useCategoryActions();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useSuspenseInfiniteQuery(findCategoriesInfinite());
+    useSuspenseInfiniteQuery(findCategoriesInfinite(props.query));
   const categories = data.pages.flatMap((page) => page.items);
 
   const deleteCategoryMutation = useMutation(deleteCategory());
@@ -58,23 +64,30 @@ export const CategoryList = ({ onCreate }: CategoryListProps) => {
 
   if (categories.length === 0) {
     return (
-      <div className="flex h-full w-full flex-col items-center justify-center gap-y-[14px]">
-        <Ghost className="text-muted size-8" />
-        <div className="flex flex-col items-center">
-          <p className="text-muted text-xl font-medium">No categories yet</p>
-          <p className="text-muted text-center text-sm">
-            Create a category to start organizing your spending.
-          </p>
+      <Tabs.Panel className="h-full p-0" id={props.id}>
+        <div className="flex h-full w-full flex-col items-center justify-center gap-y-3.5">
+          <Ghost className="text-muted size-8" />
+          <div className="flex flex-col items-center">
+            <p className="text-muted text-xl font-medium">No categories yet</p>
+            <p className="text-muted text-center text-sm">
+              Create a category to start organizing your spending.
+            </p>
+          </div>
+          <Button
+            variant="tertiary"
+            size="sm"
+            className="uppercase"
+            onClick={props.onCreate}
+          >
+            Create
+          </Button>
         </div>
-        <Button variant="tertiary" size="sm" className="uppercase" onClick={onCreate}>
-          Create
-        </Button>
-      </div>
+      </Tabs.Panel>
     );
   }
 
   return (
-    <>
+    <Tabs.Panel className="h-full p-0" id={props.id}>
       <ScrollShadow
         size={80}
         onScroll={(e) => {
@@ -144,6 +157,6 @@ export const CategoryList = ({ onCreate }: CategoryListProps) => {
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>
-    </>
+    </Tabs.Panel>
   );
 };
