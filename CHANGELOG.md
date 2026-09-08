@@ -1,3 +1,10 @@
+## [0.7.3](https://github.com/hyoaru/itala-pwa/compare/v0.7.2...v0.7.3) (2026-09-08)
+
+
+### Bug Fixes
+
+* auth refresh flow invalid refresh token when refreshing ([4e39d36](https://github.com/hyoaru/itala-pwa/commit/4e39d367baae1b12eae0667e541384b5f1442ca4))
+
 ## [0.7.2](https://github.com/hyoaru/itala-pwa/compare/v0.7.1...v0.7.2) (2026-09-07)
 
 
