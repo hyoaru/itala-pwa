@@ -114,6 +114,7 @@ export const CategoryList = (props: CategoryListProps) => {
       </ScrollShadow>
 
       <EditCategoryModal
+        key={selectedCategory?.id}
         isOpen={editCategoryModalState.isOpen}
         onOpenChange={editCategoryModalState.setOpen}
         category={selectedCategory}

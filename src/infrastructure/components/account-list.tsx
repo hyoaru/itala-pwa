@@ -99,6 +99,7 @@ export const AccountList = ({ onCreate }: AccountListProps) => {
       </ScrollShadow>
 
       <EditAccountModal
+        key={selectedAccount?.id}
         isOpen={editAccountModalState.isOpen}
         onOpenChange={editAccountModalState.setOpen}
         account={selectedAccount}

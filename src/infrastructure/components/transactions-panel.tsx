@@ -122,6 +122,7 @@ export const TransactionsPanel = (props: TransactionsPanelProps) => {
       </ScrollShadow>
 
       <EditTransactionModal
+        key={selectedTransaction?.id}
         isOpen={editTransactionModalState.isOpen}
         onOpenChange={editTransactionModalState.setOpen}
         transaction={selectedTransaction}
