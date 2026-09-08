@@ -1,3 +1,10 @@
+## [0.8.2](https://github.com/hyoaru/itala-pwa/compare/v0.8.1...v0.8.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* inconsistent date time display and mutation non-utc ([a84755d](https://github.com/hyoaru/itala-pwa/commit/a84755dd8ea29c8e5e5d98a5e906745f87590dc0))
+
 ## [0.8.1](https://github.com/hyoaru/itala-pwa/compare/v0.8.0...v0.8.1) (2026-09-08)
 
 
