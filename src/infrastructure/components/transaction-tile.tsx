@@ -52,7 +52,7 @@ export const TransactionTile = (props: TransactionTileProps) => {
         ) : (
           <BanknoteArrowDown className="text-muted h-[1.8em] w-[1.8em] shrink-0" />
         )}
-        <div className="flex min-w-0 flex-1 items-center justify-between gap-12 rounded-3xl py-2.5 ps-2.5">
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-4 rounded-3xl py-2.5 ps-2.5">
           <div className="flex min-w-0 items-center gap-1">
             <p className="inline-flex w-full min-w-0 items-center gap-1 font-medium">
               <span className="truncate">{props.transaction.description}</span>
