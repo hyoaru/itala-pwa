@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { TransactionType } from "@/domain/value-objects";
 import {
   AccountBalanceCarousel,
@@ -10,8 +11,8 @@ import {
   useIdentityActions,
   useThemeMode,
 } from "@/infrastructure/hooks";
-import { useMutation } from "@tanstack/react-query";
 import { Button, Popover, Tabs, useOverlayState } from "@heroui/react";
+import { useMutation } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link,
@@ -73,9 +74,12 @@ function RouteComponent() {
 
   const onSignOut = async () => {
     popoverState.close();
-    await signOutMutation.mutateAsync().catch(() => {});
-    clearSession();
-    router.navigate({ to: "/sign-in" });
+    try {
+      await signOutMutation.mutateAsync();
+    } finally {
+      flushSync(() => clearSession());
+      router.navigate({ to: "/sign-in" });
+    }
   };
 
   return (

@@ -32,12 +32,12 @@ export function AuthenticationSessionProvider({
   const queryClient = useQueryClient();
 
   const clearSession = useCallback(() => {
-    queryClient.clear();
     localStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("ID_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
 
     setUser(null);
+    queryClient.clear();
   }, [queryClient]);
 
   const createUserFromIdToken = (idToken: string): User => {
