@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/hyoaru/itala-pwa/compare/v0.7.6...v0.8.0) (2026-09-08)
+
+
+### Features
+
+* category tabs ([61281ce](https://github.com/hyoaru/itala-pwa/commit/61281ce4222b5f0d203df9134159e8fd1b247ae5))
+
 ## [0.7.6](https://github.com/hyoaru/itala-pwa/compare/v0.7.5...v0.7.6) (2026-09-08)
 
 
