@@ -27,7 +27,7 @@ export const AccountBalanceCard = (props: AccountBalanceCardProps) => {
             </p>
           )}
           <Button
-            className="h-max w-max ps-2"
+            className="h-max justify-end"
             isIconOnly
             size="sm"
             variant="ghost"
