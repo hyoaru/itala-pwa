@@ -50,11 +50,11 @@ const { fieldContext, formContext } = createFormHookContexts();
 const nowAsCalendarDateTime = () => {
   const now = new Date();
   return new CalendarDateTime(
-    now.getFullYear(),
-    now.getMonth() + 1,
-    now.getDate(),
-    now.getHours(),
-    now.getMinutes(),
+    now.getUTCFullYear(),
+    now.getUTCMonth() + 1,
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
   );
 };
 

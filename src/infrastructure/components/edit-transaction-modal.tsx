@@ -72,11 +72,11 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
 
   const toCalendarDateTime = (date: Date): CalendarDateTime => {
     return new CalendarDateTime(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
+      date.getUTCFullYear(),
+      date.getUTCMonth() + 1,
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
     );
   };
 
