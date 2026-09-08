@@ -1,3 +1,11 @@
+## [0.7.5](https://github.com/hyoaru/itala-pwa/compare/v0.7.4...v0.7.5) (2026-09-08)
+
+
+### Bug Fixes
+
+* gap between balance and date too big ([ad77aab](https://github.com/hyoaru/itala-pwa/commit/ad77aab976fea4dfbe8761d83e1802ef9442b4c5))
+* unable to toggle balance visibility ([a023a29](https://github.com/hyoaru/itala-pwa/commit/a023a29f8150095dc09164374ccf79c57c7b9e6a))
+
 ## [0.7.4](https://github.com/hyoaru/itala-pwa/compare/v0.7.3...v0.7.4) (2026-09-08)
 
 
