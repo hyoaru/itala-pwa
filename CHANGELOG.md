@@ -1,3 +1,10 @@
+## [0.7.4](https://github.com/hyoaru/itala-pwa/compare/v0.7.3...v0.7.4) (2026-09-08)
+
+
+### Bug Fixes
+
+* sign on race condition ([52577a5](https://github.com/hyoaru/itala-pwa/commit/52577a57a76722709b44cc21e0fdc7a4abeba7a8))
+
 ## [0.7.3](https://github.com/hyoaru/itala-pwa/compare/v0.7.2...v0.7.3) (2026-09-08)
 
 
