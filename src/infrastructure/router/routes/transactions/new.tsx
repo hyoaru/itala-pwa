@@ -50,11 +50,11 @@ const { fieldContext, formContext } = createFormHookContexts();
 const nowAsCalendarDateTime = () => {
   const now = new Date();
   return new CalendarDateTime(
-    now.getUTCFullYear(),
-    now.getUTCMonth() + 1,
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
+    now.getFullYear(),
+    now.getMonth() + 1,
+    now.getDate(),
+    now.getHours(),
+    now.getMinutes(),
   );
 };
 
@@ -118,7 +118,13 @@ function RouteComponent() {
           accountId: value.accountId,
           categoryId: value.categoryId,
           description: value.description,
-          occurredAt: value.occurredAt.toDate("UTC"),
+          occurredAt: new Date(
+            value.occurredAt.year,
+            value.occurredAt.month - 1,
+            value.occurredAt.day,
+            value.occurredAt.hour,
+            value.occurredAt.minute,
+          ),
           idempotencyKey: key,
         });
 

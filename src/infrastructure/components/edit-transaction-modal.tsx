@@ -72,11 +72,11 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
 
   const toCalendarDateTime = (date: Date): CalendarDateTime => {
     return new CalendarDateTime(
-      date.getUTCFullYear(),
-      date.getUTCMonth() + 1,
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
     );
   };
 
@@ -122,7 +122,13 @@ export const EditTransactionModal = (props: EditTransactionModalProps) => {
           accountId: value.accountId,
           categoryId: value.categoryId,
           description: value.description,
-          occurredAt: value.occurredAt.toDate("UTC"),
+          occurredAt: new Date(
+            value.occurredAt.year,
+            value.occurredAt.month - 1,
+            value.occurredAt.day,
+            value.occurredAt.hour,
+            value.occurredAt.minute,
+          ),
           idempotencyKey: key,
         });
 
