@@ -1,6 +1,14 @@
-# Itala PWA
+# Itala - Personal Finance PWA
 
 Progressive Web App frontend for the [Itala](https://github.com/hyoaru/itala-pwa) personal finance platform. Built with React 19, TypeScript, and Vite. Manages accounts, categories, and transactions with a clean architecture approach. Part of the Itala ecosystem alongside the [API backend](https://github.com/hyoaru/itala-api), [workers](https://github.com/hyoaru/itala-workers), and [infrastructure](https://github.com/hyoaru/itala-infrastructure).
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/assets/Dashboard.png" alt="Dashboard"></td>
+    <td width="33%"><img src="docs/assets/Manage%20Categories.png" alt="Manage Categories"></td>
+    <td width="33%"><img src="docs/assets/Manage%20Accounts.png" alt="Manage Accounts"></td>
+  </tr>
+</table>
 
 ## Architecture
 
@@ -58,12 +66,12 @@ itala-pwa/
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_VERSION` | Client version displayed in footer |
-| `VITE_AWS_REGION` | AWS region for Cognito |
-| `VITE_AWS_USER_POOL_CLIENT_ID` | Cognito User Pool client ID |
-| `VITE_API_BASE_URL` | Backend API base URL |
+| Variable                       | Description                        |
+| ------------------------------ | ---------------------------------- |
+| `VITE_VERSION`                 | Client version displayed in footer |
+| `VITE_AWS_REGION`              | AWS region for Cognito             |
+| `VITE_AWS_USER_POOL_CLIENT_ID` | Cognito User Pool client ID        |
+| `VITE_API_BASE_URL`            | Backend API base URL               |
 
 ## Tech Stack
 
