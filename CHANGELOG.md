@@ -1,3 +1,10 @@
+## [0.8.4](https://github.com/hyoaru/itala-pwa/compare/v0.8.3...v0.8.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* deploy only when new version is released ([00ab092](https://github.com/hyoaru/itala-pwa/commit/00ab0927b569c799bb9aaae5950286dc49782d2d))
+
 ## [0.8.3](https://github.com/hyoaru/itala-pwa/compare/v0.8.2...v0.8.3) (2026-09-10)
 
 
