@@ -96,6 +96,29 @@ itala-pwa/
 - A running [itala-api](https://github.com/hyoaru/itala-api) instance (local or deployed)
 - Amazon Cognito User Pool with a configured client
 
+## Development
+
+### Git Hooks
+
+Git hooks are managed with [Lefthook](https://github.com/evilmartians/lefthook) and [Cocogitto](https://github.com/cocogitto/cocogitto). Install both:
+
+```bash
+paru -S lefthook cocogitto
+```
+
+Hooks are activated automatically on `npm install` via the `prepare` script, or manually:
+
+```bash
+lefthook install
+```
+
+| Hook         | Action                                                                                    |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| `pre-commit` | Runs `oxlint --fix` and `prettier --write` on staged files, re-staging changes            |
+| `commit-msg` | Runs `cog verify` to enforce [Conventional Commits](https://www.conventionalcommits.org/) |
+
+Commits must follow the conventional format, e.g. `feat: add category tabs` or `fix: date time render locally push utc`.
+
 ## Deployment
 
 ### CI/CD Pipeline
