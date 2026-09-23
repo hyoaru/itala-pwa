@@ -18,6 +18,7 @@ export type AuthenticationSessionState = {
   clearSession: () => void;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthenticationSessionContext = createContext<
   AuthenticationSessionState | undefined
 >(undefined);
@@ -111,6 +112,7 @@ export function AuthenticationSessionProvider({
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuthenticationSessionContext() {
   const context = useContext(AuthenticationSessionContext);
   if (!context) {

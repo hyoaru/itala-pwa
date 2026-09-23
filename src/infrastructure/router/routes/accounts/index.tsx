@@ -16,6 +16,7 @@ export const Route = createFileRoute("/accounts/")({
   component: RouteComponent,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   const createAccountModalState = useOverlayState();
 

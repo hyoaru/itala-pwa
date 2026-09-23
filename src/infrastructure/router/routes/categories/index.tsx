@@ -22,6 +22,7 @@ type CategoryTab = {
   query?: { transactionType: TransactionType };
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   const createCategoryModalState = useOverlayState();
 

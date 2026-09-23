@@ -49,6 +49,7 @@ const { useAppForm } = createFormHook({
   formContext,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   const { setSession } = useAuthenticationSessionContext();
   const navigate = useNavigate();

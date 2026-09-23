@@ -12,6 +12,7 @@ export const Route = createRootRouteWithContext<{
   pendingComponent: Loading,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 function Root() {
   return (
     <>

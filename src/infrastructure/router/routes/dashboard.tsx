@@ -45,6 +45,7 @@ type TransactionTab = {
   query?: Parameters<typeof TransactionsPanel>[0]["query"];
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   const { user, clearSession } = useAuthenticationSessionContext();
   const {

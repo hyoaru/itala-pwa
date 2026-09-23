@@ -74,6 +74,7 @@ const { useAppForm } = createFormHook({
   formContext,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);
   const [isAccountSelectOpen, setIsAccountSelectOpen] = useState(false);
