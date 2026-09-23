@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1111.0",
@@ -46,6 +47,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "babel-plugin-react-compiler": "^1.0.0",
+    "lefthook": "^2.1.14",
     "oxlint": "^1.75.0",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
