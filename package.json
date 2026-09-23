@@ -1,12 +1,14 @@
 {
   "name": "itala",
-  "private": true,
   "version": "0.8.5",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "vitest",
+    "test:ci": "vitest run",
     "preview": "vite preview",
     "prepare": "lefthook install"
   },
@@ -53,6 +55,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "~6.0.2",
     "vite": "^8.2.0",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^5.0.1"
   }
 }
