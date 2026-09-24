@@ -1,6 +1,9 @@
 import {
   AliasExistsException,
   type CognitoIdentityProviderClient,
+  CodeMismatchException,
+  ConfirmSignUpCommand,
+  ExpiredCodeException,
   InitiateAuthCommand,
   InvalidEmailRoleAccessPolicyException,
   InvalidParameterException,
@@ -20,10 +23,12 @@ import { CognitoIdentityProvider } from "./implementation";
 import {
   IdentityProviderEmailAlreadyExistsError,
   IdentityProviderError,
+  IdentityProviderInvalidCodeError,
   IdentityProviderInvalidCredentialsError,
   IdentityProviderInvalidEmailError,
   IdentityProviderInvalidPasswordError,
   IdentityProviderPasswordResetRequiredError,
+  IdentityProviderUserNotFoundError,
   IdentityProviderUserNotVerifiedError,
 } from "@/application/ports/identity-provider";
 
@@ -401,5 +406,82 @@ describe("CognitoIdentityProvider", () => {
     sendMock.mockRejectedValue(original);
 
     await expect(provider.revoke("refresh-token")).rejects.toBe(original);
+  });
+
+  it("verifies the account with the expected Cognito command", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockResolvedValue({});
+
+    await provider.verify("ada@example.com", "123456");
+
+    const command = sendMock.mock.calls[0][0] as ConfirmSignUpCommand;
+    expect(command).toBeInstanceOf(ConfirmSignUpCommand);
+    expect(command.input).toEqual({
+      ClientId: "client-123",
+      Username: "ada@example.com",
+      ConfirmationCode: "123456",
+    });
+  });
+
+  it("throws an invalid-code error when the code mismatches", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(
+      new CodeMismatchException({ message: "x", $metadata: {} }),
+    );
+
+    await expect(
+      provider.verify("ada@example.com", "123456"),
+    ).rejects.toBeInstanceOf(IdentityProviderInvalidCodeError);
+  });
+
+  it("throws an invalid-code error when the code has expired", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(
+      new ExpiredCodeException({ message: "x", $metadata: {} }),
+    );
+
+    await expect(
+      provider.verify("ada@example.com", "123456"),
+    ).rejects.toBeInstanceOf(IdentityProviderInvalidCodeError);
+  });
+
+  it("throws a user-not-found error when the user is missing", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(
+      new UserNotFoundException({ message: "x", $metadata: {} }),
+    );
+
+    await expect(
+      provider.verify("ada@example.com", "123456"),
+    ).rejects.toBeInstanceOf(IdentityProviderUserNotFoundError);
+  });
+
+  it("wraps unknown errors in a generic identity provider error", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(new Error("network"));
+
+    await expect(
+      provider.verify("ada@example.com", "123456"),
+    ).rejects.toBeInstanceOf(IdentityProviderError);
   });
 });
