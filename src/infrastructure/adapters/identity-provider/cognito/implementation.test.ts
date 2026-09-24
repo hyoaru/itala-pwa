@@ -7,6 +7,7 @@ import {
   InvalidPasswordException,
   NotAuthorizedException,
   PasswordResetRequiredException,
+  RevokeTokenCommand,
   SignUpCommand,
   UsernameExistsException,
   UserNotConfirmedException,
@@ -357,5 +358,48 @@ describe("CognitoIdentityProvider", () => {
     sendMock.mockRejectedValue(original);
 
     await expect(provider.refresh("old-refresh")).rejects.toBe(original);
+  });
+
+  it("revokes the refresh token with the expected Cognito command", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockResolvedValue({});
+
+    await provider.revoke("refresh-token");
+
+    const command = sendMock.mock.calls[0][0] as RevokeTokenCommand;
+    expect(command).toBeInstanceOf(RevokeTokenCommand);
+    expect(command.input).toEqual({
+      ClientId: "client-123",
+      Token: "refresh-token",
+    });
+  });
+
+  it("wraps unknown errors in a generic identity provider error", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(new Error("network"));
+
+    await expect(provider.revoke("refresh-token")).rejects.toBeInstanceOf(
+      IdentityProviderError,
+    );
+  });
+
+  it("rethrows an existing identity provider error untouched", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    const original = new IdentityProviderError("boom");
+    sendMock.mockRejectedValue(original);
+
+    await expect(provider.revoke("refresh-token")).rejects.toBe(original);
   });
 });
