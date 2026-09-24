@@ -199,4 +199,35 @@ describe("HttpCategoryRepository", () => {
     const promise = repository.update("category-123", "Groceries");
     await expect(promise).rejects.toBeInstanceOf(CategoryNotFoundError);
   });
+
+  it("deletes a category", async () => {
+    const httpClient = { delete: vi.fn() } as unknown as AxiosInstance;
+
+    vi.mocked(httpClient.delete).mockResolvedValue({});
+
+    const repository = new HttpCategoryRepository(httpClient);
+    await repository.delete("category-123");
+
+    expect(httpClient.delete).toHaveBeenCalledWith("/categories/category-123");
+  });
+
+  it("throws a CategoryNotFoundError when deleting a missing category", async () => {
+    const httpClient = { delete: vi.fn() } as unknown as AxiosInstance;
+
+    vi.mocked(httpClient.delete).mockRejectedValue(
+      new AxiosError(
+        "Request failed with status code 404",
+        "ERR_BAD_REQUEST",
+        undefined,
+        undefined,
+        {
+          status: 404,
+        } as AxiosResponse,
+      ),
+    );
+
+    const repository = new HttpCategoryRepository(httpClient);
+    const promise = repository.delete("category-123");
+    await expect(promise).rejects.toBeInstanceOf(CategoryNotFoundError);
+  });
 });
