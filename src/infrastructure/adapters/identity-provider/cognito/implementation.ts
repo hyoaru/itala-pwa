@@ -16,7 +16,7 @@ import {
   AliasExistsException,
   CodeDeliveryFailureException,
   CodeMismatchException,
-  CognitoIdentityProviderClient,
+  type CognitoIdentityProviderClient,
   ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
   ExpiredCodeException,
@@ -40,11 +40,12 @@ export class CognitoIdentityProvider implements IdentityProvider {
   private userPoolClientId: string;
   private cognitoClient: CognitoIdentityProviderClient;
 
-  public constructor() {
-    this.userPoolClientId = import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID;
-    this.cognitoClient = new CognitoIdentityProviderClient({
-      region: import.meta.env.VITE_AWS_REGION,
-    });
+  public constructor(
+    cognitoClient: CognitoIdentityProviderClient,
+    userPoolClientId: string,
+  ) {
+    this.cognitoClient = cognitoClient;
+    this.userPoolClientId = userPoolClientId;
   }
 
   public async signUp(

@@ -1,3 +1,4 @@
+import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
 import { queryOptions } from "@tanstack/react-query";
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import {
@@ -45,7 +46,12 @@ import { sessionEvents } from "./events/session";
 
 // Identity
 const identityProvider = new DecoratedIdentityProvider(
-  new CognitoIdentityProvider(),
+  new CognitoIdentityProvider(
+    new CognitoIdentityProviderClient({
+      region: import.meta.env.VITE_AWS_REGION,
+    }),
+    import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID,
+  ),
 );
 
 const signIn = new SignIn(identityProvider);
@@ -156,9 +162,7 @@ const getVersion = () =>
   queryOptions({
     queryKey: ["version"],
     queryFn: async () => {
-      const { data } = await apiHttpClient.get<{ version: string }>(
-        "/version",
-      );
+      const { data } = await apiHttpClient.get<{ version: string }>("/version");
       return data.version;
     },
   });
