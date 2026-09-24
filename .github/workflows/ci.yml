@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches-ignore: [master]
+    tags-ignore: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+
+      - name: Setup node
+        uses: hyoaru/actions/setup-node@v1
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npx prettier --check .
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+
+      - name: Setup node
+        uses: hyoaru/actions/setup-node@v1
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm run test:ci
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+
+      - name: Setup node
+        uses: hyoaru/actions/setup-node@v1
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: hyoaru/actions/checkout@v1
+
+      - name: Cache Trivy DB
+        uses: hyoaru/actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/.cache/trivy
+          key: trivy-db
+          restore-keys: |
+            trivy-
+
+      - name: Scan dependencies
+        uses: hyoaru/actions/trivy@v1
+        with:
+          scan-type: fs
+          scan-ref: package-lock.json
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          format: table
+          exit-code: "1"
+          cache: "true"
