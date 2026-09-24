@@ -146,4 +146,57 @@ describe("HttpCategoryRepository", () => {
       },
     });
   });
+
+  it("updates a category", async () => {
+    const httpClient = { put: vi.fn() } as unknown as AxiosInstance;
+
+    vi.mocked(httpClient.put).mockResolvedValue({});
+
+    const repository = new HttpCategoryRepository(httpClient);
+    await repository.update("category-123", "Groceries");
+
+    expect(httpClient.put).toHaveBeenCalledWith("/categories/category-123", {
+      name: "Groceries",
+    });
+  });
+
+  it("throws a CategoryAlreadyExistsError when updating to an existing name", async () => {
+    const httpClient = { put: vi.fn() } as unknown as AxiosInstance;
+
+    vi.mocked(httpClient.put).mockRejectedValue(
+      new AxiosError(
+        "Request failed with status code 409",
+        "ERR_BAD_REQUEST",
+        undefined,
+        undefined,
+        {
+          status: 409,
+        } as AxiosResponse,
+      ),
+    );
+
+    const repository = new HttpCategoryRepository(httpClient);
+    const promise = repository.update("category-123", "Groceries");
+    await expect(promise).rejects.toBeInstanceOf(CategoryAlreadyExistsError);
+  });
+
+  it("throws a CategoryNotFoundError when the category does not exist", async () => {
+    const httpClient = { put: vi.fn() } as unknown as AxiosInstance;
+
+    vi.mocked(httpClient.put).mockRejectedValue(
+      new AxiosError(
+        "Request failed with status code 404",
+        "ERR_BAD_REQUEST",
+        undefined,
+        undefined,
+        {
+          status: 404,
+        } as AxiosResponse,
+      ),
+    );
+
+    const repository = new HttpCategoryRepository(httpClient);
+    const promise = repository.update("category-123", "Groceries");
+    await expect(promise).rejects.toBeInstanceOf(CategoryNotFoundError);
+  });
 });
