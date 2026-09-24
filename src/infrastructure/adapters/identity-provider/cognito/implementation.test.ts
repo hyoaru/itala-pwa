@@ -274,4 +274,88 @@ describe("CognitoIdentityProvider", () => {
       original,
     );
   });
+
+  it("refreshes the session and returns the new tokens", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockResolvedValue({
+      AuthenticationResult: {
+        AccessToken: "access",
+        IdToken: "id",
+        RefreshToken: "new-refresh",
+      },
+    });
+
+    const session = await provider.refresh("old-refresh");
+
+    expect(session).toBeInstanceOf(AuthenticatedSession);
+    expect(session).toMatchObject({
+      accessToken: "access",
+      idToken: "id",
+      refreshToken: "new-refresh",
+    });
+
+    const command = sendMock.mock.calls[0][0] as InitiateAuthCommand;
+    expect(command).toBeInstanceOf(InitiateAuthCommand);
+    expect(command.input.AuthFlow).toBe("REFRESH_TOKEN_AUTH");
+    expect(command.input.AuthParameters).toEqual({
+      REFRESH_TOKEN: "old-refresh",
+    });
+  });
+
+  it("keeps the provided refresh token when Cognito omits a new one", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockResolvedValue({
+      AuthenticationResult: { AccessToken: "access", IdToken: "id" },
+    });
+
+    const session = await provider.refresh("old-refresh");
+
+    expect(session.refreshToken).toBe("old-refresh");
+  });
+
+  it("throws a generic error when tokens are missing", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockResolvedValue({ AuthenticationResult: {} });
+
+    await expect(provider.refresh("old-refresh")).rejects.toBeInstanceOf(
+      IdentityProviderError,
+    );
+  });
+
+  it("wraps unknown errors in a generic identity provider error", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    sendMock.mockRejectedValue(new Error("network"));
+
+    await expect(provider.refresh("old-refresh")).rejects.toBeInstanceOf(
+      IdentityProviderError,
+    );
+  });
+
+  it("rethrows an existing identity provider error untouched", async () => {
+    const sendMock = vi.fn();
+    const provider = new CognitoIdentityProvider(
+      { send: sendMock } as unknown as CognitoIdentityProviderClient,
+      "client-123",
+    );
+    const original = new IdentityProviderError("boom");
+    sendMock.mockRejectedValue(original);
+
+    await expect(provider.refresh("old-refresh")).rejects.toBe(original);
+  });
 });
